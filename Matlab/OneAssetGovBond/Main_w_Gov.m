@@ -11,7 +11,7 @@ addpath(genpath('latex'))
 %% Select options
 % Name economy
 casename            = 'SS_BASELINE_tau_05_w_Gov_gam1_xi1_B_over_4Y_50';
-FindNewSS           = false;
+FindNewSS           = true;
 % FindNewSS           = true;
 mpar.overrideEigen  = true;
 
@@ -40,7 +40,7 @@ par.kappa         = (1-par.prob_priceadj)*(1-par.prob_priceadj*par.beta)/par.pro
 
 % Central Bank Policy
 par.theta_pi    = 1.25; % Reaction to inflation
-par.rho_R       = 0.5;  % Inertia
+% par.rho_R       = 0.0;  % Inertia (removed here because it is set later)
 
 
 % Tax Schedule
@@ -49,7 +49,7 @@ par.tau         = 0.95;   % Proportional tax on labor and profit income
 % Debt rule
 par.gamma_pi    = 1.5;   % 1.5, Reaction to inflation
 par.gamma_T     = 0.5075; % Reaction to tax revenue
-par.rho_B       = 0.99;  % Autocorrelation
+%par.rho_B       = 0.99;  % Autocorrelation (removed here because it is set later)
 
 %% Returns
 par.PI          = 1;          % Gross inflation
@@ -111,9 +111,12 @@ for mm=1:mpar.nm
 end
 
 NNP = meshes.m;
-% URE = inc.labor + meshes.m - c_guess;
-URE = inc.labor + meshes.m - C_ind;
-MPC_m=MPC_m.*(WW_h_mesh./C_ind);
+URE = inc.labor + meshes.m - c_guess;
+%URE = inc.labor + meshes.m - C_ind; %URE should use c_guess as inc.labor
+%is the labor income including disutility of working, so need to take this
+%away
+
+MPC_m=MPC_m.*(WW_h_mesh./C_ind);    %???????? what is this for?
 MPC_m=min(MPC_m,1); % prevent MPC_a larger than 1
 %% Sufficient statistics in Auclert
 
@@ -163,7 +166,7 @@ end
 par.rho_B       = 0.999;
 par.rho_R       = 0.0;  % Inertia
 
-SS_stats
+%SS_stats
 %% Select aggregate shock
 % aggrshock           = 'Uncertainty';
 % par.rhoS            = 0.839;    % Persistence of variance
