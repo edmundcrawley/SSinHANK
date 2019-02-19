@@ -46,7 +46,13 @@ end
 c_update = reshape(c_update,[mpar.nm, mpar.nh]);
 m_update = reshape(m_update,[mpar.nm, mpar.nh]);
 
-c_update(binding_constraints) = Resource(binding_constraints)-grid.m(1);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% new handling of no borrowing
+binding_constraints = c_update>Resource;
+c_update(binding_constraints) = Resource(binding_constraints);
 m_update(binding_constraints) = min(grid.m);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%c_update(binding_constraints) = Resource(binding_constraints)-grid.m(1);
+%m_update(binding_constraints) = min(grid.m);
 
 end
