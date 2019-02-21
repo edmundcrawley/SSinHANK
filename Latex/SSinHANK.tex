@@ -1,0 +1,129 @@
+\input{./econtexRoot}\input{\econtexRoot/econtexPaths.tex}\documentclass[titlepage]{\econtex}\newcommand{\texname}{ConsumptionHeterogeneity}
+\usepackage{\econtexSetup}\usepackage{\econtexShortcuts}
+\usepackage[nolists,nomarkers,tablesonly]{endfloat}
+\usepackage{tikz}
+\usepackage{caption}
+\usepackage{titlesec}
+\setcounter{secnumdepth}{4}
+\usepackage{placeins}
+\usepackage{pdfpages}
+\usepackage{setspace}
+\onehalfspacing
+
+\usepackage{booktabs,rotating}
+
+\titleformat{\paragraph}
+{\sffamily\mdseries\normalsize}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+
+
+\begin{document}\bibliographystyle{\econtexBibStyle}
+\input Switches.tex
+
+\begin{verbatimwrite}{\jobname.title}
+Sufficient Statistics in HANK
+\end{verbatimwrite}
+
+%\hfill{\tiny \jobname}
+
+\title{ 
+	\bigskip
+	\bigskip
+	Sufficient Statistics in HANK \\ A Paper Proposal}
+
+\author{
+  Edmund Crawley\authNum   \\ {\small JHU}
+  \and
+  Seungcheol Lee\authNum    \\ {\small UCL}
+}
+
+
+\keywords{}
+\jelclass{}
+
+\date{February 2019}
+\maketitle
+
+
+\begin{abstract}
+\cite{auclert_monetary_2017} shows that, under certain conditions, the transmission of monetary policy can be decomposed into five partial equilibrium channels. This paper examines how useful this decomposition is in more general models, both TANK and HANK, which have more complex dynamics. We show that if the monetary policy shock is transitory, and with reasonably calibrated convex investment adjustment costs, the decomposition works well. Furthermore, we show that the current generation of TANK and HANK models do a poor job at matching the joint distribution of unhedged interest rate exposure and MPC. We suggest improving these models along this dimension is of primary quantitative importance.
+\end{abstract}
+
+
+\begin{authorsinfo}
+\name{Crawley: Department of Economics, Johns Hopkins University, \href{mailto:ecrawle2@jhu.edu}{\texttt{ecrawle2@jhu.edu}}}
+\name{Lee: University College London, \href{mailto:seungcheol.lee@ucl.ac.uk}{\texttt{seungcheol.lee@ucl.ac.uk}}}
+\end{authorsinfo}
+
+\titlepagefinish
+\setcounter{page}{1}
+
+\pagebreak
+\section{Introduction}
+A recent wave of so-called HANK models (Heterogeneous Agent New Keynesian) purport to show that the transmission mechanism of monetary policy may be very different to that of traditional New Keynesian models. While these models have generated much discussion, their quantitative relevance and importance for policy have yet to be proven. Indeed \cite{dgHANKTANK} claim that under certain conditions a simple TANK (Two Agent New Keynesian) model can suffice.
+
+In a related paper, \cite{auclert_monetary_2017} shows how the transmission mechanism of monetary policy can be decomposed into five partial equilibrium channels, all of which are potentially measurable in data. The validity of the sufficient statistics he identifies rests on the assumption that an interest rate shock is transitory in nature.\footnote{Specifically, from the point of view of an individual household, a monetary policy shock consists of a transitory change in income, a permanent change in the price level and a transitory change to the real interest rate.}
+
+This paper investigates how useful Auclert's sufficient statistics are in more general models where the exact conditions required for the decomposition do not hold. We will restrict ourselves to models where the interest rate depends only on the current economic conditions, so there is no `artificial' persistence in the interest rate. This is required to replicate the conditions for a transitory monetary policy shock.
+
+We start with a basic TANK model in which the conditions for the sufficient statistics to exactly measure the transmission mechanism hold. We then extend the model in a variety of directions, including a simple HANK model.
+
+Finally we show that the current generation of HANK models does not do a good job at matching the empirically measured joint distribution of unhedged interest rate exposure and MPCs.
+
+\subsection{some notes...}
+The key to the paper will be to show that there is no significant medium term dynamics in these models, once we disallow persistence in the shock itself ($\rho = 0$ for the interest rate shock). While this lack of persistence limits our study somewhat, we would also question how well these models capture consumption behavior with respect to future income/interest rates. There is a wealth of micro evidence to suggest that households respond to income \textit{when they get it}, not when they hear about it, which greatly brings into question the validity of the dynamics of these models. The advantage of limiting ourselves to models with little persistence is that we can stay close to what we know about the empirics.
+
+The fact that households don't respond to income until they actually receive it seems likely to be the reason monetary policy seems to act with a delay (for example rates take time to adjust).
+
+\section{A TANK Model in which the Sufficient Statistics Work Exactly}
+Key features of model (I think):
+\begin{itemize}
+	\item Two agent, one unconstrained, one constrained
+	\item Fixed amount of capital, K, all held by unconstrained agent
+	\item Nominal bonds - either issued by government, or in net zero supply
+	\item Borrowing constraint - either at zero, or cannot borrow more than some fraction of next period's income
+	\item Government rebates any extra revenue via lump sum tax rebates.
+	\item NK setup standard otherwise
+\end{itemize}
+I believe this model should fit Auclert's conditions exactly
+
+\section{Relaxing the Fixed Capital Assumption}
+Instead of a fixed amount of capital, K, allow for investment. If there are no costs to investment, then households will invest until the new capital stock gives risk to the changed interest rate, which will result in a very persistent change in the interest rate. We will need convex investment adjustment costs to avoid this persistence, and hope to show that reasonable calibrations result in little change in the capital stock and hence low interest rate persistence. Auclert did something like this in a previous version of his paper.
+
+\section{Assumptions on Government Expenditure}
+The sufficient statistics rely heavily on the tax rebate assumption that an extra government revenues are immediately paid back in equal lump sums to all households. We need to relax this, and hope to show in the TANK model that a version of the sufficient statistics where we do not assume any rebate, holds fairly well (as long as the number of constrained households is quite high).
+
+\section{Nature of the Borrowing Constraint}
+Here I want to show the effect of changing the borrowing constraint from a proportion of next periods income to a proportion of today's income. I think this will have the effect of delaying the constrained households response by one period, but perhaps the average response over two periods may be similar?
+
+\section{A Simple HANK Model}
+Here is where we put the results from our HANK model. For the moment we should perhaps stick to the one asset version. One key thing to show is again that there is little persistence in the dynamics following a transitory shock. In the IRFs we see a slight hump in period 2 which we should try and understand (I think it is due to a change in the distribution of wealth).
+
+\section{Unhedged Interest Exposure in Existing HANK Models}
+By now we have hopefully convinced the reader that the sufficient statistics do a reasonable job in a variety of models as long as there is no `artificial' persistence in the interest rate shock.
+
+We now want to show that the joint distribution of unhedged interest rate exposure and MPCs is very poorly calibrated in our current generation of HANK models. Furthermore, the evidence suggests this joint distribution is very persistent over time, in contrast to many two asset models which suggest households come in and out of their liquidity constrained position regularly.
+
+
+\section{Conclusion}
+Lots of future research to do!
+
+
+\processdelayedfloats
+
+\small
+\bibliography{AllPapers}
+\normalsize
+
+\end{document}
+
+
+
+
+
+
+
+
+

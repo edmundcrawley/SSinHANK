@@ -1,0 +1,21 @@
+\ifx\undefined\BySame
+\newcommand{\BySame}{\leavevmode\rule[.5ex]{3em}{.5pt}\ }
+\fi
+\ifx\undefined\textsc
+\newcommand{\textsc}[1]{{\sc #1}}
+\newcommand{\emph}[1]{{\em #1\/}}
+\let\tmpsmall\small
+\renewcommand{\small}{\tmpsmall\sc}
+\fi
+\begin{thebibliography}{}
+
+\harvarditem[Auclert]{Auclert}{2017}{auclert_monetary_2017}
+\textsc{Auclert, Adrien}  (2017): ``Monetary {Policy} and the {Redistribution}
+  {Channel},'' NBER {Working} {Paper} 23451, National Bureau of Economic
+  Research.
+
+\harvarditem[Debortoli and Gali]{Debortoli and Gali}{2018}{dgHANKTANK}
+\textsc{Debortoli, Davide,  {and} Jorda Gali}  (2018): ``Monetary Policy with
+  Heterogeneous Agents: Insights from TANK models,'' mimeo, CREI.
+
+\end{thebibliography}
