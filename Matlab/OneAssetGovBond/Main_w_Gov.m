@@ -10,7 +10,7 @@ addpath(genpath('latex'))
 
 %% Select options
 % Name economy
-casename            = 'SS_BASELINE_tau_05_w_Gov_gam1_xi1_B_over_4Y_50';
+casename            = 'SS_BASELINE_tau_05_w_Gov_gam1_xi1_B_over_4Y_375';
 FindNewSS           = true;
 % FindNewSS           = true;
 mpar.overrideEigen  = true;
