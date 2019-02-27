@@ -26,27 +26,28 @@ import scipy.io
 
 class FluctuationsOneAssetIOUs:
     
-    def __init__(self, par, mpar, grid, Output, targets, Vm, joint_distr, Copula, c_policy, m_policy, mutil_c, P_H):
+    def __init__(self, SSSolution):
          
-        self.par = par
-        self.mpar = mpar
-        self.grid = grid
-        self.Output = Output
-        self.targets = targets
-        self.Vm = Vm
-        self.joint_distr = joint_distr
-        self.Copula = Copula
-        self.c_policy = c_policy
-        self.m_policy = m_policy
-        self.mutil_c = mutil_c
-        self.P_H = P_H
+        self.par = SSSolution['par']
+        self.mpar = SSSolution['mpar']
+        self.grid = SSSolution['grid']
+        self.Output = SSSolution['Output']
+        self.targets = SSSolution['targets']
+        self.Vm = SSSolution['Vm']
+        self.joint_distr = SSSolution['joint_distr']
+        self.Copula = SSSolution['Copula']
+        self.c_policy = SSSolution['c_policy']
+        self.m_policy = SSSolution['m_policy']
+        self.mutil_c = SSSolution['mutil_c']
+        self.P_H = SSSolution['P_H']
         
         
     def StateReduc(self):
         invutil = lambda x : ((1-self.par['xi'])*x)**(1./(1-self.par['xi']))
         invmutil = lambda x : (1./x)**(1./self.par['xi'])
 
-        Xss=np.vstack((np.sum(self.joint_distr.copy(),axis=1), np.transpose(np.sum(self.joint_distr.copy(),axis=0)),np.log(self.par['RB']),0))
+        Xss=np.hstack((np.sum(self.joint_distr.copy(),axis=1), np.transpose(np.sum(self.joint_distr.copy(),axis=0)),np.log(self.par['RB']),0))
+        Xss=np.expand_dims(Xss,1)
         Yss=np.vstack((invmutil(np.reshape(self.mutil_c.copy(),(np.product(self.mutil_c.shape),1),order='F')),np.log(self.par['PI']),np.log(self.targets['Y']),np.log(self.targets['W']),np.log(self.targets['PROFITS']),np.log(self.targets['N']),self.targets['B'],self.targets['G']))
         ## Construct Chebyshev Polynomials to describe deviations of policy from SS
         Poly=[]
@@ -654,7 +655,7 @@ def Fsys(State, Stateminus, Control_sparse, Controlminus_sparse, StateSS, Contro
     
     ## Update policies
     RBaux = (RB+(meshes['m']<0).copy()*par['borrwedge'])/PI
-    EVm = np.reshape(np.reshape(np.multiply(RBaux.flatten().T.copy(),mutil_c),(mpar['nm'],mpar['nh']),order='F').dot(np.transpose(P.copy())),(mpar['nm'],mpar['nh']),order='F')
+    EVm = np.reshape(np.reshape(np.multiply(RBaux.flatten().T.copy(),np.squeeze(mutil_c)),(mpar['nm'],mpar['nh']),order='F').dot(np.transpose(P.copy())),(mpar['nm'],mpar['nh']),order='F')
     
     result_EGM_policyupdate = EGM_policyupdate(EVm,PIminus,RBminus,inc,meshes,grid,par,mpar)
     c_star = result_EGM_policyupdate['c_star']

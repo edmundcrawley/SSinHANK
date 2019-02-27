@@ -226,15 +226,15 @@ class SteadyStateOneAssetIOUsBond:
                 'joint_distr': joint_distr,
                 'Copula': Copula,
                 'c_policy': c_guess,
-                'c_policy_noncomposite' : c_policy_noncomposite,
-                'labor_income_composite' : labor_income_composite,
-                'labor_income_noncomposite' : labor_income_noncomposite,
                 'm_policy': m_star,
                 'mutil_c': mutil_c,
                 'P_H' : P_H,
                 'inc' : inc,
                 'meshesm' : meshesm,
-                'meshesh' : meshesh
+                'meshesh' : meshesh,
+                'c_policy_noncomposite' : c_policy_noncomposite,
+                'labor_income_composite' : labor_income_composite,
+                'labor_income_noncomposite' : labor_income_noncomposite
                 }
        
     def JDiteration(self, m_star, P_H, mpar, grid):

@@ -9,15 +9,20 @@ import defineSSParameters as Params
 from copy import copy
 import pickle
 from SteadyStateOneAssetIOUsBond import SteadyStateOneAssetIOUsBond
+from FluctuationsOneAssetIOUsBond import FluctuationsOneAssetIOUs
+from FluctuationsOneAssetIOUsBond import SGU_solver
+from FluctuationsOneAssetIOUsBond import plot_IRF
 
-
+###############################################################################
+# First do steady state
+###############################################################################
 EconomyParams = copy(Params.parm_one_asset_IOUsBond)
   
 SSEconomy = SteadyStateOneAssetIOUsBond(**EconomyParams)
 
-SSSolution = SSEconomy.SolveSteadyState()
-
-pickle.dump(SSSolution, open("SSSolution.p", "wb"))
+#SSSolution = SSEconomy.SolveSteadyState()
+#
+#pickle.dump(SSSolution, open("SSSolution.p", "wb"))
 
 SSSolution=pickle.load(open("SSSolution.p", "rb"))
 
@@ -54,4 +59,21 @@ Redist_elas_R = sum(sum(MPC_m*URE*SSSolution['joint_distr']))/agg_c - sum(sum(MP
 sig_i = par['xi']**(-1)*SSSolution['c_policy']/SSSolution['c_policy_noncomposite'] # c_policy: composite goods consumption, c_policy_noncomposite: final goods consumption
 #
 Intertemporal_subs = sum(sum(sig_i*(1.0-MPC_m)*SSSolution['c_policy_noncomposite']*SSSolution['joint_distr']))/agg_c
+
+###############################################################################
+# Now do Fluctuations
+###############################################################################
+FluctuationEconomy=FluctuationsOneAssetIOUs(SSSolution)
+
+SR=FluctuationEconomy.StateReduc()
+#    
+SGUresult=SGU_solver(SR['Xss'],SR['Yss'],SR['Gamma_state'],SR['Gamma_control'],SR['InvGamma'],SR['Copula'],
+                         SR['par'],SR['mpar'],SR['grid'],SR['targets'],SR['P_H'],SR['aggrshock'],SR['oc'])
+#
+#    plot_IRF(SR['mpar'],SR['par'],SGUresult['gx'],SGUresult['hx'],SR['joint_distr'],
+#             SR['Gamma_state'],SR['grid'],SR['targets'],SR['os'],SR['oc'],SR['Output'])
+
+
+
+
 
