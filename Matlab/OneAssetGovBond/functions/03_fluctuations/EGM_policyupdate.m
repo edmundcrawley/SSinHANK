@@ -7,14 +7,14 @@ c_new = 1./(EMU.^(1/par.xi));
 % Calculate assets consistent with choices being (m')
 % Calculate initial money position from the budget constraint,
 % that leads to the optimal consumption choice
-m_n_aux = (c_new + mesh.m - inc.labor);
+m_n_aux = (c_new + mesh.m - inc.labor - inc.profits);
 m_n_aux = m_n_aux./(RBminus/PIminus+(m_n_aux<0)*par.borrwedge/PIminus);
 
 % Identify binding constraints
-binding_constraints = mesh.m < repmat(m_n_aux(1,:),[mpar.nm 1]);
+% binding_constraints = mesh.m < repmat(m_n_aux(1,:),[mpar.nm 1]);
 
 % Consumption when drawing assets m' to zero: Eat all Resources
-Resource = inc.labor + inc.money;
+Resource = inc.labor + inc.money + inc.profits;
 
 m_n_aux = reshape(m_n_aux,[mpar.nm mpar.nh]);
 c_n_aux  = reshape(c_new,[mpar.nm mpar.nh]);
@@ -35,8 +35,15 @@ for hh=1:mpar.nh
     c_star(:,hh)=Consumption(grid.m);  % Obtain c(m,h) by interpolation (notice this is out of grid, used linear interpolation)
 end
 
-c_star(binding_constraints) = Resource(binding_constraints)-grid.m(1);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% new handling of no borrowing
+binding_constraints = c_star>Resource;
+c_star(binding_constraints) = Resource(binding_constraints);
 m_star(binding_constraints) = min(grid.m);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% c_star(binding_constraints) = Resource(binding_constraints)-grid.m(1);
+% m_star(binding_constraints) = min(grid.m);
 
 m_star(m_star>grid.m(end)) = grid.m(end);
 
