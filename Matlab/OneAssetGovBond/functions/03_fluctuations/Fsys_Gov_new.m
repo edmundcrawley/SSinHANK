@@ -1,4 +1,4 @@
-function [Difference,LHS,RHS,JD_new,c_star,m_star,P]  = Fsys_Gov(State,Stateminus,...
+function [Difference,LHS,RHS,JD_new,c_star,m_star,P]  = Fsys_Gov_new(State,Stateminus,...
     Control_sparse,Controlminus_sparse,StateSS,...
     ControlSS,Gamma_state,Gamma_control,InvGamma,Copula,...
     par,mpar,grid,targets,P,aggrshock,oc)
@@ -44,9 +44,8 @@ Nind  = 1*NN+5;
 Bind  = 1*NN+6;
 Cind  = 1*NN+7;
 Gind  = 1*NN+8;
-Tind  = 1*NN+9;
-Xind  = 1*NN+10;
-MCind  = 1*NN+11;
+Xind  = 1*NN+9;
+MCind  = 1*NN+10;
 
 % Indexes for States
 marginal_mind = (1:mpar.nm-1);
@@ -93,8 +92,8 @@ Profitminus  = exp(Controlminus(Profitind ));
 Nminus  = exp(Controlminus(Nind ));
 Bminus  = exp(Controlminus(Bind ));
 Cminus  = exp(Controlminus(Cind ));
-Gminus  = exp(Controlminus(Gind ));
-Tminus  = exp(Controlminus(Tind ));
+Gminus  = Controlminus(Gind );
+% Tminus  = exp(Controlminus(Tind ));
 Xminus  = exp(Controlminus(Xind ));
 MCminus  = exp(Controlminus(MCind ));
 %% Write LHS values
@@ -107,7 +106,7 @@ LHS(nx+Nind)       = (Nminus);
 LHS(nx+Bind)       = (Bminus);
 LHS(nx+Cind)       = (Cminus);
 LHS(nx+Gind)       = (Gminus);
-LHS(nx+Tind)       = (Tminus);
+% LHS(nx+Tind)       = (Tminus);
 LHS(nx+Xind)       = (Xminus);
 LHS(nx+MCind)       = (MCminus);
 % States
@@ -172,8 +171,9 @@ WW(:,end)=Profitminus*par.profitshare;
 inc.labor   = par.tau*WW.*(meshes.h);
 inc.money   = meshes.m.*(RBminus/PIminus+(meshes.m<0).*par.borrwedge/PIminus);
 
-jd_aux=P^1000; jd_aux=jd_aux(1,:);
-inc.profits = sum((1-par.tau)*par.gamma/(1+par.gamma).*(Nminus/par.H).*Wminus.*grid.h.*jd_aux);
+jd_aux = sum(JDminus,1);
+inc.profits = sum((1-par.tau)*par.gamma/(1+par.gamma).*(Nminus/par.H).*Wminus.*grid.h(1:end-1).*jd_aux(1:end-1)) ...
+                + (1-par.tau)*Profitminus*par.profitshare*jd_aux(end); % lump sum transfer
 
 %% Update policies
 RBaux=(RB+(meshes.m<0).*par.borrwedge)/PI;
@@ -243,23 +243,23 @@ RHS(RBind) = log(par.RB) + par.rho_R* log(RBminus/par.RB)  + log(PIminus/par.PI)
              + EPS_TAYLOR;
 
 % % Inflation jumps to equilibrate real bond supply and demand
-% RHS(nx+PIind) = targets.B;
-% LHS(nx+PIind) = B;
+% LHS(nx+PIind) = log(B/targets.B);
+% RHS(nx+PIind) = 0;
+
 
 LHS(nx+PIind) = log((B)/(targets.B));
 
 RHS(nx+PIind) = par.rho_B * log((Bminus)/(targets.B)) ...
     + par.rho_B * log(RBminus/par.RB)...
-    - (par.rho_B+par.gamma_pi) * log(PIminus/par.PI) ...
-    - par.gamma_T * log((Tminus)/(targets.T));
-
+    - (par.rho_B+par.gamma_pi) * log(PIminus/par.PI); % ... - par.gamma_T * log((Tminus)/(targets.T));
 
 % Government expenditures
-RHS(nx+Gind) =  B - Bminus*RBminus/PIminus + Tminus;
+% RHS(nx+Gind) =  B - Bminus*RBminus/PIminus + Tminus;
+RHS(nx+Gind) =  B - Bminus*RBminus/PIminus;
 
-taxrevenue =(1-par.tau).*Wminus.*Nminus +(1-par.tau).*Profitminus;
+% taxrevenue =(1-par.tau).*Wminus.*Nminus +(1-par.tau).*Profitminus;
 
-RHS(nx+Tind) = taxrevenue;
+% RHS(nx+Tind) = taxrevenue;
 %% Difference
 Difference = InvGamma(:,:)*((LHS-RHS)./[ones(nx,1);(ControlSS(1:end-oc));ones(oc,1)]);
 

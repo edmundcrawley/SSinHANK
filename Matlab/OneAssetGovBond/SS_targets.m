@@ -13,5 +13,6 @@
     par.PROFITS=Profits_fc(1);
     par.N=N;
     targets.T=labortax;
-    par.G=targets.B*(1-par.RB/par.PI)+targets.T;
+%     par.G=targets.B*(1-par.RB/par.PI)+targets.T;
+    par.G=targets.B*(1-par.RB/par.PI);
     targets.GtoY=par.G/Output;
