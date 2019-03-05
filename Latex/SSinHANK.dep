@@ -134,6 +134,13 @@
   *{package}{pdfpages}    {2017/10/31 v0.5l}
   *{package}{eso-pic}     {2018/04/12 v2.0h}
   *{file}   {pppdftex.def}{2017/10/31 v0.5l}
+  *{package}{breqn}       {2018/09/14 v0.98f}
+  *{package}{expl3}       {2018-09-24 v3}
+  *{file}   {expl3-code.tex}{2018-09-24 v3}
+  *{file}   {l3pdfmode.def}{2018-09-24 v3}
+  *{package}{flexisym}    {2017/01/27 v0.98e}
+  *{file}   {cmbase.sym}  {2007/12/19 v0.92}
+  *{package}{mathstyle}   {2017/01/27 v0.98e}
   *{package}{rotating}    {2016/08/11 v2.16d}
   *{file}   {t3cmr.fd}    {2001/12/31 v0.0}
   *{file}   {supp-pdf.mkii}{0000/00/00 v0.0}

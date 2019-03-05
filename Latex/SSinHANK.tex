@@ -8,6 +8,7 @@
 \usepackage{placeins}
 \usepackage{pdfpages}
 \usepackage{setspace}
+\usepackage{breqn}
 \onehalfspacing
 
 \usepackage{booktabs,rotating}
@@ -87,7 +88,72 @@ Key features of model (I think):
 	\item Government rebates any extra revenue via lump sum tax rebates.
 	\item NK setup standard otherwise
 \end{itemize}
-I believe this model should fit Auclert's conditions exactly
+I believe this model should fit Auclert's conditions exactly.\\
+\\
+Parameters: $\alpha$ capital share, $\epsilon$ inverse individual good elasticity, $\theta$ Calvo parameter, $\sigma$ CRRA, $\phi$ Frish elasticity.\\
+\\
+Composite parameters:
+
+\begin{dmath*}
+	\Omega = \frac{1-{\alpha}}{1-{\alpha}+{\alpha}\, {\epsilon}}
+\end{dmath*}
+\begin{dmath*}
+	\lambda^{gali} = \frac{\left(1-{\theta}\right)\, \left(1-{\theta}\, {\beta}\right)}{{\theta}}\, \Omega_{t}
+\end{dmath*}
+\begin{dmath*}
+	\kappa = \lambda^{gali}_{t}\, \left({\sigma}+\frac{{\alpha}+{\phi}}{1-{\alpha}}\right)
+\end{dmath*}
+Now the model.\\
+\\
+New Keynesian Phillips curve:
+\begin{dmath}
+	% Equation 1
+	{\pi}_{t}={\beta}\, {\pi}_{t+1}+\kappa_{t}\, {\tilde y}_{t}
+\end{dmath}
+Households (both Ricardian and Keynesian) choose hours and consumption from FOCs:
+\begin{dmath}
+	% Equation 2
+	{w_r}_{t}={\sigma}\, {c_R}_{t}+{\phi}\, {n_R}_{t}
+\end{dmath}
+\begin{dmath}
+	% Equation 3
+	{w_r}_{t}={\sigma}\, {c_K}_{t}+{\phi}\, {n_K}_{t}
+\end{dmath}
+Euler equation for the Ricardian households:
+\begin{dmath}
+	% Equation 4
+	{c_R}_{t}={c_R}_{t+1}-\frac{1}{{\sigma}}\, \left({i}_{t}-{\pi}_{t+1}\right)
+\end{dmath}
+Keynesian housholds consume all their income that period, after paying interest. They always max out their debt limit which is set such that they never owe more than a fraction $\Lambda$ of their steady state labor earnings in the following period. Debts are nominal:
+\begin{dmath}
+	% Equation 5
+	{c_K}_{t}\, \left(1-{\Lambda}\, \left(1-{\beta}\right)\right)={w_r}_{t}+{n_K}_{t}-{\beta}\, {\Lambda}\, \left({i}_{t-1}-{\pi}_{t}-{r^r}_{t-1}+{r^r}_{t}\right)
+\end{dmath}
+Goods market clears in equilibrium. Note $\bar{C_R}$ and $\bar{C_K}$ are the steady state shares of consumption by Ricardian and Keynesian households:
+\begin{dmath}
+	% Equation 6
+	{\tilde y}_{t}={c_R}_{t}\, \bar{C_R}+{c_K}_{t}\, \bar{C_K}
+\end{dmath}
+Labor market clears in equilibrium. Note $\bar{N_R}$ and $\bar{N_K}$ are the steady state shares of hours by Ricardian and Keynesian households:
+\begin{dmath}
+	% Equation 7
+	{n}_{t}={n_R}_{t}\, \bar{N_R}+{n_K}_{t}\, \bar{N_K}
+\end{dmath}
+Taylor rule:
+\begin{dmath}
+	% Equation 8
+	{i}_{t}={\pi}_{t}\, {\phi_{\pi}}+{\tilde y}_{t}\, {\phi_{y}}+{\nu}_{t}
+\end{dmath}
+Fisher equation
+\begin{dmath}
+	% Equation 9
+	{r^r}_{t}={i}_{t}-{\pi}_{t+1}
+\end{dmath}
+Production function:
+\begin{dmath}
+	% Equation 14
+	{\tilde y}_{t}=\left(1-{\alpha}\right)\, {n}_{t}
+\end{dmath}
 
 \section{Relaxing the Fixed Capital Assumption}
 Instead of a fixed amount of capital, K, allow for investment. If there are no costs to investment, then households will invest until the new capital stock gives risk to the changed interest rate, which will result in a very persistent change in the interest rate. We will need convex investment adjustment costs to avoid this persistence, and hope to show that reasonable calibrations result in little change in the capital stock and hence low interest rate persistence. Auclert did something like this in a previous version of his paper.

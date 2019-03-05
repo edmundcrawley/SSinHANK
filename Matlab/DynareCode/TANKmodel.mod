@@ -1,42 +1,19 @@
 /*
- * This file implements the baseline New Keynesian model of Jordi Galí (2008): Monetary Policy, Inflation,
- * and the Business Cycle, Princeton University Press, Chapter 3
- *
- * Note that all model variables are expressed in deviations from steady state, i.e. in contrast to
- * to the chapter, both the nominal interest rate and natural output are not in log-levels, but rather mean 0
- *
- * This implementation was written by Johannes Pfeifer. In case you spot mistakes,
- * email me at jpfeifer@gmx.de
- *
- * Please note that the following copyright notice only applies to this Dynare 
- * implementation of the model.
- */
-
-/*
- * Copyright (C) 2013-15 Johannes Pfeifer
- *
- * This is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * It is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * For a copy of the GNU General Public License,
- * see <http://www.gnu.org/licenses/>.
+ * Implements a basic TANK model
  */
 
 var pi ${\pi}$ (long_name='inflation')
     y_gap ${\tilde y}$ (long_name='output gap')
     y_nat ${y^{nat}}$ (long_name='natural output')      //(in contrast to the textbook defined in deviation from steady state)
     y ${y}$ (long_name='output')
-    r_nat ${r^{nat}}$ (long_name='natural interest rate')
     r_real ${r^r}$ (long_name='//real interest rate')     
     i ${i}$ (long_name='nominal interrst rate')
     n ${n}$ (long_name='hours worked')
+    n_R ${n_R}$ (long_name='Ricardian hours worked')
+    n_K ${n_K}$ (long_name='Keynesian hours worked')
+    c_R ${c_R}$ (long_name='Ricardian consumption')
+    c_K ${c_K}$ (long_name='Keynesian consumption')
+    w_real ${w_r}$ (long_name='//real wage')
     nu ${\nu}$ (long_name='AR(1) monetary policy shock process')    
     a  ${a}$ (long_name='AR(1) technology shock process')
     ;     
@@ -53,19 +30,32 @@ parameters alpha ${\alpha}$ (long_name='capital share')
     phi_y ${\phi_{y}}$ (long_name='output feedback Taylor Rule')
     epsilon ${\epsilon}$ (long_name='demand elasticity')
     theta ${\theta}$ (long_name='Calvo parameter')
+    lambda ${\lambda}$ (long_name='Keynesian population share')
+    Lambda ${\Lambda}$ (long_name='debt limit as multiple of steady state labor income')
+    cons_share_K $\bar{C_K}$ (long_name='Keynesian consumption share')
+    cons_share_R $\bar{C_R}$ (long_name='Ricardian consumption share')
+    labor_share_K $\bar{N_K}$ (long_name='Keynesian labor share')
+    labor_share_R $\bar{N_R}$ (long_name='Ricardian labor share')
     ;
 %----------------------------------------------------------------
 % Parametrization, p. 52
 %----------------------------------------------------------------
-sigma = 1;
-phi=1;
-phi_pi = 1.5;
-phi_y  = .5/4;
-theta=2/3;
-rho_nu =0.0;
-beta = 0.99;
-alpha=0.0; //1/3;
-epsilon=6;
+set_param_value('sigma',sigma);
+set_param_value('phi',phi);
+set_param_value('phi_pi',phi_pi);
+set_param_value('phi_y',phi_y);
+set_param_value('theta',theta);
+set_param_value('rho_nu',rho_nu);
+set_param_value('beta',beta);
+set_param_value('alpha',alpha);
+set_param_value('epsilon',epsilon);
+set_param_value('lambda',lambda);
+set_param_value('Lambda',Lambda);
+
+set_param_value('cons_share_K',cons_share_K);
+set_param_value('cons_share_R',cons_share_R);
+set_param_value('labor_share_K',labor_share_K);
+set_param_value('labor_share_R',labor_share_R);
 
 %----------------------------------------------------------------
 % First Order Conditions
@@ -75,17 +65,23 @@ model(linear);
 //Composite parameters
 #Omega=(1-alpha)/(1-alpha+alpha*epsilon);  //defined on page 47
 #psi_n_ya=(1+phi)/(sigma*(1-alpha)+phi+alpha); //defined on page 48
-#lambda=(1-theta)*(1-beta*theta)/theta*Omega; //defined on page 47
-#kappa=lambda*(sigma+(phi+alpha)/(1-alpha));  //defined on page 49
+#lambda_gali=(1-theta)*(1-beta*theta)/theta*Omega; //defined on page 47, named lambda there
+#kappa=lambda_gali*(sigma+(phi+alpha)/(1-alpha));  //defined on page 49
 
 //1. New Keynesian Phillips Curve eq. (21)
 pi=beta*pi(+1)+kappa*y_gap;
-//2. Dynamic IS Curve eq. (22)
-y_gap=-1/sigma*(i-pi(+1)-r_nat)+y_gap(+1);
+
+// Replace dynamic IS curve with the following 6 equations 
+w_real = sigma*c_R + phi*n_R;
+w_real = sigma*c_K + phi*n_K;
+c_R = c_R(+1) - 1/sigma*(i - pi(+1));
+(1-Lambda*(1-beta))*c_K = w_real + n_K - Lambda*(i(-1)-pi-r_real(-1)) - beta*Lambda*r_real;
+y_gap = cons_share_R*c_R + cons_share_K*c_K;
+n = labor_share_R*n_R + labor_share_K*n_K;
+
 //3. Interest Rate Rule eq. (25)
 i=phi_pi*pi+phi_y*y_gap+nu;
-//4. Definition natural rate of interest eq. (23)
-r_nat=sigma*psi_n_ya*(a(+1)-a);
+
 //5. Definition real interest rate
 r_real=i-pi(+1);
 //6. Definition natural output, eq. (19)
@@ -120,7 +116,7 @@ check;
 % generate IRFs, replicates Figures 3.1, p. 53 (interest rate rule)
 % 3.3, p. 57 (money growth rule)
 %----------------------------------------------------------------
-stoch_simul(order = 1,irf=7) y_gap pi i r_real nu;
+stoch_simul(order = 1,irf=7) y_gap pi i r_real nu c_R c_K n_R n_K w_real;
 
 write_latex_dynamic_model;
 
