@@ -45,7 +45,7 @@ K=grid.K;
     WW(:,end)=Profits_fc*par.profitshare;
     RBRB = (par.RB+(meshes.m<0)*par.borrwedge)./par.PI;
     
-    [c_guess,inc]=policyguess(meshes,WW,RBRB,par,mpar);
+    [c_guess,inc]=policyguess(meshes,WW,RBRB,par,grid,N,W_fc,P_H,Profits_fc);
     count=0;
   
     % 5) Solve Policies and Joint Distribution
