@@ -1,10 +1,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Code for TANK model in Dynare
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%%
 addpath(genpath('c:\dynare'))
 clear all
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % First do a RANK model
 dynare 'RepAgent.mod' noclearall;
 RANK_irfs = oo_.irfs;
@@ -34,18 +35,19 @@ dC_C_Auclert = Inc_wt_MPC_RANK*dY_Y - Elas_EIS_RANK*dR_R;
 error_RANK = dC_C_Auclert - dC_C;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
 % Now the basic TANK model
 sigma = 1;
-phi=1;
+phi=1.0;
 phi_pi = 1.5;
-phi_y  = .5/4;
+phi_y  = 0.0;%.5/4;
 theta=2/3;
 rho_nu =0.0;
 beta = 0.99;
-alpha=0.0;%1/3;
+alpha=0.33;
 epsilon=6;
 lambda = 0.3;
-Lambda = 0.5;
+Lambda = 2.0;
 % Calc steady state share of labor and consumption of each type
 cons_share_to_labor_share_K = (1-Lambda*(1-beta))*(epsilon-1)/epsilon*(1-alpha);
 cons_share_K_obj = @(x)x^sigma * (x/cons_share_to_labor_share_K)^phi - (lambda/(1-lambda))^(sigma+phi)*(1-x)^sigma * (1-x/cons_share_to_labor_share_K)^phi;
@@ -102,6 +104,17 @@ dC_C_Auclert_TANK = MPC_TANK_R*dYR_Y_TANK + MPC_TANK_K*dYK_Y_TANK ...
                     - Elas_EIS_TANK*dR_R_TANK;
 error_TANK = dC_C_Auclert_TANK - dC_C_TANK;
 
+% Agg income channel
+MPC_TANK*dY_Y_TANK
+% Heterogeneous Income Channel
+MPC_TANK_R*dYR_Y_TANK + MPC_TANK_K*dYK_Y_TANK - MPC_TANK*dY_Y_TANK
+% Unhedged Interest Rate Exposure
+Elas_R_TANK*dR_R_TANK
+% Fisher Channel
+- Elas_P_TANK*dP_P_TANK
+% Intertemporal Elasticity Channel
+- Elas_EIS_TANK*dR_R_TANK
+
 %check for Keynesians
 dC_K = MPC_TANK_K*dYK_Y_TANK + URE_K*MPC_TANK_K*dR_R_TANK ...
         - NNP_K*MPC_TANK_K*dP_P_TANK;
@@ -113,3 +126,31 @@ dC_R = MPC_TANK_R*dYR_Y_TANK + URE_R*MPC_TANK_R*dR_R_TANK ...
         - Elas_EIS_TANK*dR_R_TANK;
 dC_R- TANK_irfs.c_R_eps_nu(1)*(1-cons_share_K)
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+% Now the TANK_capital model
+sigma = 1;
+phi=1;
+phi_pi = 1.5;
+phi_y  = 0.0;%.5/4;
+theta=2/3;
+rho_nu =0.0;
+beta = 0.99;
+alpha=0.33;
+epsilon=6;
+lambda = 0.3;
+Lambda = 2.0;
+delta = 0.1;
+% Calc steady state share of labor and consumption of each type
+cons_share_to_labor_share_K = (1-Lambda*(1-beta))*(epsilon-1)/epsilon*(1-alpha);
+invest_share = delta*alpha*(epsilon-1)/(epsilon*(1/beta - (1-delta)));
+cons_share_K_obj = @(x)x^sigma * (x/cons_share_to_labor_share_K)^phi - (lambda/(1-lambda))^(sigma+phi)*(1-invest_share-x)^sigma * (1-x/cons_share_to_labor_share_K)^phi;
+cons_share_K = fsolve(cons_share_K_obj, lambda);
+cons_share_R = 1-invest_share-cons_share_K;
+labor_share_K = cons_share_K/cons_share_to_labor_share_K;
+labor_share_R = 1-labor_share_K;
+dynare 'TANK_capital_model.mod' noclearall;
+TANK_capital_irfs = oo_.irfs;
+
+% 
