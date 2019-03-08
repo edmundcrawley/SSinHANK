@@ -98,7 +98,7 @@ K=grid.K;
   C_agg = joint_distr(:)'*C_ind(:);  
   
   AggregateSaving = m_star(:)'*joint_distr(:);
-  grid.B=2*Output; 
+  grid.B=par.BtoY*Output; 
   excess(1)=(grid.B - AggregateSaving);
 
   

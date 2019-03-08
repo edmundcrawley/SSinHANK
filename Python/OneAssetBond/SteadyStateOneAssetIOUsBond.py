@@ -105,7 +105,7 @@ class SteadyStateOneAssetIOUsBond:
             RBRB = resultFactReturn['RBRB'].copy()
             Output = resultFactReturn['Y']
            
-            resultPolGuess = self.PolicyGuess(meshes, WW, RBRB,par,self.mpar)
+            resultPolGuess = self.PolicyGuess(meshes,WW,RBRB,par,self.mpar,grid,N,W_fc,P_H,Profits_fc)
             c_guess = resultPolGuess['c_guess'].copy()
             inc = resultPolGuess['inc'].copy()
             count += 1
@@ -143,22 +143,13 @@ class SteadyStateOneAssetIOUsBond:
             par['RB']=1.+r
             print(r,  ExcessA)
             
-        #Calculate consumption excluding 'leisure' expense
-        labor_cost = par['tau']*N*W_fc*meshes['h']/par['H']/(1.0+par['gamma'])
-        labor_cost[:,-1]=0.0;
-        c_policy_noncomposite=c_guess+labor_cost;
-        
-        #Calulate labor and entrepreneur income in terms of both composite and non-composite
-        labor_income_composite = WW*meshes['h']
-        labor_income_noncomposite = labor_income_composite + labor_cost
-            
          
         ## SS_stats
         tgSB = np.sum((grid['m']<0)*np.sum(joint_distr.copy(),1))
         tgB = grid['m'].copy().dot(np.sum(joint_distr.copy(),1))
         tgBY = tgB/Output
         BCaux_M = np.sum(joint_distr,1) # 
-        tgm_bc = BCaux_M[0]
+        tgm_bc = BCaux_M[0,:]
         tgm_0 = BCaux_M[grid['m']==0]
         
         tax = (1.-par['tau'])*W_fc*N +(1.-par['tau'])*Profits_fc
@@ -230,11 +221,7 @@ class SteadyStateOneAssetIOUsBond:
                 'mutil_c': mutil_c,
                 'P_H' : P_H,
                 'inc' : inc,
-                'meshesm' : meshesm,
-                'meshesh' : meshesh,
-                'c_policy_noncomposite' : c_policy_noncomposite,
-                'labor_income_composite' : labor_income_composite,
-                'labor_income_noncomposite' : labor_income_noncomposite
+                'Profits_fc' : Profits_fc
                 }
        
     def JDiteration(self, m_star, P_H, mpar, grid):
@@ -320,7 +307,7 @@ class SteadyStateOneAssetIOUsBond:
             joint_distr = joint_distr_next.copy()
                  
             
-        return np.squeeze(np.asarray(joint_distr))  # convert from matrix to array
+        return joint_distr
            
         
     def PoliciesSS(self,c_guess, grid, inc, RBRB, P, mpar, par):
@@ -428,6 +415,9 @@ class SteadyStateOneAssetIOUsBond:
         RR = (par['RB']+(m_star.copy()<0.)*par['borrwedge'])/par['PI']
         m_star = m_star.copy()/RR
     
+        # Identify binding constraints
+        binding_constraints = (money_expense < np.tile(m_star[0,:],(mpar['nm'], 1)))
+
         # Consumption when drawing assets m' to zero: Eat all Resources
         Resource = inc['labor']  + inc['money'] + inc['profits']
     
@@ -442,14 +432,17 @@ class SteadyStateOneAssetIOUsBond:
             Consumption = interp1d(m_star[:,hh].copy(), c_aux[:,hh], fill_value='extrapolate')
             c_update[:,hh] = Consumption(grid['m'])
         
-        # Identify binding constraints
-        binding_constraints = c_update>Resource
+        
+        binding_constraints = c_update > Resource
         c_update[binding_constraints] = Resource[binding_constraints]
-        m_update[binding_constraints] = np.min((grid['m']))     
-    
+        m_update[binding_constraints] = np.min(grid['m'])
+        
+        #c_update[binding_constraints] = Resource[binding_constraints]-grid['m'][0]
+        #m_update[binding_constraints] = np.min((grid['m']))            
+
         return {'c_update': c_update, 'm_update': m_update}
        
-    def PolicyGuess(self, meshes, WW, RBRB, par, mpar):
+    def PolicyGuess(self, meshes, WW, RBRB, par, mpar,grid, N, W_fc, P_H, Profits_fc):
         '''
         autarky policy guesses 
         
@@ -473,10 +466,14 @@ class SteadyStateOneAssetIOUsBond:
         inc : dict
             guess for incomes
         '''
+        
+        jd_aux= np.linalg.matrix_power(P_H.copy(),1000)
+        jd_aux=jd_aux[0,:]
+
         inclabor = par['tau']*WW*meshes['h'].copy()
         incmoney = RBRB*meshes['m'].copy()
-        incprofits = 0. # lumpsum profits
-    
+        incprofits = sum((1-par['tau'])*par['gamma']/(1+par['gamma'])*(N/par['H'])*W_fc*grid['h'][0:-1]*jd_aux[0:-1]) + (1-par['tau'])*Profits_fc*par['profitshare']*jd_aux[-1]
+                     
         inc = {'labor': inclabor.copy(),
                'money': incmoney.copy(),
                'profits': incprofits}
@@ -524,7 +521,7 @@ class SteadyStateOneAssetIOUsBond:
     
         NW = par['gamma']/(1.+par['gamma'])*N/par['H'] *w
     
-        WW = NW*np.ones((mpar['nm'],mpar['nh'])) # Wages in terms of composite
+        WW = NW*np.ones((mpar['nm'],mpar['nh'])) # Wages
         WW[:,-1] = Profits_fc * par['profitshare']
         RBRB = (par['RB']+(meshes['m']<0)*par['borrwedge'])/par['PI']
     

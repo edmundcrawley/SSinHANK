@@ -21,7 +21,7 @@ if FindNewSS
 %% Parameters
 % Household Parameters
 par.beta        = 0.985;     % Discount factor
-par.xi          = 1;          % CRRA
+par.xi          = 2;          % CRRA
 par.gamma       = 1;          % Inverse Frisch elasticity
 
 % Income Process
@@ -44,14 +44,14 @@ par.rho_R       = 0.0;  % Inertia (removed here because it is set later)
 
 
 % Tax Schedule
-par.tau         = 0.8;   % Proportional tax on labor and profit income 
+par.tau         = 0.75;   % Proportional tax on labor and profit income 
 
 % Debt rule
 par.rho_B       = 0.0;  % Autocorrelation (removed here because it is set later)
 par.gamma_pi    = 1.5;   % 1.5, Reaction to inflation
 par.gamma_T     = 0;%0.5075; % Reaction to tax revenue
 
-
+par.BtoY = 2;
 %% Returns
 par.PI          = 1;          % Gross inflation
 par.RB          = 1;          % Market clearing interest rate to be solved for
@@ -118,7 +118,7 @@ par.theta_pi    = 1.25;
 par.rho_R       = 0;  % Inertia
 
 par.rho_B       = 0.99;
-par.gamma_pi    = 1.5;   % 1.5, Reaction to inflation
+par.gamma_pi    = 1.25;   % 1.5, Reaction to inflation
 par.gamma_T     = 0;%0.5075; % Reaction to tax revenue
 
 
