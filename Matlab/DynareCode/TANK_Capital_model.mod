@@ -128,7 +128,7 @@ check;
 % generate IRFs, replicates Figures 3.1, p. 53 (interest rate rule)
 % 3.3, p. 57 (money growth rule)
 %----------------------------------------------------------------
-stoch_simul(order = 1,irf=7) y_gap pi i r_real nu c_R c_K n_R n_K w_real;
+stoch_simul(order = 1,irf=7) y_gap y y_nat pi i r_real k invest nu c_R c_K n_R n_K w_real;
 
 write_latex_dynamic_model;
 
