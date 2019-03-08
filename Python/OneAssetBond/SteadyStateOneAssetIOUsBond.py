@@ -105,7 +105,7 @@ class SteadyStateOneAssetIOUsBond:
             RBRB = resultFactReturn['RBRB'].copy()
             Output = resultFactReturn['Y']
            
-            resultPolGuess = self.PolicyGuess(meshes, WW, RBRB,par,self.mpar)
+            resultPolGuess = self.PolicyGuess(meshes,WW,RBRB,par,self.mpar,grid,N,W_fc,P_H,Profits_fc)
             c_guess = resultPolGuess['c_guess'].copy()
             inc = resultPolGuess['inc'].copy()
             count += 1
@@ -219,7 +219,9 @@ class SteadyStateOneAssetIOUsBond:
                 'c_policy': c_guess,
                 'm_policy': m_star,
                 'mutil_c': mutil_c,
-                'P_H' : P_H
+                'P_H' : P_H,
+                'inc' : inc,
+                'Profits_fc' : Profits_fc
                 }
        
     def JDiteration(self, m_star, P_H, mpar, grid):
@@ -430,13 +432,17 @@ class SteadyStateOneAssetIOUsBond:
             Consumption = interp1d(m_star[:,hh].copy(), c_aux[:,hh], fill_value='extrapolate')
             c_update[:,hh] = Consumption(grid['m'])
         
-        c_update[binding_constraints] = Resource[binding_constraints]-grid['m'][0]
-        m_update[binding_constraints] = np.min((grid['m']))    
         
-    
+        binding_constraints = c_update > Resource
+        c_update[binding_constraints] = Resource[binding_constraints]
+        m_update[binding_constraints] = np.min(grid['m'])
+        
+        #c_update[binding_constraints] = Resource[binding_constraints]-grid['m'][0]
+        #m_update[binding_constraints] = np.min((grid['m']))            
+
         return {'c_update': c_update, 'm_update': m_update}
        
-    def PolicyGuess(self, meshes, WW, RBRB, par, mpar):
+    def PolicyGuess(self, meshes, WW, RBRB, par, mpar,grid, N, W_fc, P_H, Profits_fc):
         '''
         autarky policy guesses 
         
@@ -460,10 +466,14 @@ class SteadyStateOneAssetIOUsBond:
         inc : dict
             guess for incomes
         '''
+        
+        jd_aux= np.linalg.matrix_power(P_H.copy(),1000)
+        jd_aux=jd_aux[0,:]
+
         inclabor = par['tau']*WW*meshes['h'].copy()
         incmoney = RBRB*meshes['m'].copy()
-        incprofits = 0. # lumpsum profits
-    
+        incprofits = sum((1-par['tau'])*par['gamma']/(1+par['gamma'])*(N/par['H'])*W_fc*grid['h'][0:-1]*jd_aux[0:-1]) + (1-par['tau'])*Profits_fc*par['profitshare']*jd_aux[-1]
+                     
         inc = {'labor': inclabor.copy(),
                'money': incmoney.copy(),
                'profits': incprofits}

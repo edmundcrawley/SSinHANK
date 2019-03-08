@@ -3,7 +3,7 @@ close all
 IRF_distr=Gamma_state*IRF_state_sparse(1:mpar.numstates-2,1:mpar.maxlag);
 % preparation
 IRF_H=100*grid.h(1:end-1)*IRF_distr(mpar.nm+(1:mpar.nh-1),2:end)/par.H;
-% IRF_M=100*grid.m*IRF_distr((1:mpar.nm),2:end)/targets.Y;
+IRF_M=100*grid.m*IRF_distr((1:mpar.nm),2:end)/targets.Y;
 % M=100*grid.m*IRF_distr((1:mpar.nm),1:end)+grid.B;
 IRF_RB=100*IRF_state_sparse(mpar.numstates-os+1,2:end);
 IRF_S=100*IRF_state_sparse(mpar.numstates-os+2,1:end-1);

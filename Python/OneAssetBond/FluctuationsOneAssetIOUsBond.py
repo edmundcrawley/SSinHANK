@@ -24,9 +24,9 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import scipy.io
 
-class FluctuationsOneAssetIOUs:
+class FluctuationsOneAssetIOUsBond:
     
-    def __init__(self, par, mpar, grid, Output, targets, Vm, joint_distr, Copula, c_policy, m_policy, mutil_c, P_H):
+    def __init__(self, par, mpar, grid, Output, targets, Vm, joint_distr, Copula, c_policy, m_policy, mutil_c, P_H,inc,Profits_fc):
          
         self.par = par
         self.mpar = mpar
@@ -40,7 +40,8 @@ class FluctuationsOneAssetIOUs:
         self.m_policy = m_policy
         self.mutil_c = mutil_c
         self.P_H = P_H
-        
+        self.inc = inc
+        self.Profits_fc = Profits_fc
         
     def StateReduc(self):
         invutil = lambda x : ((1-self.par['xi'])*x)**(1./(1-self.par['xi']))
@@ -338,7 +339,7 @@ def plot_IRF(mpar,par,gx,hx,joint_distr,Gamma_state,grid,targets,os,oc,Output):
     MX = np.vstack((np.eye(len(x0)), gx))
     IRF_state_sparse=[]
     x=x0.copy()
-    mpar['maxlag']=16
+    mpar['maxlag']=40
         
     for t in range(0,mpar['maxlag']):
         IRF_state_sparse.append(np.dot(MX,x))
@@ -356,8 +357,8 @@ def plot_IRF(mpar,par,gx,hx,joint_distr,Gamma_state,grid,targets,os,oc,Output):
     # preparation
         
     IRF_H = 100*grid['h'][:-1]*IRF_distr[mpar['nm']:mpar['nm']+mpar['nh']-1,1:]/par['H']
-    IRF_M = 100*grid['m']*IRF_distr[:mpar['nm'],1:]/targets['Y']
-    M = 100*grid['m']*IRF_distr[:mpar['nm'],:]+grid['B']
+#    IRF_M = 100*grid['m']*IRF_distr[:mpar['nm'],1:]/targets['Y']
+#    M = 100*grid['m']*IRF_distr[:mpar['nm'],:]+grid['B']
     IRF_RB = 100*IRF_state_sparse[mpar['numstates']-os,1:]
     IRF_S=100*IRF_state_sparse[mpar['numstates']-os+1,:-1]
         
@@ -394,14 +395,14 @@ def plot_IRF(mpar,par,gx,hx,joint_distr,Gamma_state,grid,targets,os,oc,Output):
     plt.ylabel('Percent') 
     f_C.show()
         
-    f_M = plt.figure(3)
-    line1,=plt.plot(range(1,mpar['maxlag']),np.squeeze(np.asarray(IRF_M)), label='IRF_M')
-    plt.plot(range(0,mpar['maxlag']-1),np.zeros((mpar['maxlag']-1)),'k--' )
-    plt.ylim((-1, 1))
-    plt.legend(handles=[line1])
-    plt.xlabel('Quarter')
-    plt.ylabel('Percent') 
-    f_M.show()
+#    f_M = plt.figure(3)
+#    line1,=plt.plot(range(1,mpar['maxlag']),np.squeeze(np.asarray(IRF_M)), label='IRF_M')
+#    plt.plot(range(0,mpar['maxlag']-1),np.zeros((mpar['maxlag']-1)),'k--' )
+#    plt.ylim((-1, 1))
+#    plt.legend(handles=[line1])
+#    plt.xlabel('Quarter')
+#    plt.ylabel('Percent') 
+#    f_M.show()
 
     f_H = plt.figure(4)
     line1,=plt.plot(range(1,mpar['maxlag']),np.squeeze(np.asarray(IRF_H)), label='IRF_H')
@@ -650,7 +651,9 @@ def Fsys(State, Stateminus, Control_sparse, Controlminus_sparse, StateSS, Contro
     ## Incomes (grids)
     inclabor = par['tau']*WW.copy()*meshes['h'].copy()
     incmoney = np.multiply(meshes['m'].copy(),(RBminus/PIminus+(meshes['m']<0)*par['borrwedge']/PIminus))
-    inc = {'labor':inclabor, 'money':incmoney}
+    jd_aux = np.sum(JDminus,axis=0)
+    incprofits = np.sum((1-par['tau'])*par['gamma']/(1+par['gamma'])*(np.asarray(Nminus)/par['H'])*np.asarray(Wminus)*grid['h'][0:-1]*jd_aux[0:-1]) + (1-par['tau'])*np.asarray(Profitminus)*par['profitshare']*jd_aux[-1]
+    inc = {'labor':inclabor, 'money':incmoney, 'profits':incprofits}
     
     ## Update policies
     RBaux = (RB+(meshes['m']<0).copy()*par['borrwedge'])/PI
@@ -723,10 +726,10 @@ def Fsys(State, Stateminus, Control_sparse, Controlminus_sparse, StateSS, Contro
     # Inflation jumps to equilibrate real bond supply and demand
     
     if par['tau'] < 1:
-       RHS[nx+Gind] = targets['G']*np.exp(-par['gamma_b']*np.log(Bminus/targets['B']) - par['gamma_pi']*np.log(PIminus/par['PI'])) 
-       tax = (1-par['tau'])*Wminus*Nminus + (1-par['tau'])*Profitminus
-       RHS[nx+PIind] = (Bminus*RBminus/PIminus + Gminus - tax)
-       LHS[nx+PIind] = B
+       RHS[nx+Gind] = B - Bminus*RBminus/PIminus
+       
+       RHS[nx+PIind] = par['rho_B'] * np.log((Bminus)/(targets['B'])) + par['rho_B'] * np.log(RBminus/par['RB'])-(par['rho_B']+par['gamma_pi']) * np.log(PIminus/par['PI'])
+       LHS[nx+PIind] = np.log((B)/(targets['B']))
     else:
        RHS[nx+Gind] = targets['G'] 
        RHS[nx+PIind] = targets['B']
@@ -749,14 +752,14 @@ def EGM_policyupdate(EVm,PIminus,RBminus,inc,meshes,grid,par,mpar):
     # Calculate assets consistent with choices being (m')
     # Calculate initial money position from the budget constraint,
     # that leads to the optimal consumption choice
-    m_n_aux = (c_new.copy() + meshes['m'].copy()-inc['labor'].copy())
+    m_n_aux = (c_new.copy() + meshes['m'].copy()-inc['labor'].copy()-inc['profits'].copy())
     m_n_aux = m_n_aux.copy()/(RBminus/PIminus+(m_n_aux.copy()<0)*par['borrwedge']/PIminus)
     
     # Identify binding constraints
     binding_constraints = meshes['m'].copy() < np.tile(m_n_aux[0,:].copy(),(mpar['nm'],1))
     
     # Consumption when drawing assets m' to zero: Eat all resources
-    Resource = inc['labor'].copy() + inc['money'].copy()
+    Resource = inc['labor'].copy() + inc['money'].copy() + inc['profits'].copy()
     
     m_n_aux = np.reshape(m_n_aux.copy(),(mpar['nm'],mpar['nh']),order='F')
     c_n_aux = np.reshape(c_new.copy(),(mpar['nm'],mpar['nh']),order='F')
@@ -776,8 +779,12 @@ def EGM_policyupdate(EVm,PIminus,RBminus,inc,meshes,grid,par,mpar):
         Consumption = interp1d(np.squeeze(np.asarray(m_n_aux[:,hh].copy())), np.squeeze(np.asarray(c_n_aux[:,hh].copy())), fill_value='extrapolate')
         c_star[:,hh] = Consumption(grid['m'].copy())
     
-    c_star[binding_constraints] = np.squeeze(np.asarray(Resource[binding_constraints].copy() - grid['m'][0]))
-    m_star[binding_constraints] = grid['m'].min()
+    binding_constraints = c_star > Resource
+    c_star[binding_constraints] = np.squeeze(np.asarray(Resource[binding_constraints].copy()))
+    m_star[binding_constraints] = np.min(grid['m'])
+    
+    #c_star[binding_constraints] = np.squeeze(np.asarray(Resource[binding_constraints].copy() - grid['m'][0]))
+    #m_star[binding_constraints] = grid['m'].min()
     
     m_star[m_star>grid['m'][-1]] = grid['m'][-1]
     
@@ -794,7 +801,7 @@ if __name__ == '__main__':
     
     EX2SS=pickle.load(open("EX2SS.p", "rb"))
 
-    EX2SR=FluctuationsOneAssetIOUs(**EX2SS)
+    EX2SR=FluctuationsOneAssetIOUsBond(**EX2SS)
 
     SR=EX2SR.StateReduc()
     
