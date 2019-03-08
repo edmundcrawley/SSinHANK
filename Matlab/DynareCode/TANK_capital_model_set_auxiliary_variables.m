@@ -1,4 +1,4 @@
-function y = TANK_capital_model_set_auxiliary_variables(y, x, params)
+function y = TANK_Capital_model_set_auxiliary_variables(y, x, params)
 %
 % Status : Computes static model for Dynare
 %

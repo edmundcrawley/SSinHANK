@@ -1,4 +1,4 @@
-function [residual, g1, g2] = TANK_capital_model_static(y, x, params)
+function [residual, g1, g2] = TANK_Capital_model_static(y, x, params)
 %
 % Status : Computes static model for Dynare
 %
@@ -21,7 +21,7 @@ function [residual, g1, g2] = TANK_capital_model_static(y, x, params)
 % Warning : this file is generated automatically by Dynare
 %           from model file (.mod)
 
-residual = zeros( 16, 1);
+residual = zeros( 17, 1);
 
 %
 % Model equations
@@ -55,33 +55,34 @@ residual(7)= lhs-rhs;
 lhs =y(16)*params(16);
 rhs =y(15)-y(15)*(1-params(16));
 residual(8)= lhs-rhs;
-lhs =y(5);
-rhs =(1-params(2)*(1-params(16)))*(y(12)+y(7)-y(15));
-residual(9)= lhs-rhs;
+residual(9) = y(17);
+lhs =y(5)+y(17);
+rhs =y(17)*params(2)*(1-params(16))+(1-params(2)*(1-params(16)))*(y(12)+y(7)-y(15));
+residual(10)= lhs-rhs;
 lhs =y(6);
 rhs =y(1)*params(6)+y(2)*params(7)+y(13);
-residual(10)= lhs-rhs;
+residual(11)= lhs-rhs;
 lhs =y(5);
 rhs =y(6)-y(1);
-residual(11)= lhs-rhs;
+residual(12)= lhs-rhs;
 lhs =y(3);
 rhs =psi_n_ya__*(y(14)+params(1)*y(15));
-residual(12)= lhs-rhs;
+residual(13)= lhs-rhs;
 lhs =y(2);
 rhs =y(4)-y(3);
-residual(13)= lhs-rhs;
+residual(14)= lhs-rhs;
 lhs =y(13);
 rhs =y(13)*params(3)+x(1);
-residual(14)= lhs-rhs;
-residual(15) = y(14);
+residual(15)= lhs-rhs;
+residual(16) = y(14);
 lhs =y(4);
 rhs =params(1)*y(15)+y(14)+(1-params(1))*y(7);
-residual(16)= lhs-rhs;
+residual(17)= lhs-rhs;
 if ~isreal(residual)
   residual = real(residual)+imag(residual).^2;
 end
 if nargout >= 2,
-  g1 = zeros(16, 16);
+  g1 = zeros(17, 17);
 
   %
   % Jacobian matrix
@@ -112,29 +113,31 @@ if nargout >= 2,
   g1(7,9)=(-params(14));
   g1(8,15)=(-(1-(1-params(16))));
   g1(8,16)=params(16);
-  g1(9,5)=1;
-  g1(9,7)=(-(1-params(2)*(1-params(16))));
-  g1(9,12)=(-(1-params(2)*(1-params(16))));
-  g1(9,15)=1-params(2)*(1-params(16));
-  g1(10,1)=(-params(6));
-  g1(10,2)=(-params(7));
-  g1(10,6)=1;
-  g1(10,13)=(-1);
-  g1(11,1)=1;
-  g1(11,5)=1;
-  g1(11,6)=(-1);
-  g1(12,3)=1;
-  g1(12,14)=(-psi_n_ya__);
-  g1(12,15)=(-(params(1)*psi_n_ya__));
-  g1(13,2)=1;
+  g1(9,17)=1;
+  g1(10,5)=1;
+  g1(10,7)=(-(1-params(2)*(1-params(16))));
+  g1(10,12)=(-(1-params(2)*(1-params(16))));
+  g1(10,15)=1-params(2)*(1-params(16));
+  g1(10,17)=1-params(2)*(1-params(16));
+  g1(11,1)=(-params(6));
+  g1(11,2)=(-params(7));
+  g1(11,6)=1;
+  g1(11,13)=(-1);
+  g1(12,1)=1;
+  g1(12,5)=1;
+  g1(12,6)=(-1);
   g1(13,3)=1;
-  g1(13,4)=(-1);
-  g1(14,13)=1-params(3);
-  g1(15,14)=1;
-  g1(16,4)=1;
-  g1(16,7)=(-(1-params(1)));
-  g1(16,14)=(-1);
-  g1(16,15)=(-params(1));
+  g1(13,14)=(-psi_n_ya__);
+  g1(13,15)=(-(params(1)*psi_n_ya__));
+  g1(14,2)=1;
+  g1(14,3)=1;
+  g1(14,4)=(-1);
+  g1(15,13)=1-params(3);
+  g1(16,14)=1;
+  g1(17,4)=1;
+  g1(17,7)=(-(1-params(1)));
+  g1(17,14)=(-1);
+  g1(17,15)=(-params(1));
   if ~isreal(g1)
     g1 = real(g1)+2*imag(g1);
   end
@@ -144,6 +147,6 @@ if nargout >= 3,
   % Hessian matrix
   %
 
-  g2 = sparse([],[],[],16,256);
+  g2 = sparse([],[],[],17,289);
 end
 end

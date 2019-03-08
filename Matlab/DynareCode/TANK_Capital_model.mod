@@ -18,6 +18,7 @@ var pi ${\pi}$ (long_name='inflation')
     a  ${a}$ (long_name='AR(1) technology shock process')
     k   ${k}$   (long_name = 'capital')
     invest   ${i_R}$   (long_name = 'investment')
+    q   ${q}$   (long_name = 'cost of capital')
     ;     
 
 varexo eps_nu ${\varepsilon_\nu}$   (long_name='monetary policy shock')
@@ -40,6 +41,7 @@ parameters alpha ${\alpha}$ (long_name='capital share')
     labor_share_R $\bar{N_R}$ (long_name='Ricardian labor share')
     delta ${\delta}$ (long_name='depreciation')
     invest_share ${\frac{\bar{I}}{\bar{Y}}}$  (long_name='investment share')
+    psi_c ${\psi_c}$  (long_name='capital adjustment costs parameter')
     ;
 %----------------------------------------------------------------
 % Parametrization, p. 52
@@ -62,7 +64,7 @@ set_param_value('labor_share_K',labor_share_K);
 set_param_value('labor_share_R',labor_share_R);
 set_param_value('delta',delta);
 set_param_value('invest_share',invest_share);
-
+set_param_value('psi_c',psi_c);
 
 %----------------------------------------------------------------
 % First Order Conditions
@@ -88,7 +90,9 @@ n = labor_share_R*n_R + labor_share_K*n_K;
 
 // extra equations for capital
 delta*invest = k - (1-delta)*k(-1);
-r_real = (1 - beta*(1-delta))*(w_real(+1) + n(+1) - k);
+
+q = psi_c*(k-k(-1));
+r_real + q = beta*(1-delta)*q(+1) + (1 - beta*(1-delta))*(w_real(+1) + n(+1) - k);
 
 
 //3. Interest Rate Rule eq. (25)
@@ -128,7 +132,7 @@ check;
 % generate IRFs, replicates Figures 3.1, p. 53 (interest rate rule)
 % 3.3, p. 57 (money growth rule)
 %----------------------------------------------------------------
-stoch_simul(order = 1,irf=7) y_gap y y_nat pi i r_real k invest nu c_R c_K n_R n_K w_real;
+stoch_simul(order = 1,irf=7) y_gap y y_nat pi i r_real k invest q nu c_R c_K n_R n_K w_real;
 
 write_latex_dynamic_model;
 

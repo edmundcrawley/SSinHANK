@@ -137,11 +137,12 @@ phi_y  = 0.0;%.5/4;
 theta=2/3;
 rho_nu =0.0;
 beta = 0.99;
-alpha=0.16;
+alpha=0.33;
 epsilon=6;
 lambda = 0.3;
 Lambda = 2.0;
 delta = 0.1;
+psi_c = 3;
 % Calc steady state share of labor and consumption of each type
 cons_share_to_labor_share_K = (1-Lambda*(1-beta))*(epsilon-1)/epsilon*(1-alpha);
 invest_share = delta*alpha*(epsilon-1)/(epsilon*(1/beta - (1-delta)));
@@ -150,7 +151,6 @@ cons_share_K = fsolve(cons_share_K_obj, lambda);
 cons_share_R = 1-invest_share-cons_share_K;
 labor_share_K = cons_share_K/cons_share_to_labor_share_K;
 labor_share_R = 1-labor_share_K;
-dynare 'TANK_capital_model.mod' noclearall;
-TANK_capital_irfs = oo_.irfs;
+dynare 'TANK_Capital_model.mod' noclearall;
+TANK_Capital_irfs = oo_.irfs;
 
-% 

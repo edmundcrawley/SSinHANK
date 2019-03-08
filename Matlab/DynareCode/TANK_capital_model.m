@@ -7,13 +7,13 @@
 tic;
 global M_ oo_ options_ ys0_ ex0_ estimation_info
 options_ = [];
-M_.fname = 'TANK_capital_model';
+M_.fname = 'TANK_Capital_model';
 %
 % Some global variables initialization
 %
 global_initialization;
 diary off;
-diary('TANK_capital_model.log');
+diary('TANK_Capital_model.log');
 M_.exo_names = 'eps_nu';
 M_.exo_names_tex = '{\varepsilon_\nu}';
 M_.exo_names_long = 'monetary policy shock';
@@ -65,6 +65,9 @@ M_.endo_names_long = char(M_.endo_names_long, 'capital');
 M_.endo_names = char(M_.endo_names, 'invest');
 M_.endo_names_tex = char(M_.endo_names_tex, '{i_R}');
 M_.endo_names_long = char(M_.endo_names_long, 'investment');
+M_.endo_names = char(M_.endo_names, 'q');
+M_.endo_names_tex = char(M_.endo_names_tex, '{q}');
+M_.endo_names_long = char(M_.endo_names_long, 'cost of capital');
 M_.param_names = 'alpha';
 M_.param_names_tex = '{\alpha}';
 M_.param_names_long = 'capital share';
@@ -116,11 +119,14 @@ M_.param_names_long = char(M_.param_names_long, 'depreciation');
 M_.param_names = char(M_.param_names, 'invest_share');
 M_.param_names_tex = char(M_.param_names_tex, '{\frac{\bar{I}}{\bar{Y}}}');
 M_.param_names_long = char(M_.param_names_long, 'investment share');
+M_.param_names = char(M_.param_names, 'psi_c');
+M_.param_names_tex = char(M_.param_names_tex, '{\psi_c}');
+M_.param_names_long = char(M_.param_names_long, 'capital adjustment costs parameter');
 M_.exo_det_nbr = 0;
 M_.exo_nbr = 1;
-M_.endo_nbr = 16;
-M_.param_nbr = 17;
-M_.orig_endo_nbr = 16;
+M_.endo_nbr = 17;
+M_.param_nbr = 18;
+M_.orig_endo_nbr = 17;
 M_.aux_vars = [];
 M_.Sigma_e = zeros(1, 1);
 M_.Correlation_matrix = eye(1, 1);
@@ -131,32 +137,33 @@ options_.linear = 1;
 options_.block=0;
 options_.bytecode=0;
 options_.use_dll=0;
-erase_compiled_function('TANK_capital_model_static');
-erase_compiled_function('TANK_capital_model_dynamic');
+erase_compiled_function('TANK_Capital_model_static');
+erase_compiled_function('TANK_Capital_model_dynamic');
 M_.lead_lag_incidence = [
- 0 5 21;
+ 0 5 22;
  0 6 0;
  0 7 0;
  0 8 0;
  1 9 0;
  2 10 0;
- 0 11 22;
+ 0 11 23;
  0 12 0;
  0 13 0;
- 0 14 23;
+ 0 14 24;
  0 15 0;
- 0 16 24;
+ 0 16 25;
  3 17 0;
  0 18 0;
  4 19 0;
- 0 20 0;]';
+ 0 20 0;
+ 0 21 26;]';
 M_.nstatic = 8;
-M_.nfwrd   = 4;
+M_.nfwrd   = 5;
 M_.npred   = 4;
 M_.nboth   = 0;
-M_.nsfwrd   = 4;
+M_.nsfwrd   = 5;
 M_.nspred   = 4;
-M_.ndynamic   = 8;
+M_.ndynamic   = 9;
 M_.equations_tags = {
 };
 M_.static_and_dynamic_models_differ = 0;
@@ -165,13 +172,13 @@ M_.maximum_lag = 1;
 M_.maximum_lead = 1;
 M_.maximum_endo_lag = 1;
 M_.maximum_endo_lead = 1;
-oo_.steady_state = zeros(16, 1);
+oo_.steady_state = zeros(17, 1);
 M_.maximum_exo_lag = 0;
 M_.maximum_exo_lead = 0;
 oo_.exo_steady_state = zeros(1, 1);
-M_.params = NaN(17, 1);
+M_.params = NaN(18, 1);
 M_.NNZDerivatives = zeros(3, 1);
-M_.NNZDerivatives(1) = 55;
+M_.NNZDerivatives(1) = 60;
 M_.NNZDerivatives(2) = -1;
 M_.NNZDerivatives(3) = -1;
 set_param_value('sigma',sigma);
@@ -191,6 +198,7 @@ set_param_value('labor_share_K',labor_share_K);
 set_param_value('labor_share_R',labor_share_R);
 set_param_value('delta',delta);
 set_param_value('invest_share',invest_share);
+set_param_value('psi_c',psi_c);
 %
 % SHOCKS instructions
 %
@@ -204,9 +212,14 @@ options_.irf = 7;
 options_.order = 1;
 var_list_=[];
 var_list_ = 'y_gap';
+var_list_ = char(var_list_, 'y');
+var_list_ = char(var_list_, 'y_nat');
 var_list_ = char(var_list_, 'pi');
 var_list_ = char(var_list_, 'i');
 var_list_ = char(var_list_, 'r_real');
+var_list_ = char(var_list_, 'k');
+var_list_ = char(var_list_, 'invest');
+var_list_ = char(var_list_, 'q');
 var_list_ = char(var_list_, 'nu');
 var_list_ = char(var_list_, 'c_R');
 var_list_ = char(var_list_, 'c_K');
@@ -214,18 +227,18 @@ var_list_ = char(var_list_, 'n_R');
 var_list_ = char(var_list_, 'n_K');
 var_list_ = char(var_list_, 'w_real');
 info = stoch_simul(var_list_);
-save('TANK_capital_model_results.mat', 'oo_', 'M_', 'options_');
+save('TANK_Capital_model_results.mat', 'oo_', 'M_', 'options_');
 if exist('estim_params_', 'var') == 1
-  save('TANK_capital_model_results.mat', 'estim_params_', '-append');
+  save('TANK_Capital_model_results.mat', 'estim_params_', '-append');
 end
 if exist('bayestopt_', 'var') == 1
-  save('TANK_capital_model_results.mat', 'bayestopt_', '-append');
+  save('TANK_Capital_model_results.mat', 'bayestopt_', '-append');
 end
 if exist('dataset_', 'var') == 1
-  save('TANK_capital_model_results.mat', 'dataset_', '-append');
+  save('TANK_Capital_model_results.mat', 'dataset_', '-append');
 end
 if exist('estimation_info', 'var') == 1
-  save('TANK_capital_model_results.mat', 'estimation_info', '-append');
+  save('TANK_Capital_model_results.mat', 'estimation_info', '-append');
 end
 
 
