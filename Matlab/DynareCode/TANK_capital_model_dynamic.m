@@ -1,4 +1,4 @@
-function [residual, g1, g2, g3] = TANK_Capital_model_dynamic(y, x, params, steady_state, it_)
+function [residual, g1, g2, g3] = TANK_capital_model_dynamic(y, x, params, steady_state, it_)
 %
 % Status : Computes dynamic model for Dynare
 %

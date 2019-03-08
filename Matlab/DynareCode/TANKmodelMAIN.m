@@ -151,7 +151,7 @@ cons_share_K = fsolve(cons_share_K_obj, lambda);
 cons_share_R = 1-invest_share-cons_share_K;
 labor_share_K = cons_share_K/cons_share_to_labor_share_K;
 labor_share_R = 1-labor_share_K;
-dynare 'TANK_Capital_model.mod' noclearall;
+dynare 'TANK_capital_model.mod' noclearall;
 TANK_Capital_irfs = oo_.irfs;
 
 % Now calc Auclert's statistics
@@ -164,16 +164,16 @@ Inc_wt_MPC_TANK_Capital = MPC_TANK_Capital;
 % ????
 % 3) Interest Rate Exposure Channel (URE measures as a fraction of total
 % consumption/income)
+cons_share = cons_share_R+cons_share_K;
 y_K_share = 1/(1-Lambda*(1-beta))*cons_share_K; %share of total income earned by Keynesian labor
 URE_K = -beta*Lambda*y_K_share;  % Nominal debt of Keynesians is a multiple of their labor income
-URE_R = - URE_K;
+URE_R = - URE_K + invest_share;
 Elas_R_TANK_Capital = (URE_K*MPC_TANK_Capital_K + URE_R*MPC_TANK_Capital_R)/cons_share;
 % 4) Fisher channel (debt deflation)
 NNP_K = -Lambda*y_K_share;
 NNP_R = - NNP_K;
 Elas_P_TANK_Capital = (NNP_K*MPC_TANK_Capital_K + NNP_R*MPC_TANK_Capital_R)/cons_share;
 % 5) Intertemporal Substitution Channel
-cons_share = cons_share_R+cons_share_K;
 Hicks_scaling_TANK_Capital = (1.0-MPC_TANK_Capital_R)*cons_share_R/cons_share + (1.0-MPC_TANK_Capital_K)*cons_share_K/cons_share;
 Elas_EIS_TANK_Capital = Hicks_scaling_TANK_Capital*sigma;
 
@@ -207,10 +207,13 @@ Elas_R_TANK_Capital*dR_R_TANK_Capital
 - Elas_P_TANK_Capital*dP_P_TANK_Capital
 % Intertemporal Elasticity Channel
 - Elas_EIS_TANK_Capital*dR_R_TANK_Capital
+%Total
+dC_C_Auclert_TANK_Capital
 
 %check for Keynesians
-dC_K = MPC_TANK_Capital_K*dYK_Y_TANK_Capital + URE_K*MPC_TANK_Capital_K*dR_R_TANK_Capital ...
-        - NNP_K*MPC_TANK_Capital_K*dP_P_TANK_Capital;
+dC_K = MPC_TANK_Capital_K*dYK_Y_TANK_Capital/cons_share ...
+        + URE_K*MPC_TANK_Capital_K*dR_R_TANK_Capital/cons_share ...
+        - NNP_K*MPC_TANK_Capital_K*dP_P_TANK_Capital/cons_share;
 dC_K- TANK_Capital_irfs.c_K_eps_nu(1)*cons_share_K/cons_share
 
 %check for Ricardians

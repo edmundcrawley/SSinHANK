@@ -1,4 +1,4 @@
-function [residual, g1, g2] = TANK_Capital_model_static(y, x, params)
+function [residual, g1, g2] = TANK_capital_model_static(y, x, params)
 %
 % Status : Computes static model for Dynare
 %

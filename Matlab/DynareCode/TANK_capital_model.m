@@ -7,13 +7,13 @@
 tic;
 global M_ oo_ options_ ys0_ ex0_ estimation_info
 options_ = [];
-M_.fname = 'TANK_Capital_model';
+M_.fname = 'TANK_capital_model';
 %
 % Some global variables initialization
 %
 global_initialization;
 diary off;
-diary('TANK_Capital_model.log');
+diary('TANK_capital_model.log');
 M_.exo_names = 'eps_nu';
 M_.exo_names_tex = '{\varepsilon_\nu}';
 M_.exo_names_long = 'monetary policy shock';
@@ -137,8 +137,8 @@ options_.linear = 1;
 options_.block=0;
 options_.bytecode=0;
 options_.use_dll=0;
-erase_compiled_function('TANK_Capital_model_static');
-erase_compiled_function('TANK_Capital_model_dynamic');
+erase_compiled_function('TANK_capital_model_static');
+erase_compiled_function('TANK_capital_model_dynamic');
 M_.lead_lag_incidence = [
  0 5 22;
  0 6 0;
@@ -227,18 +227,18 @@ var_list_ = char(var_list_, 'n_R');
 var_list_ = char(var_list_, 'n_K');
 var_list_ = char(var_list_, 'w_real');
 info = stoch_simul(var_list_);
-save('TANK_Capital_model_results.mat', 'oo_', 'M_', 'options_');
+save('TANK_capital_model_results.mat', 'oo_', 'M_', 'options_');
 if exist('estim_params_', 'var') == 1
-  save('TANK_Capital_model_results.mat', 'estim_params_', '-append');
+  save('TANK_capital_model_results.mat', 'estim_params_', '-append');
 end
 if exist('bayestopt_', 'var') == 1
-  save('TANK_Capital_model_results.mat', 'bayestopt_', '-append');
+  save('TANK_capital_model_results.mat', 'bayestopt_', '-append');
 end
 if exist('dataset_', 'var') == 1
-  save('TANK_Capital_model_results.mat', 'dataset_', '-append');
+  save('TANK_capital_model_results.mat', 'dataset_', '-append');
 end
 if exist('estimation_info', 'var') == 1
-  save('TANK_Capital_model_results.mat', 'estimation_info', '-append');
+  save('TANK_capital_model_results.mat', 'estimation_info', '-append');
 end
 
 
