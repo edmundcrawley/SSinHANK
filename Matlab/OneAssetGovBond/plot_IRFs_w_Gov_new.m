@@ -83,7 +83,7 @@ legend({'true IRF','IRF using sufficient stats'},'location','southeast','FontSiz
 % legend({'Cumulative Distribution'},'fontsize',12)
 
 %% Compute sufficient statistics
-fprintf('M is %2.2f \n',Inc_wt_MPC)
+fprintf('M is %2.2f \n',M)
 fprintf('E(Epsilon_Y) is %2.2f \n',mean(Earning_hetero))
 fprintf('Epsilon_P is %2.2f \n',mean(Redist_elas_P))
 fprintf('Epsilon_R is %2.2f \n',mean(Redist_elas_R))
