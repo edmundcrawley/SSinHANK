@@ -27,10 +27,10 @@ residual = zeros( 14, 1);
 % Model equations
 %
 
-Omega__ = (1-params(1))/(1-params(1)+params(1)*params(8));
-psi_n_ya__ = (1+params(5))/(params(1)+params(5)+(1-params(1))*params(4));
+Omega__ = 1;
+psi_n_ya__ = (1+params(5))/(params(1)+params(5)+params(4)*(1-params(1)));
 lambda_gali__ = (1-params(9))*(1-params(9)*params(2))/params(9)*Omega__;
-kappa__ = lambda_gali__*(params(4)+(params(1)+params(5))/(1-params(1)));
+kappa__ = lambda_gali__*(params(4)+(params(5)+params(1))/(1-params(1)));
 lhs =y(1);
 rhs =params(2)*y(1)+kappa__*y(2);
 residual(1)= lhs-rhs;

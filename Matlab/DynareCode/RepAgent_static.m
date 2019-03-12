@@ -27,16 +27,16 @@ residual = zeros( 10, 1);
 % Model equations
 %
 
-Omega__ = (1-params(1))/(1-params(1)+params(1)*params(8));
-psi_n_ya__ = (1+params(5))/(params(1)+params(5)+(1-params(1))*params(4));
+Omega__ = 1;
+psi_n_ya__ = (1+params(5))/(params(1)+params(5)+params(4)*(1-params(1)));
 lambda__ = (1-params(9))*(1-params(9)*params(2))/params(9)*Omega__;
-kappa__ = lambda__*(params(4)+(params(1)+params(5))/(1-params(1)));
-T42 = (-1)/params(4);
+kappa__ = lambda__*(params(4)+(params(5)+params(1))/(1-params(1)));
+T38 = (-1)/params(4);
 lhs =y(1);
 rhs =params(2)*y(1)+kappa__*y(2);
 residual(1)= lhs-rhs;
 lhs =y(2);
-rhs =y(2)+T42*(y(7)-y(1)-y(5));
+rhs =y(2)+T38*(y(7)-y(1)-y(5));
 residual(2)= lhs-rhs;
 lhs =y(7);
 rhs =y(1)*params(6)+y(2)*params(7)+y(9);
@@ -70,9 +70,9 @@ if nargout >= 2,
 
   g1(1,1)=1-params(2);
   g1(1,2)=(-kappa__);
-  g1(2,1)=T42;
-  g1(2,5)=T42;
-  g1(2,7)=(-T42);
+  g1(2,1)=T38;
+  g1(2,5)=T38;
+  g1(2,7)=(-T38);
   g1(3,1)=(-params(6));
   g1(3,2)=(-params(7));
   g1(3,7)=1;

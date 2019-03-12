@@ -73,7 +73,7 @@ epsilon=6;
 
 model(linear); 
 //Composite parameters
-#Omega=(1-alpha)/(1-alpha+alpha*epsilon);  //defined on page 47
+#Omega=1; // We are using constant returns to scale as firms can also adjust their capital each period (1-alpha)/(1-alpha+alpha*epsilon);  //defined on page 47
 #psi_n_ya=(1+phi)/(sigma*(1-alpha)+phi+alpha); //defined on page 48
 #lambda=(1-theta)*(1-beta*theta)/theta*Omega; //defined on page 47
 #kappa=lambda*(sigma+(phi+alpha)/(1-alpha));  //defined on page 49

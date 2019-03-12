@@ -37,7 +37,7 @@ error_RANK = dC_C_Auclert - dC_C;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%
 % Now the basic TANK model
-sigma = 1;
+sigma = 5.0;
 phi=1.0;
 phi_pi = 1.5;
 phi_y  = 0.0;%.5/4;
@@ -82,7 +82,7 @@ NNP_R = - NNP_K;
 Elas_P_TANK = NNP_K*MPC_TANK_K + NNP_R*MPC_TANK_R;
 % 5) Intertemporal Substitution Channel
 Hicks_scaling_TANK = (1.0-MPC_TANK_R)*cons_share_R + (1.0-MPC_TANK_K)*cons_share_K;
-Elas_EIS_TANK = Hicks_scaling_TANK*sigma;
+Elas_EIS_TANK = Hicks_scaling_TANK/sigma;
 
 % Get inputs for partial eq. decomposition
 % dY/Y
@@ -141,7 +141,7 @@ alpha=0.33;
 epsilon=6;
 lambda = 0.3;
 Lambda = 2.0;
-delta = 0.1;
+delta = 0.025;
 psi_c = 3;
 % Calc steady state share of labor and consumption of each type
 cons_share_to_labor_share_K = (1-Lambda*(1-beta))*(epsilon-1)/epsilon*(1-alpha);
@@ -175,7 +175,7 @@ NNP_R = - NNP_K;
 Elas_P_TANK_Capital = (NNP_K*MPC_TANK_Capital_K + NNP_R*MPC_TANK_Capital_R)/cons_share;
 % 5) Intertemporal Substitution Channel
 Hicks_scaling_TANK_Capital = (1.0-MPC_TANK_Capital_R)*cons_share_R/cons_share + (1.0-MPC_TANK_Capital_K)*cons_share_K/cons_share;
-Elas_EIS_TANK_Capital = Hicks_scaling_TANK_Capital*sigma;
+Elas_EIS_TANK_Capital = Hicks_scaling_TANK_Capital/sigma;
 
 % Get inputs for partial eq. decomposition
 % dY/Y

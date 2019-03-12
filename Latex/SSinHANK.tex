@@ -78,6 +78,8 @@ The key to the paper will be to show that there is no significant medium term dy
 
 The fact that households don't respond to income until they actually receive it seems likely to be the reason monetary policy seems to act with a delay (for example rates take time to adjust).
 
+\section{Auclert's Sufficient Statistics}
+
 \section{A TANK Model in which the Sufficient Statistics Work Exactly}
 Key features of model (I think):
 \begin{itemize}
@@ -90,73 +92,199 @@ Key features of model (I think):
 \end{itemize}
 I believe this model should fit Auclert's conditions exactly.\\
 \\
-Parameters: $\alpha$ capital share, $\epsilon$ inverse individual good elasticity, $\theta$ Calvo parameter, $\sigma$ CRRA, $\phi$ Frish elasticity.\\
-\\
-Composite parameters:
+\subsection{Model intro...}
+Our baseline TANK model is composed of type types of agents, Ricardian and Keynesian, along with a continuum of intermediate goods firms, a perfectly competitive final goods firm, and a monetary policy authority. The model is closely related to the standard New Keynesian model with Calvo pricing frictions, the main difference being the addition of the Keynesian households. A key addition in our model is to allow for the Keynesian households to hold a non-zero quantity of short term nominal debt (owed to the Ricardian households) so that we have non-trivial levels for households' unhedged interest rate exposure (URE) and net nominal positions (NNP).
 
-\begin{dmath*}
-	\Omega = \frac{1-{\alpha}}{1-{\alpha}+{\alpha}\, {\epsilon}}
-\end{dmath*}
-\begin{dmath*}
-	\lambda^{gali} = \frac{\left(1-{\theta}\right)\, \left(1-{\theta}\, {\beta}\right)}{{\theta}}\, \Omega_{t}
-\end{dmath*}
-\begin{dmath*}
-	\kappa = \lambda^{gali}_{t}\, \left({\sigma}+\frac{{\alpha}+{\phi}}{1-{\alpha}}\right)
-\end{dmath*}
-Now the model.\\
-\\
-New Keynesian Phillips curve:
-\begin{dmath}
-	% Equation 1
-	{\pi}_{t}={\beta}\, {\pi}_{t+1}+\kappa\, {\tilde y}_{t}
-\end{dmath}
-Households (both Ricardian and Keynesian) choose hours and consumption from FOCs:
-\begin{dmath}
-	% Equation 2
-	{w_r}_{t}={\sigma}\, {c_R}_{t}+{\phi}\, {n_R}_{t}
-\end{dmath}
-\begin{dmath}
-	% Equation 3
-	{w_r}_{t}={\sigma}\, {c_K}_{t}+{\phi}\, {n_K}_{t}
-\end{dmath}
-Euler equation for the Ricardian households:
-\begin{dmath}
-	% Equation 4
-	{c_R}_{t}={c_R}_{t+1}-\frac{1}{{\sigma}}\, \left({i}_{t}-{\pi}_{t+1}\right)
-\end{dmath}
-Keynesian housholds consume all their income that period, after paying interest. They always max out their debt limit which is set such that they never owe more than a fraction $\Lambda$ of their steady state labor earnings in the following period. Debts are nominal:
-\begin{dmath}
-	% Equation 5
-	{c_K}_{t}\, \left(1-{\Lambda}\, \left(1-{\beta}\right)\right)={w_r}_{t}+{n_K}_{t}- {\Lambda}\, \left({i}_{t-1}-{\pi}_{t}-{r^r}_{t-1}\right) - {\beta \Lambda}{r^r}_{t}
-\end{dmath}
-Goods market clears in equilibrium. Note $\bar{C_R}$ and $\bar{C_K}$ are the steady state shares of consumption by Ricardian and Keynesian households:
-\begin{dmath}
-	% Equation 6
-	{\tilde y}_{t}={c_R}_{t}\, \bar{C_R}+{c_K}_{t}\, \bar{C_K}
-\end{dmath}
-Labor market clears in equilibrium. Note $\bar{N_R}$ and $\bar{N_K}$ are the steady state shares of hours by Ricardian and Keynesian households:
-\begin{dmath}
-	% Equation 7
-	{n}_{t}={n_R}_{t}\, \bar{N_R}+{n_K}_{t}\, \bar{N_K}
-\end{dmath}
-Taylor rule:
-\begin{dmath}
-	% Equation 8
-	{i}_{t}={\pi}_{t}\, {\phi_{\pi}}+{\tilde y}_{t}\, {\phi_{y}}+{\nu}_{t}
-\end{dmath}
-Fisher equation
-\begin{dmath}
-	% Equation 9
-	{r^r}_{t}={i}_{t}-{\pi}_{t+1}
-\end{dmath}
-Production function:
-\begin{dmath}
-	% Equation 14
-	{\tilde y}_{t}=\left(1-{\alpha}\right)\, {n}_{t}
-\end{dmath}
+\subsection{Households}
+A proportion $\lambda$ of households, which we shall call Keynesian, live hand-to-mouth, consuming all their income in each period. The remaining ($1-\lambda$), which we shall call Ricardian, are unconstrained optimizing agents.
+
+\subsubsection{Ricardian Households}
+Each period Ricardian households choose how much to consume, $C^R_t$, and how many hours to work, $N^R_t$ in order to maximize their life time (separable) utility:
+\begin{align*}
+\mathbb{E}\sum_{t=0}^{\infty}\beta^t \left(\frac{\left(C^R_t\right)^{1-\sigma}}{1-\sigma} - \frac{\left(N^R_t\right)^{1+\psi}}{1+\psi}\right)
+\end{align*}
+subject to their budget constraint:
+\begin{align*}
+P_t C^R_t + I_{t}^{-1}B_{t+1} = P_t N^R_t W_t + P_t D_t + B_t
+\end{align*}
+where $P_t$ is the price level in period $t$, $I_t$ is the gross nominal interest rate between $t$ and $t+1$, $B_t$ is the quantity of bonds bought at time $t-1$ paying one unit of nominal currency in period $t$, $W_t$ is the wage per unit of labor in period $t$ and $D_t$ is the real dividend payed by firms in period $t$. All firm profit goes to the Ricardian households and this is shared equally between them.
+
+The first order conditions for these Ricardian households are:
+\begin{align}
+\frac{W_t}{P_t} = \left(C^R_t\right)^{\sigma}\left(N^R_t\right)^{\psi} \label{foc_hours_R} \\
+\left(C^R_t\right)^{-\sigma} = \beta \mathbb{E}\left(I_t\frac{P_{t+1}}{P_t} \left(C^R_{t+1}\right)^{-\sigma}\right)	\label{euler_R}
+\end{align}
+
+\subsubsection{Keynesian Households}
+Keynesian households are more impatient that the Ricardian households and as a result are up against their borrowing limit. They can borrow nominal bonds up to the point where their expected \textit{real} payment in the next period is equal to a fixed fraction $\Omega$ of their steady state income. Each period they optimize their period utility:
+\begin{align*}
+\frac{\left(C^K_t\right)^{1-\sigma}}{1-\sigma} - \frac{\left(N^K_t\right)^{1+\psi}}{1+\psi}\
+\end{align*}
+subject to their budget constraint:
+\begin{align}
+C^K_t \leq N^K_t \frac{W_t}{P_t} + \left(I_{t}^{-1} - \frac{P_{t-1}}{P_t}\right)\Omega \bar{N_K}\overline{W/P}  \label{budget_constraint_K}
+\end{align}
+where $\overline{W/P}$ and $\bar{N_K}$ are the steady state real wage and hours worked by Keynesian households.
+
+Their first order condition for consumption and labor is:
+\begin{align}
+\frac{W_t}{P_t} = \left(C^K_t\right)^{\sigma}\left(N^K_t\right)^{\psi} \label{foc_hours_K}
+\end{align}
+
+\subsubsection{Household Aggregation}
+With the Keynesian proportion of households equal to $\lambda$, total consumption and hours worked are:
+\begin{align}
+C_t = \lambda C^K_t + (1-\lambda) C^R_t \label{agg_C}\\
+N_t = \lambda N^K_t + (1-\lambda) N^R_t \label{agg_N}
+\end{align}
+
+\subsection {Firms}
+The production side of the economy follows the standard New Keynesian model with Calvo price adjustment. The firm side of the economy is identical to that presented in \cite{gali_book} except for the fact that firms choose both labor and capital (and thus their production function has constant returns to scale) each period. This simplifies the analysis a little, as all firms share the same marginal cost. In our base model we hold the aggregate quantity of capital constant, but including it here allows for easy extension to the model with investment.
+
+\subsubsection{Final Goods Firm}
+The final goods firm produces a final consumption good, $Y_t$, from intermediated inputs, $X_t(j)$ for $j \in [0,1]$ using the technology:
+\begin{align*}
+Y_t = \int_0^1 X_t(j)^{1-\frac{1}{\varepsilon}} dj
+\end{align*}
+Profit maximization yields the demand schedule $X_t(j) = \left(\frac{P_t(j)}{P_t}\right)^{-\varepsilon}$ where $P_t$ is the price of the final good. Competition also imposes a zero profit condition that yields $P_t = \left(\int_0^1 P_t^{1-\varepsilon}\right)^{\frac{1}{1-\varepsilon}}$.
+
+\subsubsection{Intermediate Goods Firm}
+There is a continuum of intermediate goods firms, indexed by $j \in [0,1]$ each of which uses both labor and capital each period according to the production function:
+\begin{align*}
+X_t(j) = A K_t(j)^\alpha N_t(j)^{1-\alpha}
+\end{align*}
+As our focus is on monetary policy shocks, we assume the technology level ($A$) to be constant. Constant returns to scale results in the marginal cost being equal for all firms.
+
+The probability that a firm is able to adjust its price in any period is equal to $1-\theta$. A firm that is able to adjust its price in period $t$ will choose a price $P^*$ to maximize the current market value of profits it will make while the price remains effective. That is firm $j$ solves the problem:
+\begin{align}
+\underset{P^*}{\max} \sum_{k=t}^{\infty} \theta^k \mathbb{E}_t \{{\Lambda}_{t,t+k} X_{t+k}(j) (P_t^* - MC_{t+k}P_{t+k}) \} \label{profit_max}
+\end{align}
+subject to the demand constraints:
+\begin{align}
+X_t(j) = \left(\frac{P_t^*}{P_{t+k}}\right)^{-\varepsilon} \label{demand_constraint}
+\end{align}
+where ${\Lambda}_{t,t+k} = \beta^k \left(\frac{c^R_{t+k}}{c^R_{t}}\right)^{-\sigma} \left( \frac{P_t}{P_{t+k}} \right)$ is the stochastic discount factor for nominal payoffs, for the Ricardian households who own the profits from the firms. 
+
+The first order condition arising from \ref{profit_max}  and \ref{demand_constraint} is:
+\begin{align}
+\sum_{k=t}^{\infty} \theta^k \mathbb{E}_t \Big\{{\Lambda}_{t,t+k} X_{t+k}(j) \left(P_t^* - \frac{\varepsilon}{\varepsilon-1}MC_{t+k} P_{t+k}\right)  \Big\} = 0 \label{foc_pricing}
+\end{align}
+
+Finally, with only a fraction $1-\theta$ of firms changing their prices in any given period, the aggregate price level moves according to:
+\begin{align*}
+P_t = \left(   \theta P_{t-1}^{1-\varepsilon} + (1-\theta)(P_t^*)^{1-\varepsilon}\right)^{\frac{1}{1-\varepsilon}}
+\end{align*}
+
+\subsection{Monetary Policy}
+We assume the central bank follows a simple log-linear Taylor rule with weight on inflation only:
+\begin{align}
+i_t = \phi_{\pi} \pi_t + \nu_t	\label{taylor_rule}
+\end{align}
+where $i_t$ and $\pi_t$ are the log deviations from the nominal steady-state interest rate and inflation rate respectively. In line with the transitory nature of the experiment we are running, we assume no persistence in $\nu_t$.
+
+\subsection{Equilibrium}
+As our baseline model has no investment, the goods market clearing condition is:
+\begin{align}
+Y_t = C_t	\label{agg_prod}
+\end{align}
+and the total capital and labor used must equal that available, $\int_0^1 K_t(j)dj = \bar{K}$ and $\int_0^1 N_t(j)dj = N_t$.
+
+\subsection{Steady State}
+We will study small fluctuations around the zero inflation steady-state. In order to write down the linear model, we need to identify the Keynesian households consumption share of income, $\overline{c}_{K} = \lambda\overline{C^K}/\overline{Y}$, the Keynesian households share of labor hours, $\overline{n}_{KN} = \lambda\overline{N^K}/\overline{N}$, and the Ricardian household equivalents, $\overline{c}_{R} = 1- \overline{c}_{K}$ and  $\overline{n}_{R} = 1- \overline{n}_{K}$. In steady-state the markup over marginal cost is equal to $\frac{\varepsilon}{\varepsilon-1}$, and the real wage is equal to the marginal productivity of labor adjusted down by this markup, $(1-\alpha) \frac{\varepsilon-1}{\varepsilon}\frac{\overline{Y}}{\overline{N}}$. 
+
+
+Using this steady-state wage, along with the Keynesian budget constraint (\ref{budget_constraint_K}) we can identify the steady-state ratio of Keynesian consumption over output to Keynesian labor over total labor:
+\begin{align}
+\xi^K=\frac{\overline{c}_{K}}{\overline{n}_{K}} = \left(1-\Omega(1-\beta)\right)\frac{\varepsilon-1}{\varepsilon}(1-\alpha) \label{c_K_n_K}
+\end{align}
+The first order conditions \ref{foc_hours_R} and \ref{foc_hours_K} now allow us to find $\overline{c}_{K}$. That is we solve the following using a non-linear solver:
+\begin{align}
+(\overline{c}_{K})^\sigma  \left(\frac{\overline{c}_{K}}{\xi^K}\right)^\phi = \left(\frac{\lambda}{1-\lambda}\right)^{\sigma+\phi}(1-\overline{c}_{K})^\sigma  (1-\frac{\overline{c}_{K}}{\xi^K})^\phi	\label{c_K_ss}
+\end{align}
+which in turn gives us values for $\overline{c}_{K}$, $\overline{n}_{KN}$, $\overline{c}_{R}$ and  $\overline{n}_{R}$.
+
+
+\subsection{Log-linearized Model}
+We use small letters to indicate percentage changes from steady-state values and then linearize around the steady-state. We begin with the basic building blocks of the New Keynesian model. First the Euler equation for Ricardian households, linearized from equation \ref{euler_R}, becomes:
+\begin{align}
+c^R_t = \mathbb{E}_t c^R_{t+1} - \frac{1}{\sigma}(i_t - \mathbb{E}_t\pi_{t+1}) \label{euler_R_linear}
+\end{align}
+The New Keynesian Phillips curve, derived from the pricing equation \ref{foc_pricing}, is:
+\begin{align}
+\pi_t=\beta \mathbb{E}_t\pi_{t+1}+\frac{(1-\theta)(1-\beta\theta)}{\theta}\left(\sigma +  \frac{\phi + \alpha}{1-\alpha} \right)\tilde{y}_t \label{NKphillips_linear}
+\end{align}
+where the output gap, $\tilde{y}_t$, in this case with fixed technology and capital is just the percentage deviation of output from steady-state output.
+
+The monetary policy rule is already linearized and we take it directly from equation \ref{taylor_rule}.
+
+Unlike the standard New Keynesian model, these three are not enough to pin down the model as the Euler equation (\ref{euler_R_linear}) is determined by Ricardian households, while total consumption and production involves the Keynesians too. We have the aggregation conditions from equations \ref{agg_C}, \ref{agg_N} and \ref{agg_prod}:
+\begin{align}
+c_t &= \overline{c}_{K} c^K_t + \overline{c}_{R} c^R_t \label{agg_C_linear} \\
+n_t &= \overline{n}_{K} n^K_t + \overline{n}_{R} n^R_t \label{agg_N_linear} \\
+\tilde{y}_t &= c_t \label{agg_prod_linear}
+\end{align}
+and the Keynesian budget condition from equation \ref{budget_constraint_K}:
+\begin{align}
+(1-\Omega (1-\beta)) c^K_t = w_t + n^K_t + \Omega \left(\pi_t - \mathbb{E}_{t-1}\pi_t\right) - \beta \Omega  (i_t - \mathbb{E}_t \pi_{t+1})  \label{budget_constraint_K_linear}
+\end{align}
+where $w_t$ is the real wage in period $t$. Note $\pi_t - \mathbb{E}_{t-1}\pi_t$ represents unexpected inflation between $t-1$ and $t$ and relates to the net nominal position of the Keynesian households. The expected return on nominal bonds, $r_t = i_t - \mathbb{E}_t \pi_{t+1}$, would be the real interest between $t$ and $t+1$ if such a market existed and relates to the unhedged interest rate exposure of the Keynesian households. In the case where there is no debt ($\Omega=0$), both these components of the budget constraint disappear. Further note that in this model $\mathbb{E}_{t-1}\pi_t$ will always be equal to zero, so the model has no predetermined variables. WHY IS THIS RIGHT?????
+
+The first order conditions for hours worked, equations \ref{foc_hours_R} and \ref{foc_hours_K}, give:
+\begin{align}
+w_t &= \sigma c^R_t + \phi n^R_t \label{foc_hours_R_linear} \\
+w_t &= \sigma c^K_t + \phi n^K_t \label{foc_hours_K_linear}
+\end{align}
+Finally the connection between hours worked and the output gap is given by:
+\begin{align}
+\tilde{y}_t &= (1-\alpha)n_t  \label{production_linear}
+\end{align}
+Note capital does not appear in the linearized production function because of the fixed capital assumption.
+
+The final baseline model consists of the Taylor rule, equation \ref{taylor_rule}, along with the equations \ref{euler_R_linear} through \ref{production_linear} and the identity $r_t = i_t - \mathbb{E}_t \pi_{t+1}$.
+
 
 \section{Relaxing the Fixed Capital Assumption}
 Instead of a fixed amount of capital, K, allow for investment. If there are no costs to investment, then households will invest until the new capital stock gives risk to the changed interest rate, which will result in a very persistent change in the interest rate. We will need convex investment adjustment costs to avoid this persistence, and hope to show that reasonable calibrations result in little change in the capital stock and hence low interest rate persistence. Auclert did something like this in a previous version of his paper.
+
+\subsection{The Model}
+The model is identical to the baseline model, except for the fact that the Ricardian households are now able to invest in capital as well as nominal bonds. Aggregate investment at time $t$, $\text{Inv}_t$, along with the level of capital at time $t$, $K_t$, together determine the capital level at time $t+1$:
+\begin{align}
+\text{Inv}_t = \Phi\left(\frac{K_{t+1}}{K_t}\right) K_t
+\end{align}
+where $\Phi(1) =\delta$ is the per period depreciation, $\Phi'(1) =1$ and $\Phi''(1) =\psi_K >0 $ represents convex capital adjustment costs. It is the fact that capital in period $t+1$ is \textit{predetermined} in period $t$ that differentiates this model from the baseline model in terms of breaking the assumptions required for Auclert's sufficient statistics to hold. In steady state the investment share of income is $\overline{\textit{inv}} = \frac{\varepsilon-1}{\varepsilon} \frac{\delta \alpha}{1/\beta - (1-\delta)}$.\footnote{This comes from equating the steady-state return from investment with $1/\beta$, the steady-state real interest rate, and using the fact that in equilibrium the total income allocated to capital is equal to $\frac{\alpha}{1-\alpha}$ times the total income allocated to labor. For other steady-state ratios, equation \ref{c_K_n_K} remains the same, but \ref{c_K_ss} becomes $(\overline{c}_{K})^\sigma  \left(\frac{\overline{c}_{K}}{\xi^K}\right)^\phi = \left(\frac{\lambda}{1-\lambda}\right)^{\sigma+\phi}(1-\overline{\textit{inv}}-\overline{c}_{K})^\sigma  (1-\frac{\overline{c}_{K}}{\xi^K})^\phi$ and $\overline{c}_{R}=1-\overline{\textit{inv}}-\overline{c}_{K}$, taking account of the fact that investment now takes a chunk out of output which is no longer equal to aggregate consumption.}
+
+\subsection{Changes Relative to the Linear Baseline Model}
+Given nominal interest rate and inflation expectations, the individual optimization problems for both Ricardian and Keynesian households, as well as firms, remains identical to the baseline model. That results in equations \ref{euler_R_linear}, \ref{NKphillips_linear}, \ref{budget_constraint_K_linear}, \ref{foc_hours_R_linear} and \ref{foc_hours_K_linear} remaining unchanged. Differences occur in aggregation.
+
+As the natural level of output (output that would occur with flexible prices) is no longer constant, the output gap, $\tilde{y}$, is no longer equal to output. The model needs equations to define the natural level output and the output gap:\footnote{Natural output is derived from the fact that under flexible prices, the markup over marginal cost will be constant ($\frac{\varepsilon}{\varepsilon-1}$).}
+\begin{align}
+y^{n} &= \frac{\alpha(1+\psi)}{\sigma(1-\alpha) + \psi + \alpha} k_{t} \label{y_nat_linear} \\
+\tilde{y}_t &= y_t - y^{n}	\label{output_gap_linear}
+\end{align}
+Futhermore, the aggregate production function, equation \ref{production_linear}, now includes capital:
+\begin{align}
+\tilde{y}_t &= \alpha k_t +  (1-\alpha)n_t  \label{production_capital_linear}
+\end{align}
+Aggregation of output now includes the capital share, so equation \ref{agg_C_linear} is replaced by:
+\begin{align}
+y_t &= \overline{c}_{K} c^K_t + \overline{c}_{R} c^R_t + \overline{\textit{inv}} \ \textit{inv}_t \label{agg_Y_linear}
+\end{align}
+The law of motion for capital is introduced to the model:
+\begin{align}
+\delta \ \textit{inv}_t = k_{t+1} - (1-\delta) k_{t}    \label{lom_capital}
+\end{align}
+As is the equation for the shadow price of capital, $q_t$, determined by the convexity of adjustment costs:
+\begin{align}
+q_t = \psi_K (k_{t+1}-k_t)	\label{shadow_K}
+\end{align}
+Finally we require an equation to equate the expected return on investment with the expected real return on nominal bonds:
+\begin{align}
+r_t + q_t = \beta (1-\delta) \mathbb{E}_t q_{t+1} + (1 - \beta (1-\delta)) (\mathbb{E}_t (w_{t+1} + n_{t+1}) - k_{t+1})	\label{return_K}
+\end{align}
+
+
+
+
 
 \section{Assumptions on Government Expenditure}
 The sufficient statistics rely heavily on the tax rebate assumption that an extra government revenues are immediately paid back in equal lump sums to all households. We need to relax this, and hope to show in the TANK model that a version of the sufficient statistics where we do not assume any rebate, holds fairly well (as long as the number of constrained households is quite high).
