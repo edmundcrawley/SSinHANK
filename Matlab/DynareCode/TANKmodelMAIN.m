@@ -37,7 +37,7 @@ error_RANK = dC_C_Auclert - dC_C;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%
 % Now the basic TANK model
-sigma = 5.0;
+sigma = 1.0;
 phi=1.0;
 phi_pi = 1.5;
 phi_y  = 0.0;%.5/4;
@@ -222,4 +222,72 @@ dC_R = MPC_TANK_Capital_R*dYR_Y_TANK_Capital/cons_share ...
         - NNP_R*MPC_TANK_Capital_R*dP_P_TANK_Capital/cons_share ...
         - Elas_EIS_TANK_Capital*dR_R_TANK_Capital;
 dC_R- TANK_Capital_irfs.c_R_eps_nu(1)*(1-invest_share-cons_share_K)/cons_share
+
+%%
+% Basic TANK model, experiment with different parameters
+sigma = 1.0;
+phi=1.0;
+phi_pi = 1.5;
+phi_y  = 0.0;%.5/4;
+theta=2/3;
+rho_nu =0.0;
+beta = 0.97;
+alpha=0.25;
+epsilon=6;
+lambda = 0.2;
+Lambda = 0.0;
+cons_share_K = (1-Lambda*(1-beta))*lambda*(1-alpha)*(epsilon-1)/epsilon;
+cons_share_R = 1-cons_share_K;
+labor_share_K = lambda;
+labor_share_R = 1-labor_share_K;
+% Loop over parameters
+dynare TANKmodel_dgwages.mod noclearall;
+options_.nograph = 1;
+%param_loop = 0.0:0.05:2;
+
+%% run different experiments
+param_to_vary = [string('lambda'),string('Lambda')];
+plot_xlabel = [string('Proportion of Keynesian Households'),string('Keynesian Household Debt Level')];
+param_loop.(char(param_to_vary(1))) = 0.0:0.01:0.3;
+param_loop.(char(param_to_vary(2))) = 0.0:0.05:2;
+for j=1:length(param_to_vary)
+    set_param_value('lambda',0.2);
+    set_param_value('Lambda',0.0);
+    set_param_value('sigma',2.0);
+    param_array = param_loop.(char(param_to_vary(j)));
+    Transmission_Channels = zeros(length(param_loop),7);
+    suff_stats = zeros(length(param_array),4);
+    YRP_changes = zeros(length(param_array),3);
+    checks = zeros(length(param_array),3);
+    for i=1:length(param_array)
+        set_param_value(char(param_to_vary(j)),param_array(i));
+        run 'CalcTransmissionChannels_TANKmodel.m';
+        Transmission_Channels(i,1) = agg_inc*nominal_i_scale;
+        Transmission_Channels(i,2) = het_inc*nominal_i_scale;
+        Transmission_Channels(i,3) = ire*nominal_i_scale;
+        Transmission_Channels(i,4) = fisher*nominal_i_scale;
+        Transmission_Channels(i,5) = ies*nominal_i_scale;
+        Transmission_Channels(i,6) = dC_C_TANK*nominal_i_scale;
+        Transmission_Channels(i,7) = param_array(i);
+        suff_stats(i,1) = Inc_wt_MPC_TANK;
+        suff_stats(i,2) = Elas_R_TANK;
+        suff_stats(i,3) = Elas_P_TANK;
+        suff_stats(i,4) = Elas_EIS_TANK;
+        YRP_changes(i,1) = dY_Y_TANK*nominal_i_scale;
+        YRP_changes(i,2) = dR_R_TANK*nominal_i_scale;
+        YRP_changes(i,3) = dP_P_TANK*nominal_i_scale;
+        checks(i,1) = error_TANK;
+        checks(i,2) = check_R;
+        checks(i,3) = check_K;
+    end
+    cum_trans_channels = cumsum(Transmission_Channels(:,1:5),2);
+    figure;
+    area(param_array,Transmission_Channels(:,1:5));
+    colormap(linspecer);
+    legend('Agg Income', 'Het Income','Int. Rate Exposure', 'Fisher', 'Intertemporal Subs.','location','NorthWest');
+    legend('boxoff');
+    xlabel(char(plot_xlabel(j)));
+    ylabel('Consumption Change');
+    title('Transmission Channels to a 1% Interest Rate Decline');
+end
 
