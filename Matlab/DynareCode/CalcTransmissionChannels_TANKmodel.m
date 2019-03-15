@@ -33,7 +33,9 @@ TANK_irfs = oo_.irfs;
 % Now calc Auclert's statistics
 MPC_TANK_K = 1.0;
 MPC_TANK_R = 1-beta;
-MPC_TANK = MPC_TANK_R*cons_share_R + MPC_TANK_K*cons_share_K;
+y_K_share = 1/(1-Lambda*(1-beta))*cons_share_K; %share of total income earned by Keynesian labor
+y_R_share = 1- y_K_share;
+MPC_TANK = MPC_TANK_R*y_R_share + MPC_TANK_K*y_K_share; %income weighted MPC
 % 1) Aggregate income elasticity
 Inc_wt_MPC_TANK = MPC_TANK;
 % 2) Income Heterogeneity Channel
@@ -43,7 +45,6 @@ y_R = TANK_irfs.w_real_eps_nu(1) + TANK_irfs.n_R_eps_nu(1);
 IncomeChannel_Total = y_K*cons_share_K + y_R*(1-beta)*cons_share_R;
 % 3) Interest Rate Exposure Channel (URE measures as a fraction of total
 % consumption/income)
-y_K_share = 1/(1-Lambda*(1-beta))*cons_share_K; %share of total income earned by Keynesian labor
 URE_K = -beta*Lambda*y_K_share;  % Nominal debt of Keynesians is a multiple of their labor income
 URE_R = - URE_K;
 Elas_R_TANK = URE_K*MPC_TANK_K + URE_R*MPC_TANK_R;
