@@ -2,8 +2,8 @@
 % Code for TANK model in Dynare
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%
-addpath(genpath('c:\dynare'))
-clear all
+addpath(genpath('c:\dynare'));
+clear all;
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % First do a RANK model
@@ -246,48 +246,59 @@ options_.nograph = 1;
 %param_loop = 0.0:0.05:2;
 
 %% run different experiments
+figure_dir = '.\Figures\';
 param_to_vary = [string('lambda'),string('Lambda')];
+title_string = [string('Transmission Channels to a 1% Interest Rate Decline'),string('Transmission Channels to a 1% Interest Rate Decline'),string('Transmission Channels to a 1% Interest Rate Decline');string('\sigma = 1'),string('\sigma = 2'),string('\sigma = 3')];
+save_name = [string('ProportionKeynesian'),string('KeynesianDebt')];
 plot_xlabel = [string('Proportion of Keynesian Households'),string('Keynesian Household Debt Level')];
 param_loop.(char(param_to_vary(1))) = 0.0:0.01:0.3;
 param_loop.(char(param_to_vary(2))) = 0.0:0.05:2;
-for j=1:length(param_to_vary)
-    set_param_value('lambda',0.2);
-    set_param_value('Lambda',0.0);
-    set_param_value('sigma',2.0);
-    param_array = param_loop.(char(param_to_vary(j)));
-    Transmission_Channels = zeros(length(param_loop),7);
-    suff_stats = zeros(length(param_array),4);
-    YRP_changes = zeros(length(param_array),3);
-    checks = zeros(length(param_array),3);
-    for i=1:length(param_array)
-        set_param_value(char(param_to_vary(j)),param_array(i));
-        run 'CalcTransmissionChannels_TANKmodel.m';
-        Transmission_Channels(i,1) = agg_inc*nominal_i_scale;
-        Transmission_Channels(i,2) = het_inc*nominal_i_scale;
-        Transmission_Channels(i,3) = ire*nominal_i_scale;
-        Transmission_Channels(i,4) = fisher*nominal_i_scale;
-        Transmission_Channels(i,5) = ies*nominal_i_scale;
-        Transmission_Channels(i,6) = dC_C_TANK*nominal_i_scale;
-        Transmission_Channels(i,7) = param_array(i);
-        suff_stats(i,1) = Inc_wt_MPC_TANK;
-        suff_stats(i,2) = Elas_R_TANK;
-        suff_stats(i,3) = Elas_P_TANK;
-        suff_stats(i,4) = Elas_EIS_TANK;
-        YRP_changes(i,1) = dY_Y_TANK*nominal_i_scale;
-        YRP_changes(i,2) = dR_R_TANK*nominal_i_scale;
-        YRP_changes(i,3) = dP_P_TANK*nominal_i_scale;
-        checks(i,1) = error_TANK;
-        checks(i,2) = check_R;
-        checks(i,3) = check_K;
+for sigma = 1:3
+    set_param_value('sigma',sigma);
+    for j=1:length(param_to_vary)
+        set_param_value('lambda',0.2);
+        set_param_value('Lambda',0.0);
+        param_array = param_loop.(char(param_to_vary(j)));
+        Transmission_Channels = zeros(length(param_loop),7);
+        suff_stats = zeros(length(param_array),4);
+        YRP_changes = zeros(length(param_array),3);
+        checks = zeros(length(param_array),3);
+        for i=1:length(param_array)
+            set_param_value(char(param_to_vary(j)),param_array(i));
+            run 'CalcTransmissionChannels_TANKmodel.m';
+            Transmission_Channels(i,1) = agg_inc*nominal_i_scale;
+            Transmission_Channels(i,2) = het_inc*nominal_i_scale;
+            Transmission_Channels(i,3) = ire*nominal_i_scale;
+            Transmission_Channels(i,4) = fisher*nominal_i_scale;
+            Transmission_Channels(i,5) = ies*nominal_i_scale;
+            Transmission_Channels(i,6) = dC_C_TANK*nominal_i_scale;
+            Transmission_Channels(i,7) = param_array(i);
+            suff_stats(i,1) = Inc_wt_MPC_TANK;
+            suff_stats(i,2) = Elas_R_TANK;
+            suff_stats(i,3) = Elas_P_TANK;
+            suff_stats(i,4) = Elas_EIS_TANK;
+            YRP_changes(i,1) = dY_Y_TANK*nominal_i_scale;
+            YRP_changes(i,2) = dR_R_TANK*nominal_i_scale;
+            YRP_changes(i,3) = dP_P_TANK*nominal_i_scale;
+            checks(i,1) = error_TANK;
+            checks(i,2) = check_R;
+            checks(i,3) = check_K;
+        end
+        cum_trans_channels = cumsum(Transmission_Channels(:,1:5),2);
+        figure;
+        area(param_array,Transmission_Channels(:,[5,3,4,1,2]));
+        colormap(linspecer);
+        legend('Intertemporal Substitution', 'Interest Rate Exposure', 'Fisher','Aggregate Income', 'Heterogenous Income','location','NorthWest');
+        legend('boxoff');
+        xlabel(char(plot_xlabel(j)));
+        ylabel('Consumption Change');
+        title(title_string(j,sigma));
+        axis([ param_array(1) param_array(end) 0 3])
+        if j==1
+            hold on
+            plot([0.2 0.2],ylim,'Color','k','LineStyle','--');
+        end
+        saveas(gcf,[figure_dir,char(save_name(j)),'_sigma',num2str(sigma),'.eps'],'epsc');
     end
-    cum_trans_channels = cumsum(Transmission_Channels(:,1:5),2);
-    figure;
-    area(param_array,Transmission_Channels(:,1:5));
-    colormap(linspecer);
-    legend('Agg Income', 'Het Income','Int. Rate Exposure', 'Fisher', 'Intertemporal Subs.','location','NorthWest');
-    legend('boxoff');
-    xlabel(char(plot_xlabel(j)));
-    ylabel('Consumption Change');
-    title('Transmission Channels to a 1% Interest Rate Decline');
 end
 

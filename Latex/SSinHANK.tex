@@ -78,7 +78,7 @@ The key to the paper will be to show that there is no significant medium term dy
 
 The fact that households don't respond to income until they actually receive it seems likely to be the reason monetary policy seems to act with a delay (for example rates take time to adjust).
 
-\section{Auclert's Sufficient Statistics}
+\section{Transmission Channels} \label{transmission_channels}
 
 \section{A TANK Model in which the Sufficient Statistics Work Exactly}
 Key features of model (I think):
@@ -241,6 +241,43 @@ Finally the connection between hours worked and the output gap is given by:
 Note capital does not appear in the linearized production function because of the fixed capital assumption.
 
 The final baseline model consists of the Taylor rule, equation \ref{taylor_rule}, along with the equations \ref{euler_R_linear} through \ref{production_linear} and the identity $r_t = i_t - \mathbb{E}_t \pi_{t+1}$.
+
+\section{Results from the Baseline TANK Model}
+As there are no predetermined variables in our baseline TANK model the decomposition of transmission mechanisms described in section \ref{transmission_channels} works exactly. Here we look at how monetary policy divides into the five different channels according to the proportion of Keynesian households, as well as the extent to which they are able to take on debt.
+
+\subsection{Model with No Debt}
+To start we consider the model in which the Keynesian households cannot hold any debt, as is standard in TANK model.\footnote{For examples see \cite{dgHANKTANK}, \cite{gali_understanding_2007} and \cite{broer_2018}}. The transitory nature of the shock means that expected inflation next period is zero, and hence a one percent decrease in the nominal rate translate exactly into a one percent decrease in the real rate (if it were to trade).
+
+Figure \ref{fig:ProportionKeynesian} shows the size of each transmission channel following a one percentage point decrease in the nominal interest rate, where the proportion of Keynesian households is on the x-axis. Note that both the interest rate exposure channel and the Fisher channel are absent in this model as there is no debt between the two types of agent. The left side of the graph shows the transmission channels when there are very few Keynesian households. As has been well documented\footnote{e.g. \cite{kaplan_monetary_2016}} the intertemporal substitution model dominates in this case, seen here in the division of transmission channels along the y-axis corresponding to the RANK model. We have set the elasticity of intertemporal substitution equal to one, so a one percentage point decrease in the real interest rate increases consumption of the Ricardian households by exactly one percent. This is seen as the intercept with the y-axis, divided into a large intertemporal substitution channel of size $\beta$, and a small aggregate income channel of size $1-\beta$.
+
+Moving along the x-axis increases the proportion of Keynesian households. The size of the intertemporal substitution channel decreases in line with the consumption share of consumption by Ricardian households. As Ricardian households own all the capital as well as the profits from the firms, their consumption share falls more slowly that their share of households. As we introduce Keynesian households the size of the aggregate income channel increases, as the average MPC across households grows. While this aggregate income channel is substantial, it ends up being dominated by the heterogeneous income channel. This channel is both less intuitive and economically more questionable. It arises because during a boom, the extra income is not distributed equally between the Keynesian and Ricardian households, but instead goes predominantly to the Keynesian households. This is due to the fact that when the output gap is positive, markups above marginal cost are small, so workers get paid closer to their marginal product while the profits of the firms are reduced. When the proportion of Keynesian households reaches 0.3 this heterogeneous income channel actually dominates both of the other channels.
+
+\begin{figure} 
+	\begin{centering}
+		\includegraphics[scale=0.7]{../Matlab/DynareCode/Figures/ProportionKeynesian_sigma1.eps}
+		\caption{Changing the Proportion of Keynesian Households, $\sigma=1$}
+		\label{fig:ProportionKeynesian}
+	\end{centering}
+\end{figure}
+
+This feature of the standard New Keynesian model, that markups are low during a boom and high during a recession, is not backed by empirical evidence and has led some away from price frictions and toward nominal wage frictions.\footnote{This point is emphasized in \cite{broer_2018} and motivates modeling choices in \cite{auclert_inequality_2018}}. While we are sympathetic to this approach, for this paper we maintain the sticky price assumption to stay close to the existing HANK literature. One way to remove this heterogeneous income channel completely would be to divide the income from capital and profits proportionally between the Keynesian and Ricardian households. In that model, the total consumption change would remain unchanged as the number of Keynesian households increased, with the intertemporal substitution channel decreases proportional to the share of Ricardian's in the economy and the aggregate income channel making up the remainder. While the channels would be different, in this model the aggregate dynamics would be \textit{identical} to the RANK model.
+
+\subsection{Introducing Debt}
+In this section we analyze what happens when the Keynesian households are allowed to take on debt equal to some fraction of their steady state income. For the remainder of this section we will fix the proportion of Keynesian households at 0.2, giving an economy-wide MPC of just over 20 percent. This number is chosen both because it is close to a number of the current theoretical HANK models, and a larger number causes indeterminacy problems for some parameterizations.\footnote{See \cite{gali_2004} for a detailed discussion on determinacy of TANK models.} However, we accept 0.2 is on the low end of empirical estimates.\footnote{A large literature aims to estimate MPCS. See \cite{johnson_household_2006}, \cite{parker_consumer_2013}, \cite{fagereng_mpc_2016} and \cite{ckConsumption} for a small selection of examples.} In figure \ref{fig:ProportionKeynesian} from the previous section, there is a dotted line drawn where the proportion of Keynesian households equals 0.2. This shows the size of the transmission channels for this section when there is no debt.
+
+Figure \ref{fig:KeynesianDebt} shows how the size of the transmission channels change with the level of debt held by the Keynesian households, with the three panels showing this for decreasing elasticity of substitution.\footnote{The elasticity of substitution is equal to $1/\sigma$, so the three panels in figure \ref{fig:KeynesianDebt} represent an elasticity of substitution of 1, 0.5 and 0.33 respectively.} Starting with the left hand panel, we consider how the model behaves with an elasticity of substitution equal to one. The intercepts with the y-axis exactly correspond with the intercepts with the dotted line from figure \ref{fig:ProportionKeynesian}. This is the size of the transmission channels when a proportion 0.2 of households are Keynesian and these households have no debt. As in the previous section, the intertemporal substitution channel is slightly below one, while the income channels also play a significant role due to presence of Keynesian households. However, with no debt at the intersection with the y-axis both the interest rate exposure and Fisher channels are zero.
+
+
+
+\begin{figure} 
+	\begin{centering}
+		\includegraphics[scale=0.4]{../Matlab/DynareCode/Figures/KeynesianDebt_sigma1.eps}
+		\includegraphics[scale=0.4]{../Matlab/DynareCode/Figures/KeynesianDebt_sigma2.eps}
+		\includegraphics[scale=0.4]{../Matlab/DynareCode/Figures/KeynesianDebt_sigma3.eps}
+		\caption{Changing the Debt of Keynesian Households}
+		\label{fig:KeynesianDebt}
+	\end{centering}
+\end{figure}
 
 
 \section{Relaxing the Fixed Capital Assumption}
