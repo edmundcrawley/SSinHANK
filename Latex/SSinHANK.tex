@@ -105,14 +105,14 @@ Each period Ricardian households choose how much to consume, $C^R_t$, and how ma
 \end{align*}
 subject to their budget constraint:
 \begin{align*}
-P_t C^R_t + I_{t}^{-1}B_{t+1} = P_t N^R_t W_t + P_t D_t + B_t
+P_t C^R_t + I_{t}^{-1}B_{t+1} =  N^R_t W_t + P_t D_t + B_t
 \end{align*}
-where $P_t$ is the price level in period $t$, $I_t$ is the gross nominal interest rate between $t$ and $t+1$, $B_t$ is the quantity of bonds bought at time $t-1$ paying one unit of nominal currency in period $t$, $W_t$ is the wage per unit of labor in period $t$ and $D_t$ is the real dividend payed by firms in period $t$. All firm profit goes to the Ricardian households and this is shared equally between them.
+where $P_t$ is the price level in period $t$, $I_t$ is the gross nominal interest rate between $t$ and $t+1$, $B_t$ is the quantity of bonds bought at time $t-1$ paying one unit of nominal currency in period $t$, $W_t$ is the nominal wage per unit of labor in period $t$ and $D_t$ is the real dividend payed by firms in period $t$. All firm profit goes to the Ricardian households and this is shared equally between them.
 
 The first order conditions for these Ricardian households are:
 \begin{align}
 \frac{W_t}{P_t} = \left(C^R_t\right)^{\sigma}\left(N^R_t\right)^{\psi} \label{foc_hours_R} \\
-\left(C^R_t\right)^{-\sigma} = \beta \mathbb{E}\left(I_t\frac{P_{t+1}}{P_t} \left(C^R_{t+1}\right)^{-\sigma}\right)	\label{euler_R}
+\left(C^R_t\right)^{-\sigma} = \beta \mathbb{E}\left(I_t\frac{P_{t}}{P_{t+1}} \left(C^R_{t+1}\right)^{-\sigma}\right)	\label{euler_R}
 \end{align}
 
 \subsubsection{Keynesian Households}
@@ -122,7 +122,7 @@ Keynesian households are more impatient that the Ricardian households and as a r
 \end{align*}
 subject to their budget constraint:
 \begin{align}
-C^K_t \leq N^K_t \frac{W_t}{P_t} + \left(I_{t}^{-1} - \frac{P_{t-1}}{P_t}\right)\Omega \bar{N_K}\overline{W/P}  \label{budget_constraint_K}
+C^K_t \leq N^K_t \frac{W_t}{P_t} + \left(I_{t}^{-1} \frac{\mathbb{E}_t P_{t+1}}{P_t} -  \frac{\mathbb{E}_{t-1}P_t }{P_t}\right)\Omega \bar{N_K}\overline{W/P}  \label{budget_constraint_K}
 \end{align}
 where $\overline{W/P}$ and $\bar{N_K}$ are the steady state real wage and hours worked by Keynesian households.
 
@@ -144,7 +144,7 @@ The production side of the economy follows the standard New Keynesian model with
 \subsubsection{Final Goods Firm}
 The final goods firm produces a final consumption good, $Y_t$, from intermediated inputs, $X_t(j)$ for $j \in [0,1]$ using the technology:
 \begin{align*}
-Y_t = \int_0^1 X_t(j)^{1-\frac{1}{\varepsilon}} dj
+Y_t = \left( \int_0^1 X_t(j)^{1-\frac{1}{\varepsilon}} dj \right)^{\frac{\varepsilon}{\varepsilon-1}}
 \end{align*}
 Profit maximization yields the demand schedule $X_t(j) = \left(\frac{P_t(j)}{P_t}\right)^{-\varepsilon}$ where $P_t$ is the price of the final good. Competition also imposes a zero profit condition that yields $P_t = \left(\int_0^1 P_t^{1-\varepsilon}\right)^{\frac{1}{1-\varepsilon}}$.
 
@@ -199,7 +199,7 @@ Using this steady-state wage, along with the Keynesian budget constraint (\ref{b
 \end{align}
 The first order conditions \ref{foc_hours_R} and \ref{foc_hours_K} now allow us to find $\overline{c}_{K}$. That is we solve the following using a non-linear solver:
 \begin{align}
-(\overline{c}_{K})^\sigma  \left(\frac{\overline{c}_{K}}{\xi^K}\right)^\phi = \left(\frac{\lambda}{1-\lambda}\right)^{\sigma+\phi}(1-\overline{c}_{K})^\sigma  (1-\frac{\overline{c}_{K}}{\xi^K})^\phi	\label{c_K_ss}
+(\overline{c}_{K})^\sigma  \left(\frac{\overline{c}_{K}}{\xi^K}\right)^\psi = \left(\frac{\lambda}{1-\lambda}\right)^{\sigma+\psi}(1-\overline{c}_{K})^\sigma  (1-\frac{\overline{c}_{K}}{\xi^K})^\psi	\label{c_K_ss}
 \end{align}
 which in turn gives us values for $\overline{c}_{K}$, $\overline{n}_{KN}$, $\overline{c}_{R}$ and  $\overline{n}_{R}$.
 
@@ -211,7 +211,7 @@ c^R_t = \mathbb{E}_t c^R_{t+1} - \frac{1}{\sigma}(i_t - \mathbb{E}_t\pi_{t+1}) \
 \end{align}
 The New Keynesian Phillips curve, derived from the pricing equation \ref{foc_pricing}, is:
 \begin{align}
-\pi_t=\beta \mathbb{E}_t\pi_{t+1}+\frac{(1-\theta)(1-\beta\theta)}{\theta}\left(\sigma +  \frac{\phi + \alpha}{1-\alpha} \right)\tilde{y}_t \label{NKphillips_linear}
+\pi_t=\beta \mathbb{E}_t\pi_{t+1}+\frac{(1-\theta)(1-\beta\theta)}{\theta}\left(\sigma +  \frac{\psi + \alpha}{1-\alpha} \right)\tilde{y}_t \label{NKphillips_linear}
 \end{align}
 where the output gap, $\tilde{y}_t$, in this case with fixed technology and capital is just the percentage deviation of output from steady-state output.
 
@@ -231,8 +231,8 @@ where $w_t$ is the real wage in period $t$. Note $\pi_t - \mathbb{E}_{t-1}\pi_t$
 
 The first order conditions for hours worked, equations \ref{foc_hours_R} and \ref{foc_hours_K}, give:
 \begin{align}
-w_t &= \sigma c^R_t + \phi n^R_t \label{foc_hours_R_linear} \\
-w_t &= \sigma c^K_t + \phi n^K_t \label{foc_hours_K_linear}
+w_t &= \sigma c^R_t + \psi n^R_t \label{foc_hours_R_linear} \\
+w_t &= \sigma c^K_t + \psi n^K_t \label{foc_hours_K_linear}
 \end{align}
 Finally the connection between hours worked and the output gap is given by:
 \begin{align}
@@ -288,7 +288,7 @@ The model is identical to the baseline model, except for the fact that the Ricar
 \begin{align}
 \text{Inv}_t = \Phi\left(\frac{K_{t+1}}{K_t}\right) K_t
 \end{align}
-where $\Phi(1) =\delta$ is the per period depreciation, $\Phi'(1) =1$ and $\Phi''(1) =\psi_K >0 $ represents convex capital adjustment costs. It is the fact that capital in period $t+1$ is \textit{predetermined} in period $t$ that differentiates this model from the baseline model in terms of breaking the assumptions required for Auclert's sufficient statistics to hold. In steady state the investment share of income is $\overline{\textit{inv}} = \frac{\varepsilon-1}{\varepsilon} \frac{\delta \alpha}{1/\beta - (1-\delta)}$.\footnote{This comes from equating the steady-state return from investment with $1/\beta$, the steady-state real interest rate, and using the fact that in equilibrium the total income allocated to capital is equal to $\frac{\alpha}{1-\alpha}$ times the total income allocated to labor. For other steady-state ratios, equation \ref{c_K_n_K} remains the same, but \ref{c_K_ss} becomes $(\overline{c}_{K})^\sigma  \left(\frac{\overline{c}_{K}}{\xi^K}\right)^\phi = \left(\frac{\lambda}{1-\lambda}\right)^{\sigma+\phi}(1-\overline{\textit{inv}}-\overline{c}_{K})^\sigma  (1-\frac{\overline{c}_{K}}{\xi^K})^\phi$ and $\overline{c}_{R}=1-\overline{\textit{inv}}-\overline{c}_{K}$, taking account of the fact that investment now takes a chunk out of output which is no longer equal to aggregate consumption.}
+where $\Phi(1) =\delta$ is the per period depreciation, $\Phi'(1) =1$ and $\Phi''(1) =\psi_K >0 $ represents convex capital adjustment costs. It is the fact that capital in period $t+1$ is \textit{predetermined} in period $t$ that differentiates this model from the baseline model in terms of breaking the assumptions required for Auclert's sufficient statistics to hold. In steady state the investment share of income is $\overline{\textit{inv}} = \frac{\varepsilon-1}{\varepsilon} \frac{\delta \alpha}{1/\beta - (1-\delta)}$.\footnote{This comes from equating the steady-state return from investment with $1/\beta$, the steady-state real interest rate, and using the fact that in equilibrium the total income allocated to capital is equal to $\frac{\alpha}{1-\alpha}$ times the total income allocated to labor. For other steady-state ratios, equation \ref{c_K_n_K} remains the same, but \ref{c_K_ss} becomes $(\overline{c}_{K})^\sigma  \left(\frac{\overline{c}_{K}}{\xi^K}\right)^\psi = \left(\frac{\lambda}{1-\lambda}\right)^{\sigma+\psi}(1-\overline{\textit{inv}}-\overline{c}_{K})^\sigma  (1-\frac{\overline{c}_{K}}{\xi^K})^\psi$ and $\overline{c}_{R}=1-\overline{\textit{inv}}-\overline{c}_{K}$, taking account of the fact that investment now takes a chunk out of output which is no longer equal to aggregate consumption.}
 
 \subsection{Changes Relative to the Linear Baseline Model}
 Given nominal interest rate and inflation expectations, the individual optimization problems for both Ricardian and Keynesian households, as well as firms, remains identical to the baseline model. That results in equations \ref{euler_R_linear}, \ref{NKphillips_linear}, \ref{budget_constraint_K_linear}, \ref{foc_hours_R_linear} and \ref{foc_hours_K_linear} remaining unchanged. Differences occur in aggregation.
