@@ -9,7 +9,7 @@ import defineSSParametersIOUsBond as Params
 from copy import copy
 import pickle
 from SteadyStateOneAssetIOUsBond import SteadyStateOneAssetIOUsBond
-from FluctuationsOneAssetIOUsBond import FluctuationsOneAssetIOUsBond, SGU_solver, plot_IRF
+from FluctuationsOneAssetIOUsBond import FluctuationsOneAssetIOUsBond, Fsys, SGU_solver, plot_IRF
 
 EconomyParams = copy(Params.parm_one_asset_IOUsBond)
   
@@ -18,9 +18,10 @@ SSEconomy = SteadyStateOneAssetIOUsBond(**EconomyParams)
 
 ##### Choose whether calculate new steady state or use ond one
 
-SSS = SSEconomy.SolveSteadyState() # New steady state
+#SSS = SSEconomy.SolveSteadyState() # New steady state
+#pickle.dump(SSS, open("SSS.p", "wb"))
 
-#SSS=pickle.load(open("SSS.p", "rb")) # Use old steady state
+SSS=pickle.load(open("SSS.p", "rb")) # Use old steady state
 
 #############3#################################################3
 
@@ -97,6 +98,16 @@ SSS=pickle.load(open("SSS.p", "rb"))
 EX2SR=FluctuationsOneAssetIOUsBond(**SSS)
 
 SR=EX2SR.StateReduc()
+
+State       = np.zeros((mpar['numstates'],1))
+State_m     = State
+Contr       = np.zeros((mpar['numcontrols'],1))
+Contr_m     = Contr
+
+Fsysresult = Fsys(State, State_m, Contr, Contr_m, SR['Xss'], SR['Yss'], 
+         SR['Gamma_state'], SR['Gamma_control'], SR['InvGamma'], SR['Copula'],SR['par'], 
+         SR['mpar'], SR['grid'], SR['targets'],SR['P_H'],SR['aggrshock'],SR['oc'])
+    
     
 SGUresult=SGU_solver(SR['Xss'],SR['Yss'],SR['Gamma_state'],SR['Gamma_control'],SR['InvGamma'],SR['Copula'],
                      SR['par'],SR['mpar'],SR['grid'],SR['targets'],SR['P_H'],SR['aggrshock'],SR['oc'])

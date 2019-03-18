@@ -716,7 +716,7 @@ def Fsys(State, Stateminus, Control_sparse, Controlminus_sparse, StateSS, Contro
     #incprofits = np.sum((1-par['tau'])*par['gamma']/(1+par['gamma'])*(np.asarray(Nminus)/par['H'])*np.asarray(Wminus)*grid['h'][0:-1]*jd_aux[0:-1]) + (1-par['tau'])*np.asarray(Profitminus)*par['profitshare']*jd_aux[-1]
     incprofits = np.sum((1-par['tau'])*(np.asarray(Nminus)/Hminus)*np.asarray(Wminus)*grid['h'][0:-1]*jd_aux[0:-1]) \
                 + (1-par['tau'])*np.asarray(Profitminus)*par['profitshare']*jd_aux[-1] \
-                - (RBminus/PIminus-1.0)*B 
+                - (RBminus/PIminus*Bminus-B)
 
     
     inc = {'labor':inclabor, 'money':incmoney, 'profits':incprofits}
