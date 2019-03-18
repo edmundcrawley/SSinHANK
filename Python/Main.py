@@ -13,14 +13,14 @@ from FluctuationsOneAssetIOUsBond import FluctuationsOneAssetIOUsBond, SGU_solve
 
 EconomyParams = copy(Params.parm_one_asset_IOUsBond)
   
-#SSEconomy = SteadyStateOneAssetIOUsBond(**EconomyParams)
+SSEconomy = SteadyStateOneAssetIOUsBond(**EconomyParams)
 
 
 ##### Choose whether calculate new steady state or use ond one
 
-#SSS = SSEconomy.SolveSteadyState() # New steady state
+SSS = SSEconomy.SolveSteadyState() # New steady state
 
-SSS=pickle.load(open("SSS.p", "rb")) # Use old steady state
+#SSS=pickle.load(open("SSS.p", "rb")) # Use old steady state
 
 #############3#################################################3
 

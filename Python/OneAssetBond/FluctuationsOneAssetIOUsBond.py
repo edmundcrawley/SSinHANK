@@ -339,7 +339,7 @@ def plot_IRF(mpar,par,gx,hx,joint_distr,Gamma_state,grid,targets,os,oc,Output,C_
     MX = np.vstack((np.eye(len(x0)), gx))
     IRF_state_sparse=[]
     x=x0.copy()
-    mpar['maxlag']=40
+    mpar['maxlag']=10
         
     for t in range(0,mpar['maxlag']):
         IRF_state_sparse.append(np.dot(MX,x))
@@ -363,19 +363,18 @@ def plot_IRF(mpar,par,gx,hx,joint_distr,Gamma_state,grid,targets,os,oc,Output,C_
     IRF_S=100*IRF_state_sparse[mpar['numstates']-os+1,:-1]
         
     Y=targets['Y']*(1+IRF_state_sparse[-1-oc+2, :-1])
-    G=targets['G']*(1+IRF_state_sparse[-1-oc+7, :-1])
-    C=Y-G;
+    G=targets['G'] + IRF_state_sparse[-1-oc+7, :-1]     # The state space representation uses G (not log G)
     
-    IRF_C=100*np.log(C/(targets['Y']-targets['G']))
     IRF_Y=100*IRF_state_sparse[-1-oc+2, :-1]
-    IRF_G=100*IRF_state_sparse[-1-oc+7, :-1]
+    IRF_C=IRF_Y                                         # C=Y in this model with no investment
+    IRF_G=100*IRF_state_sparse[-1-oc+7, :-1]/targets['Y']   # write IRF_G in terms of percentage of output
     IRF_W=100*IRF_state_sparse[-1-oc+3, :-1]
     IRF_Profit=100*IRF_state_sparse[-1-oc+4, :-1]
     IRF_N=100*IRF_state_sparse[-1-oc+5, :-1]
     IRF_PI=100*100*IRF_state_sparse[-1-oc+1, :-1]
         
-    PI=1+IRF_state_sparse[-1-oc+1, :-1]
-    RB=par['RB']+(IRF_state_sparse[mpar['numstates']-os,1:])
+    PI=1+IRF_state_sparse[-1-oc+1, 1:]
+    RB=par['RB']*(1+IRF_state_sparse[mpar['numstates']-os,1:])
     IRF_RB=100*100*(RB-par['RB'])
     IRF_RBREAL=100*100*(RB/PI-par['RB'])
     
@@ -511,7 +510,7 @@ def plot_IRF(mpar,par,gx,hx,joint_distr,Gamma_state,grid,targets,os,oc,Output,C_
     plt.legend(handles=[line1])
     plt.plot(range(0,mpar['maxlag']-1),np.zeros((mpar['maxlag']-1)),'k--' )
     plt.xlabel('Quarter')
-    plt.ylabel('Percent') 
+    plt.ylabel('Percent of SS Output') 
     f_G.show()        
     
     
@@ -714,7 +713,12 @@ def Fsys(State, Stateminus, Control_sparse, Controlminus_sparse, StateSS, Contro
     inclabor = par['tau']*WW.copy()*meshes['h'].copy()
     incmoney = np.multiply(meshes['m'].copy(),(RBminus/PIminus+(meshes['m']<0)*par['borrwedge']/PIminus))
     jd_aux = np.sum(JDminus,axis=0)
-    incprofits = np.sum((1-par['tau'])*par['gamma']/(1+par['gamma'])*(np.asarray(Nminus)/par['H'])*np.asarray(Wminus)*grid['h'][0:-1]*jd_aux[0:-1]) + (1-par['tau'])*np.asarray(Profitminus)*par['profitshare']*jd_aux[-1]
+    #incprofits = np.sum((1-par['tau'])*par['gamma']/(1+par['gamma'])*(np.asarray(Nminus)/par['H'])*np.asarray(Wminus)*grid['h'][0:-1]*jd_aux[0:-1]) + (1-par['tau'])*np.asarray(Profitminus)*par['profitshare']*jd_aux[-1]
+    incprofits = np.sum((1-par['tau'])*(np.asarray(Nminus)/Hminus)*np.asarray(Wminus)*grid['h'][0:-1]*jd_aux[0:-1]) \
+                + (1-par['tau'])*np.asarray(Profitminus)*par['profitshare']*jd_aux[-1] \
+                - (RBminus/PIminus-1.0)*B 
+
+    
     inc = {'labor':inclabor, 'money':incmoney, 'profits':incprofits}
     
     ## Update policies
@@ -787,15 +791,19 @@ def Fsys(State, Stateminus, Control_sparse, Controlminus_sparse, StateSS, Contro
     
     # Inflation jumps to equilibrate real bond supply and demand
     
-    if par['tau'] < 1:
-       RHS[nx+Gind] = B - Bminus*RBminus/PIminus
-       
-       RHS[nx+PIind] = par['rho_B'] * np.log((Bminus)/(targets['B'])) + par['rho_B'] * np.log(RBminus/par['RB'])-(par['rho_B']+par['gamma_pi']) * np.log(PIminus/par['PI'])
-       LHS[nx+PIind] = np.log((B)/(targets['B']))
-    else:
-       RHS[nx+Gind] = targets['G'] 
-       RHS[nx+PIind] = targets['B']
-       LHS[nx+PIind] = B
+#    if par['tau'] < 1:
+#       RHS[nx+Gind] = B - Bminus*RBminus/PIminus
+#       
+#       RHS[nx+PIind] = par['rho_B'] * np.log((Bminus)/(targets['B'])) + par['rho_B'] * np.log(RBminus/par['RB'])-(par['rho_B']+par['gamma_pi']) * np.log(PIminus/par['PI'])
+#       LHS[nx+PIind] = np.log((B)/(targets['B']))
+#    else:
+#       RHS[nx+Gind] = targets['G'] 
+#       RHS[nx+PIind] = targets['B']
+#       LHS[nx+PIind] = B
+    taxes = (1 - par['tau'])*Yminus
+    RHS[nx+Gind] = B - Bminus*RBminus/PIminus + taxes
+    RHS[nx+PIind] = par['RB']*targets['B']
+    LHS[nx+PIind] = RB/PI * B       # Govt always expects to owe the same amount in the next period
     
     
     ## Difference

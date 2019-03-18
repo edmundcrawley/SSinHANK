@@ -105,7 +105,7 @@ class SteadyStateOneAssetIOUsBond:
             RBRB = resultFactReturn['RBRB'].copy()
             Output = resultFactReturn['Y']
            
-            resultPolGuess = self.PolicyGuess(meshes,WW,RBRB,par,self.mpar,grid,N,W_fc,P_H,Profits_fc)
+            resultPolGuess = self.PolicyGuess(meshes,WW,RBRB,par,self.mpar,grid,N,W_fc,P_H,Profits_fc,Output)
             c_guess = resultPolGuess['c_guess'].copy()
             inc = resultPolGuess['inc'].copy()
             count += 1
@@ -442,7 +442,7 @@ class SteadyStateOneAssetIOUsBond:
 
         return {'c_update': c_update, 'm_update': m_update}
        
-    def PolicyGuess(self, meshes, WW, RBRB, par, mpar,grid, N, W_fc, P_H, Profits_fc):
+    def PolicyGuess(self, meshes, WW, RBRB, par, mpar,grid, N, W_fc, P_H, Profits_fc,Output):
         '''
         autarky policy guesses 
         
@@ -472,8 +472,13 @@ class SteadyStateOneAssetIOUsBond:
 
         inclabor = par['tau']*WW*meshes['h'].copy()
         incmoney = RBRB*meshes['m'].copy()
-        incprofits = sum((1-par['tau'])*par['gamma']/(1+par['gamma'])*(N/par['H'])*W_fc*grid['h'][0:-1]*jd_aux[0:-1]) + (1-par['tau'])*Profits_fc*par['profitshare']*jd_aux[-1]
-                     
+        #incprofits = sum((1-par['tau'])*par['gamma']/(1+par['gamma'])*(N/par['H'])*W_fc*grid['h'][0:-1]*jd_aux[0:-1]) + (1-par['tau'])*Profits_fc*par['profitshare']*jd_aux[-1]
+          
+        incprofits = sum((1-par['tau'])*(N/par['H'])*W_fc*grid['h'][0:-1]*jd_aux[0:-1]) + (1-par['tau'])*Profits_fc*par['profitshare']*jd_aux[-1] - (RBRB-1.0)*self.par['BtoY']*Output
+
+
+
+           
         inc = {'labor': inclabor.copy(),
                'money': incmoney.copy(),
                'profits': incprofits}
