@@ -87,21 +87,21 @@ Hick_scaling = np.sum(np.sum( np.multiply(np.multiply(np.multiply(sig_i, (1-MPC_
 
 SSS['par']['rho_B'] = 0.99
 SSS['par']['gamma_pi'] = 1.25
-
+SSS['par']['theta_pi'] = 2
 ##############################################################################
 
-pickle.dump(SSS, open("SSS.p", "wb"))
-
-SSS=pickle.load(open("SSS.p", "rb"))
+#pickle.dump(SSS, open("SSS.p", "wb"))
+#
+#SSS=pickle.load(open("SSS.p", "rb"))
 
 
 EX2SR=FluctuationsOneAssetIOUsBond(**SSS)
 
 SR=EX2SR.StateReduc()
 
-State       = np.zeros((mpar['numstates'],1))
+State       = np.zeros((SR['mpar']['numstates'],1))
 State_m     = State
-Contr       = np.zeros((mpar['numcontrols'],1))
+Contr       = np.zeros((SR['mpar']['numcontrols'],1))
 Contr_m     = Contr
 
 Fsysresult = Fsys(State, State_m, Contr, Contr_m, SR['Xss'], SR['Yss'], 
