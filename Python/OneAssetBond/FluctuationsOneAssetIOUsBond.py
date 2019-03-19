@@ -513,7 +513,7 @@ def plot_IRF(mpar,par,gx,hx,joint_distr,Gamma_state,grid,targets,os,oc,Output,C_
     plt.ylabel('Percent of SS Output') 
     f_G.show()        
     
-    
+    return{'IRF_state_sparse': IRF_state_sparse, 'IRF_C_by_suff':IRF_C_by_suff,'IRF_C':IRF_C }
     
 def Fsys(State, Stateminus, Control_sparse, Controlminus_sparse, StateSS, ControlSS, 
          Gamma_state, Gamma_control, InvGamma, Copula, par, mpar, grid, targets, P, aggrshock, oc):
