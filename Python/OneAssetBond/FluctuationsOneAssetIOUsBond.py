@@ -513,7 +513,7 @@ def plot_IRF(mpar,par,gx,hx,joint_distr,Gamma_state,grid,targets,os,oc,Output,C_
     plt.ylabel('Percent of SS Output') 
     f_G.show()        
     
-    
+    return{'IRF_state_sparse': IRF_state_sparse, 'IRF_C_by_suff':IRF_C_by_suff,'IRF_C':IRF_C }
     
 def Fsys(State, Stateminus, Control_sparse, Controlminus_sparse, StateSS, ControlSS, 
          Gamma_state, Gamma_control, InvGamma, Copula, par, mpar, grid, targets, P, aggrshock, oc):
@@ -716,7 +716,7 @@ def Fsys(State, Stateminus, Control_sparse, Controlminus_sparse, StateSS, Contro
     #incprofits = np.sum((1-par['tau'])*par['gamma']/(1+par['gamma'])*(np.asarray(Nminus)/par['H'])*np.asarray(Wminus)*grid['h'][0:-1]*jd_aux[0:-1]) + (1-par['tau'])*np.asarray(Profitminus)*par['profitshare']*jd_aux[-1]
     incprofits = np.sum((1-par['tau'])*(np.asarray(Nminus)/Hminus)*np.asarray(Wminus)*grid['h'][0:-1]*jd_aux[0:-1]) \
                 + (1-par['tau'])*np.asarray(Profitminus)*par['profitshare']*jd_aux[-1] \
-                - (RBminus/PIminus-1.0)*B 
+                - (RBminus/PIminus*Bminus-B)
 
     
     inc = {'labor':inclabor, 'money':incmoney, 'profits':incprofits}
