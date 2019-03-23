@@ -1,0 +1,7 @@
+\begin{table}
+    \caption{Calibration}\label{table:calibration}
+\begin{tabular}{cd{5}l}
+\\ \toprule
+\\ \bottomrule
+ \end{tabular}
+\end{table}

@@ -18,8 +18,8 @@ SSEconomy = SteadyStateOneAssetIOUsBond(**EconomyParams)
 
 ##### Choose whether calculate new steady state or use ond one
 
-#SSS = SSEconomy.SolveSteadyState() # New steady state
-#pickle.dump(SSS, open("SSS.p", "wb"))
+SSS = SSEconomy.SolveSteadyState() # New steady state
+pickle.dump(SSS, open("SSS.p", "wb"))
 
 SSS=pickle.load(open("SSS.p", "rb")) # Use old steady state
 

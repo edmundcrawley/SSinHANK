@@ -106,7 +106,6 @@
   *{file}   {hpdftex.def} {2018/02/06 v6.86b}
   *{package}{rerunfilecheck}{2016/05/16 v1.8}
   *{package}{./texmf-local/tex/latex/econtexShortcuts}{0000/00/00 v0.0}
-  *{package}{endfloat}    {2018/03/24 v2.6}
   *{package}{tikz}        {2015/08/07 v3.0.1a}
   *{package}{pgf}         {2015/08/07 v3.0.1a}
   *{package}{pgfrcs}      {2015/08/07 v3.0.1a}
@@ -162,5 +161,10 @@
   *{file}   {../Matlab/DynareCode/Figures/KeynesianDebt_sigma1-eps-converted-to.pdf}{0000/00/00 v0.0}
   *{file}   {../Matlab/DynareCode/Figures/KeynesianDebt_sigma2-eps-converted-to.pdf}{0000/00/00 v0.0}
   *{file}   {../Matlab/DynareCode/Figures/KeynesianDebt_sigma3-eps-converted-to.pdf}{0000/00/00 v0.0}
+  *{file}   {../Matlab/DynareCode/Figures/TANK_capital_IRF_k-eps-converted-to.pdf}{0000/00/00 v0.0}
+  *{file}   {../Matlab/DynareCode/Figures/TANK_capital_IRF_i-eps-converted-to.pdf}{0000/00/00 v0.0}
+  *{file}   {../Matlab/DynareCode/Figures/TANK_capital_IRF_c_K-eps-converted-to.pdf}{0000/00/00 v0.0}
+  *{file}   {../Matlab/DynareCode/Figures/TANK_capital_IRF_c_R-eps-converted-to.pdf}{0000/00/00 v0.0}
+  *{file}   {../Matlab/DynareCode/Figures/TANK_capital_IRF_q-eps-converted-to.pdf}{0000/00/00 v0.0}
   *{file}   {SSinHANK.bbl}{0000/00/00 v0.0}
 }
