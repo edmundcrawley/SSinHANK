@@ -79,21 +79,52 @@ The key to the paper will be to show that there is no significant medium term dy
 The fact that households don't respond to income until they actually receive it seems likely to be the reason monetary policy seems to act with a delay (for example rates take time to adjust).
 
 \section{Transmission Channels} \label{transmission_channels}
+We will make heavy use of the monetary policy partial equilibrium decomposition described in \cite{auclert_monetary_2017}. He makes the assumption that for an individual a one time shock to nominal interest rates looks like i) a transitory change in income, ii) a one off change in the price level, iii) a change in the real interest rate. Here we provide a brief description of each of the five channels he identifies and then give some indication as to the conditions under which they sum to the aggregate change in consumption. For more detail please refer to Auclert's paper.
+
+\subsection{Aggregate Income Channel}
+The aggregate income channel measures how much consumption changes due to the change in aggregate income, under the assumption that all incomes move proportionally. The size of this channel is given by:
+\begin{align}
+\textit{AggInc} = \mathbb{E}_i \left( \text{MPC}_i Y_i  \right) \frac{dY}{Y}
+\end{align}
+where $\text{MPC}_i$ is the marginal propensity to consume of household $i$ and the expectation is taken over all households.\footnote{Strictly this is the marginal propensity to consume out of income \textit{after} accounting for labor response. In our models hours are either rationed or do not depend on wealth, so this definition of MPC coincides with the more standard definition.} That is the aggregate income channel is the income weighted marginal propensity to consume multiplied by the change in aggregate income.
+
+\subsection{Heterogeneous Income Channel}
+A monetary policy shock may not change the income of every household proportionally. If households with high MPCs see relatively larger income changes than households with low MPCs, then overall the channel through which monetary policy affects consumption through income will be larger than measured by the aggregate income channel. The total income channel is simply the expectation of each household's MPC multiplied by their own change in income, $\mathbb{E}_i \left( \text{MPC}_i dY_i  \right) $. The heterogeneous income channel is measured as the residual of the total income channel after taking away the aggregate income channel:
+\begin{align}
+\textit{HetInc} = \mathbb{E}_i \left( \text{MPC}_i dY_i  \right) - \mathbb{E}_i \left( \text{MPC}_i Y_i  \right) \frac{dY}{Y}
+\end{align}
+
+\subsection{Interest Rate Exposure Channel}
+The interest rate exposure channel measures how much households change their consumption due to unhedged interest rate exposure (URE). Unhedged interest rate exposure is defined as the difference between all maturing assets (including income) and maturing liabilities (including planned consumption), and is therefore the quantity of saving that is planned to be invested at this periods interest rate. When this period's real interest rate goes up, this effectively increases the budget constraint of those households who have positive unhedged interest rate exposure. Under certain conditions these households will increase their consumption by their MPC multiplied by the change in their budget constraint. That is:
+\begin{align}
+\textit{IRE} = \mathbb{E}_i \left( \text{MPC}_i \text{URE}_i  \right) \frac{dR}{R}
+\end{align}
+where $R$ is the real interest rate.
+
+\subsection{Fisher Channel}
+Inflation has the effect of changing the real value of nominal assets and debts. The Fisher channel measures how this affects aggregate consumption, making the assumption that households individual MPCs apply to this change in wealth. This key household level measure here is the net nominal position (NNP), that is the sum of all nominal assets net of nominal debts for each household. The size of the channel is then:
+\begin{align}
+\textit{Fisher} = -\mathbb{E}_i \left( \text{MPC}_i \text{NNP}_i  \right) \frac{dP}{P}
+\end{align}
+where $P$ is the price level.
+
+\subsection{Intertemporal Substitution Channel}
+Finally the intertemporal substitution channel measures how much households will shift their consumption between time periods due to the change in the real interest rate.
+\begin{align}
+\textit{IntSubs} = \mathbb{E}_i \left( \frac{1}{\sigma_i} (1-\text{MPC}_i) \frac{C_i}{C}  \right) \frac{dR}{R}
+\end{align}
+where $\frac{1}{\sigma_i}$ is the household's elasticity of intertemporal substitution, $C_i$ is their consumption this period and $C$ is the mean level of consumption this period.
+
+\subsection{Aggregation}
+\cite{auclert_monetary_2017} shows the conditions under which these five channels sum exactly to the aggregate change in consumption following a monetary policy shock. In summary this is when a monetary policy shocks has a purely transitory effect, changing income and the real interest rate for one period only, while effecting a one time change in the price level. For New Keynesian models with no predetermined variables, such as the standard consumption New Keynesian model or the baseline two agent New Keynesian model presented below, this is the case. Models with capital, or where the distribution of wealth persists into the next period such as the HANK model presented below, do not fit this decomposition. We will measure the error as the difference between the sum of the five channels and the actual change in consumption.
+
 
 \section{A TANK Model in which the Sufficient Statistics Work Exactly}
-Key features of model (I think):
-\begin{itemize}
-	\item Two agent, one unconstrained, one constrained
-	\item Fixed amount of capital, K, all held by unconstrained agent
-	\item Nominal bonds - either issued by government, or in net zero supply
-	\item Borrowing constraint - either at zero, or cannot borrow more than some fraction of next period's income
-	\item Government rebates any extra revenue via lump sum tax rebates.
-	\item NK setup standard otherwise
-\end{itemize}
-I believe this model should fit Auclert's conditions exactly.\\
-\\
-\subsection{Model intro...}
-Our baseline TANK model is composed of type types of agents, Ricardian and Keynesian, along with a continuum of intermediate goods firms, a perfectly competitive final goods firm, and a monetary policy authority. The model is closely related to the standard New Keynesian model with Calvo pricing frictions, the main difference being the addition of the Keynesian households. A key addition in our model is to allow for the Keynesian households to hold a non-zero quantity of short term nominal debt (owed to the Ricardian households) so that we have non-trivial levels for households' unhedged interest rate exposure (URE) and net nominal positions (NNP).
+
+\subsection{Model Overview}
+We begin our analysis with a baseline two agent New Keynesian (TANK) model. Our baseline TANK model is composed of type types of agents, Ricardian and Keynesian, along with a continuum of intermediate goods firms, a perfectly competitive final goods firm, and a monetary policy authority. The model is closely related to the standard New Keynesian model with Calvo pricing frictions, the main difference being the addition of the Keynesian households. A key addition in our model, compared with other TANK models, is to allow for the Keynesian households to hold a non-zero quantity of short term nominal debt (owed to the Ricardian households) so that we have non-trivial levels for households' unhedged interest rate exposure (URE) and net nominal positions (NNP).
+
+The advantage of starting our analysis with this model is that it contains no predetermined variables, and therefore the conditions for our partial equilibrium decomposition hold exactly. As well as being a useful starting point to build upon, it also highlights how the transmission mechanism works in TANK models (and HANK models more generally), highlighting just how important the heterogeneous income channel is in these models.
 
 \subsection{Households}
 A proportion $\lambda$ of households, which we shall call Keynesian, live hand-to-mouth, consuming all their income in each period. The remaining ($1-\lambda$), which we shall call Ricardian, are unconstrained optimizing agents. Following \cite{dgHANKTANK}, and in order to keep the supply side as simple as possible, we assume the markup on wages (see below) is high enough that households supply as much labor as demanded by the firms.
@@ -380,9 +411,57 @@ The sufficient statistics rely heavily on the tax rebate assumption that an extr
 Here I want to show the effect of changing the borrowing constraint from a proportion of next periods income to a proportion of today's income. I think this will have the effect of delaying the constrained households response by one period, but perhaps the average response over two periods may be similar?
 
 \section{A Simple HANK Model}
-Here is where we put the results from our HANK model. For the moment we should perhaps stick to the one asset version. One key thing to show is again that there is little persistence in the dynamics following a transitory shock. In the IRFs we see a slight hump in period 2 which we should try and understand (I think it is due to a change in the distribution of wealth).
 
-\subsection{Households}
+\subsection{The Model}
+The model we study is a one asset version of the HANK model presented in \cite{blSolving}. We also follow the solution method presented in that paper.
+
+\subsubsection{Households}
+In a given period household $i$ has labor productivity $h_{it}$, chooses their consumption $c_{it}$ and hours worked $n_{it}$. Households have Greenwood, Hercowitz and Huffman (GHH) preferences and act in order to maximize their expected utility:\footnote{The use of GHH preferences is primarily motivated to significantly simplify the solution method. \cite{arGHH} show GHH preferences can lead to unrealistically large fiscal multipliers, while separable preferences lead to other counter factual results.}
+\begin{align*}
+\mathbb{E} \sum_{t=0}^{\infty}\beta^t  u(c_{it} - \nu(n_{it} h_{it})) 
+\end{align*}
+where $u(x) = \frac{x^{1-\sigma}}{1-\sigma}$ and $\nu(n) = \frac{x^{1-\psi}}{1-\psi}$.
+
+Households consume a consumption bundle formed according to a Dixit-Stiglitz aggregator:
+\begin{align*}
+c_{it} = \left(\int_{j=0}^{1} c_{ijt}^{\frac{\varepsilon-1}{\varepsilon}} dj \right)^{\frac{\varepsilon}{\varepsilon-1}}
+\end{align*}
+The price of each good is $p_{jt}$ resulting in the aggregate price level $P_t = \left(\int_{j=0}^{1} p_{jt}^{1-\varepsilon} dj \right)^{\frac{1}{1-\varepsilon}}$ with demand for each good:
+\begin{align*}
+c_{ijt} = \left(\frac{p_{jt}}{P_t} \right)^{-\varepsilon} c_{it}
+\end{align*}
+
+Household labor productivity evolves according to a $\log-AR(1)$ process, with a fixed probability that the household becomes an entrepreneur, receives no labor income, but instead collects a share of the firm profits:
+\begin{align*}
+h_{it} = \begin{cases}
+				\exp(\rho_h h_{it-1} + \epsilon^h_{it}) &\text{ with prob } 1-\zeta \text{ if } h_{it-1} \ne 0\\
+				0 &\text{  with prob } \iota \text{ if } h_{it-1} = 0 \\
+				1	&\text{ otherwise}
+\end{cases}
+\end{align*}
+That is a non-entrepreneur switches to an entrepreneur state with probability $\zeta$, while an entrepreneur switches to a non-entrepreneur with unit labor productivity with probability $\iota$. All households choose the same number of hours, due to GHH preferences. Total productive hours worked, $\int_{i=0}^{\infty} h_{it}n_{it}di = N(\omega_t)$, therefore depend only on the real wage, $\omega_t$.
+
+In the entrepreneur state the household receives a fixed share of the economic profits of the firms, $\Pi_t$, and these rents are not tradeable.
+
+Households must pay a tax $\tau$ on all their rent and labor income.
+
+\subsubsection{Price Setting}
+Prices are set by risk-neutral managers who form a group of measure zero.\footnote{Assuming the price setters are risk neutral makes the optimal price setting problem tractable without taking away from the important economics of the model.} We assume \cite{rotemberg_sticky_1982} pricing frictions, leading to a New Keynesian Phillips curve:
+\begin{align*}
+\log\left(\frac{P_t}{P_{t-1}}\right) = \beta \mathbb{E}_t \left( \log \left(\frac{P_{t+1}}{P_{t}}\right) \frac{Y_{t+1}}{Y_{t}} \right) + \kappa \left( MC_t - \frac{\varepsilon-1}{\varepsilon} \right)
+\end{align*}
+where $Y_t$ is total output in period $t$, $MC_t$ is the real marginal cost and $\kappa$ measures the size of the Rotemberg price frictions. In equilibrium all goods will have the same price.
+
+\subsubsection{Fiscal Policy}
+
+
+\subsubsection{Monetary Policy}
+As in the TANK model, we assume the central bank follows the Taylor rule given in equation \ref{taylor_rule}.
+
+\subsection{Results from the HANK model}
+
+
+
 
 \section{Unhedged Interest Exposure in Existing HANK Models}
 By now we have hopefully convinced the reader that the sufficient statistics do a reasonable job in a variety of models as long as there is no `artificial' persistence in the interest rate shock.
