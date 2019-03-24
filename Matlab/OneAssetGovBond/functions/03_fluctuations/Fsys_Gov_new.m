@@ -173,7 +173,7 @@ inc.money   = meshes.m.*(RBminus/PIminus+(meshes.m<0).*par.borrwedge/PIminus);
 
 jd_aux = sum(JDminus,1);
 inc.profits = sum((1-par.tau)*par.gamma/(1+par.gamma).*(Nminus/par.H).*Wminus.*grid.h(1:end-1).*jd_aux(1:end-1)) ...
-                + (1-par.tau)*Profitminus*par.profitshare*jd_aux(end); % lump sum transfer
+                + (1-par.tau)*Profitminus*par.profitshare*jd_aux(end) - (RBminus/PIminus*Bminus-B); % lump sum transfer
 
 %% Update policies
 RBaux=(RB+(meshes.m<0).*par.borrwedge)/PI;
@@ -243,15 +243,15 @@ RHS(RBind) = log(par.RB) + par.rho_R* log(RBminus/par.RB)  + log(PIminus/par.PI)
              + EPS_TAYLOR;
 
 % % Inflation jumps to equilibrate real bond supply and demand
-% LHS(nx+PIind) = log(B/targets.B);
-% RHS(nx+PIind) = 0;
+LHS(nx+PIind) = par.RB*targets.B;
+RHS(nx+PIind) = RB/PI * B;
 
 
-LHS(nx+PIind) = log((B)/(targets.B));
-
-RHS(nx+PIind) = par.rho_B * log((Bminus)/(targets.B)) ...
-    + par.rho_B * log(RBminus/par.RB)...
-    - (par.rho_B+par.gamma_pi) * log(PIminus/par.PI); % ... - par.gamma_T * log((Tminus)/(targets.T));
+% LHS(nx+PIind) = log((B)/(targets.B));
+% 
+% RHS(nx+PIind) = par.rho_B * log((Bminus)/(targets.B)) ...
+%     + par.rho_B * log(RBminus/par.RB)...
+%     - (par.rho_B+par.gamma_pi) * log(PIminus/par.PI); % ... - par.gamma_T * log((Tminus)/(targets.T));
 
 % Government expenditures
 % RHS(nx+Gind) =  B - Bminus*RBminus/PIminus + Tminus;

@@ -10,7 +10,7 @@ addpath(genpath('latex'))
 
 %% Select options
 % Name economy
-casename            = 'Tax_rebate_B_over_Y_2';
+casename            = 'Tax_rebate_B_over_Y_4';
 % FindNewSS           = true;
 FindNewSS           = false;
 mpar.overrideEigen  = true;
@@ -51,7 +51,7 @@ par.rho_B       = 0.0;  % Autocorrelation (removed here because it is set later)
 par.gamma_pi    = 1.5;   % 1.5, Reaction to inflation
 par.gamma_T     = 0;%0.5075; % Reaction to tax revenue
 
-par.BtoY = 2;
+par.BtoY = 8;
 %% Returns
 par.PI          = 1;          % Gross inflation
 par.RB          = 1;          % Market clearing interest rate to be solved for
@@ -114,7 +114,7 @@ end
 Suff_Stats
 
 %% adjust policy parameter after finding a steady state
-par.theta_pi    = 1.25;
+par.theta_pi    = 2.5;
 par.rho_R       = 0;  % Inertia
 
 par.rho_B       = 0.99;
