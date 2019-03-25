@@ -187,14 +187,14 @@ class SteadyState_fsolve:
         inc = resultPolGuess['inc'].copy()
 
         print('Solving household problem by EGM')
-        start_time = time.process_time()
+        start_time = time.clock()
            
         resultPolicySS = self.PoliciesSS(c_guess, grid, inc, RBRB, P_H, self.mpar, par)
         c_guess = resultPolicySS['c_new'].copy()
         m_star = resultPolicySS['m_star'].copy()
         distPOL = resultPolicySS['distPOL']
         
-        end_time = time.process_time()
+        end_time = time.clock()
         print('Elapsed time is ',  (end_time-start_time), ' seconds.')
            
         print(distPOL)
@@ -229,14 +229,14 @@ class SteadyState_fsolve:
         inc = resultPolGuess['inc'].copy()
            
         print('Solving household problem by EGM')
-        start_time = time.process_time()
+        start_time = time.clock()
            
         resultPolicySS = self.PoliciesSS(c_guess, grid, inc, RBRB, P_H, self.mpar, par)
         c_guess = resultPolicySS['c_new'].copy()
         m_star = resultPolicySS['m_star'].copy()
         distPOL = resultPolicySS['distPOL']
         
-        end_time = time.process_time()
+        end_time = time.clock()
         print('Elapsed time is ',  (end_time-start_time), ' seconds.')
            
         print(distPOL)
