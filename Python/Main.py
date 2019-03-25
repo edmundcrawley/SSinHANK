@@ -20,7 +20,7 @@ SSEconomy = SteadyState_fsolve(**EconomyParams)
 ##### Choose whether calculate new steady state or use ond one
 
 SSS = SSEconomy.SolveSteadyState() # New steady state
-pickle.dump(SSS, open("SSS.p", "wb"))
+pickle.dump(SSS, open("btoy5_tau_05_gam5_xi2.p", "wb"))
 
 SSS=pickle.load(open("btoy5_tau_05_gam5_xi2.p", "rb")) # Use old steady state
 
