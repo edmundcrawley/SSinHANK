@@ -14,11 +14,19 @@
   {Channel},'' NBER {Working} {Paper} 23451, National Bureau of Economic
   Research.
 
+\harvarditem[Auclert and Rognlie]{Auclert and Rognlie}{2017}{arGHH}
+\textsc{Auclert, Adrien,  {and} Matthew Rognlie}  (2017): ``A note on
+  multipliers in NK models with GHH preferences,'' working paper.
+
 \harvarditem[Auclert and Rognlie]{Auclert and
   Rognlie}{2018}{auclert_inequality_2018}
-\textsc{Auclert, Adrien,  {and} Matthew Rognlie}  (2018): ``Inequality and
-  {Aggregate} {Demand},'' Working {Paper} 24280, National Bureau of Economic
-  Research.
+\textsc{\BySame{}}  (2018): ``Inequality and {Aggregate} {Demand},'' Working
+  {Paper} 24280, National Bureau of Economic Research.
+
+\harvarditem[Bayer and Luetticke]{Bayer and Luetticke}{2018}{blSolving}
+\textsc{Bayer, Christian,  {and} Ralph Luetticke}  (2018): ``Solving
+  heterogeneous agent models in discrete time with many idiosyncratic states by
+  perturbation methods,'' working paper.
 
 \harvarditem[Broer, Hansen, Krusell, and Oberg]{Broer, Hansen, Krusell, and
   Oberg}{2018}{broer_2018}
@@ -75,10 +83,21 @@
   ``Monetary {Policy} {According} to {HANK},'' NBER {Working} {Paper} 21897,
   National Bureau of Economic Research.
 
+\harvarditem[Landier, Sraer, and Thesmar]{Landier, Sraer, and
+  Thesmar}{2013}{landier_banks_2013}
+\textsc{Landier, Augustin, David Sraer,  {and} David Thesmar}  (2013): ``Banks'
+  {Exposure} to {Interest} {Rate} {Risk} and {The} {Transmission} of {Monetary}
+  {Policy},'' NBER {Working} {Paper} 18857, National Bureau of Economic
+  Research.
+
 \harvarditem[Parker, Souleles, Johnson, and McClelland]{Parker, Souleles,
   Johnson, and McClelland}{2013}{parker_consumer_2013}
 \textsc{Parker, Jonathan~A, Nicholas~S Souleles, David~S Johnson,  {and} Robert
   McClelland}  (2013): ``Consumer spending and the economic stimulus payments
   of 2008,'' \emph{American Economic Review}, 103(6), 2530--2553.
+
+\harvarditem[Rotemberg]{Rotemberg}{1982}{rotemberg_sticky_1982}
+\textsc{Rotemberg, Julio~J.}  (1982): ``Sticky {Prices} in the {United}
+  {States},'' \emph{Journal of Political Economy}, 90(6), 1187--1211.
 
 \end{thebibliography}

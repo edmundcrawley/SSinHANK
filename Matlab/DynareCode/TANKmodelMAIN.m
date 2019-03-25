@@ -4,248 +4,16 @@
 %%
 addpath(genpath('c:\dynare'));
 clear all;
-%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% First do a RANK model
-dynare 'RepAgent.mod' noclearall;
-RANK_irfs = oo_.irfs;
-
-% MPC in this representative agent model is (1-beta)/(1+sigma/phi*(1-alpha))
-% Note actually want MPC_hat = MPC/(MPC+MPS) = (1-beta) ? check this
-MPC_RANK = (1-beta);
-% Size of two channels (no other channels in rep agent model)
-% 1) Aggregate income elasticity
-Inc_wt_MPC_RANK = MPC_RANK;
-% 2) Intertemporal Substitution Channel
-Hicks_scaling_RANK = 1.0-MPC_RANK;
-Elas_EIS_RANK = Hicks_scaling_RANK*sigma;
-
-% Get inputs for partial eq. decomposition
-% dY/Y
-dY_Y = RANK_irfs.y_gap_eps_nu(1);
-% dR/R
-dR_R = RANK_irfs.r_real_eps_nu(1);
-
-% Get output for partial eq. decomposition
-% dC/C
-dC_C = RANK_irfs.y_gap_eps_nu(1);
-
-% Check they add up...
-dC_C_Auclert = Inc_wt_MPC_RANK*dY_Y - Elas_EIS_RANK*dR_R;
-error_RANK = dC_C_Auclert - dC_C;
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%
-% Now the basic TANK model
-sigma = 1.0;
-phi=1.0;
-phi_pi = 1.5;
-phi_y  = 0.0;%.5/4;
-theta=2/3;
-rho_nu =0.0;
-beta = 0.99;
-alpha=0.33;
-epsilon=6;
-lambda = 0.3;
-Lambda = 2.0;
-% Calc steady state share of labor and consumption of each type
-cons_share_to_labor_share_K = (1-Lambda*(1-beta))*(epsilon-1)/epsilon*(1-alpha);
-cons_share_K_obj = @(x)x^sigma * (x/cons_share_to_labor_share_K)^phi - (lambda/(1-lambda))^(sigma+phi)*(1-x)^sigma * (1-x/cons_share_to_labor_share_K)^phi;
-cons_share_K = fsolve(cons_share_K_obj, lambda);
-%cons_share_K =cons_share_K(1);
-cons_share_R = 1-cons_share_K;
-labor_share_K = cons_share_K/cons_share_to_labor_share_K;
-labor_share_R = 1-labor_share_K;
-dynare 'TANKmodel.mod' noclearall;
-TANK_irfs = oo_.irfs;
-
-% Now calc Auclert's statistics
-MPC_TANK_K = 1.0;
-MPC_TANK_R = 1-beta;
-y_K_share = 1/(1-Lambda*(1-beta))*cons_share_K; %share of total income earned by Keynesian labor
-y_R_share = 1- y_K_share;
-MPC_TANK = MPC_TANK_R*y_R_share + MPC_TANK_K*y_K_share; %income weighted MPC
-% 1) Aggregate income elasticity
-Inc_wt_MPC_TANK = MPC_TANK;
-% 2) Income Heterogeneity Channel
-% Calculate this exactly (rather than finding gamma)
-y_K = TANK_irfs.w_real_eps_nu(1) + TANK_irfs.n_K_eps_nu(1);
-y_R = TANK_irfs.w_real_eps_nu(1) + TANK_irfs.n_R_eps_nu(1);
-IncomeChannel_Total = y_K*cons_share_K + y_R*(1-beta)*cons_share_R;
-% 3) Interest Rate Exposure Channel (URE measures as a fraction of total
-% consumption/income)
-URE_K = -beta*Lambda*y_K_share;  % Nominal debt of Keynesians is a multiple of their labor income
-URE_R = - URE_K;
-Elas_R_TANK = URE_K*MPC_TANK_K + URE_R*MPC_TANK_R;
-% 4) Fisher channel (debt deflation)
-NNP_K = -Lambda*y_K_share;
-NNP_R = - NNP_K;
-Elas_P_TANK = NNP_K*MPC_TANK_K + NNP_R*MPC_TANK_R;
-% 5) Intertemporal Substitution Channel
-Hicks_scaling_TANK = (1.0-MPC_TANK_R)*cons_share_R + (1.0-MPC_TANK_K)*cons_share_K;
-Elas_EIS_TANK = Hicks_scaling_TANK/sigma;
-
-% Get inputs for partial eq. decomposition
-% dY/Y
-dY_Y_TANK = TANK_irfs.y_gap_eps_nu(1);
-dYK_Y_TANK = (TANK_irfs.w_real_eps_nu(1) + TANK_irfs.n_K_eps_nu(1))*y_K_share;
-dYR_Y_TANK = dY_Y_TANK - dYK_Y_TANK;
-% dR/R
-dR_R_TANK = TANK_irfs.r_real_eps_nu(1);
-% dP/P
-dP_P_TANK = TANK_irfs.pi_eps_nu(1);
-
-% Get output for partial eq. decomposition
-% dC/C
-dC_C_TANK = TANK_irfs.y_gap_eps_nu(1);
-
-% Check they add up...
-dC_C_Auclert_TANK = MPC_TANK_R*dYR_Y_TANK + MPC_TANK_K*dYK_Y_TANK ...
-                    + Elas_R_TANK*dR_R_TANK - Elas_P_TANK*dP_P_TANK ... 
-                    - Elas_EIS_TANK*dR_R_TANK;
-error_TANK = dC_C_Auclert_TANK - dC_C_TANK;
-
-% Agg income channel
-MPC_TANK*dY_Y_TANK
-% Heterogeneous Income Channel
-MPC_TANK_R*dYR_Y_TANK + MPC_TANK_K*dYK_Y_TANK - MPC_TANK*dY_Y_TANK
-% Unhedged Interest Rate Exposure
-Elas_R_TANK*dR_R_TANK
-% Fisher Channel
-- Elas_P_TANK*dP_P_TANK
-% Intertemporal Elasticity Channel
-- Elas_EIS_TANK*dR_R_TANK
-
-%check for Keynesians
-dC_K = MPC_TANK_K*dYK_Y_TANK + URE_K*MPC_TANK_K*dR_R_TANK ...
-        - NNP_K*MPC_TANK_K*dP_P_TANK;
-dC_K- TANK_irfs.c_K_eps_nu(1)*cons_share_K
-
-%check for Ricardians
-dC_R = MPC_TANK_R*dYR_Y_TANK + URE_R*MPC_TANK_R*dR_R_TANK ...
-        - NNP_R*MPC_TANK_R*dP_P_TANK ...
-        - Elas_EIS_TANK*dR_R_TANK;
-dC_R- TANK_irfs.c_R_eps_nu(1)*(1-cons_share_K)
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%
-% Now the TANK_capital model
-sigma = 1;
-phi=1;
-phi_pi = 1.5;
-phi_y  = 0.0;%.5/4;
-theta=2/3;
-rho_nu =0.0;
-beta = 0.99;
-alpha=0.33;
-epsilon=6;
-lambda = 0.3;
-Lambda = 2.0;
-delta = 0.025;
-psi_c = 3;
-% Calc steady state share of labor and consumption of each type
-cons_share_to_labor_share_K = (1-Lambda*(1-beta))*(epsilon-1)/epsilon*(1-alpha);
-invest_share = delta*alpha*(epsilon-1)/(epsilon*(1/beta - (1-delta)));
-cons_share_K_obj = @(x)x^sigma * (x/cons_share_to_labor_share_K)^phi - (lambda/(1-lambda))^(sigma+phi)*(1-invest_share-x)^sigma * (1-x/cons_share_to_labor_share_K)^phi;
-cons_share_K = fsolve(cons_share_K_obj, lambda);
-cons_share_R = 1-invest_share-cons_share_K;
-labor_share_K = cons_share_K/cons_share_to_labor_share_K;
-labor_share_R = 1-labor_share_K;
-dynare 'TANK_capital_model.mod' noclearall;
-TANK_Capital_irfs = oo_.irfs;
-
-% Now calc Auclert's statistics
-MPC_TANK_Capital_K = 1.0;
-MPC_TANK_Capital_R = 1-beta;
-y_K_share = 1/(1-Lambda*(1-beta))*cons_share_K; %share of total income earned by Keynesian labor
-y_R_share = 1- y_K_share;
-MPC_TANK_Capital = MPC_TANK_Capital_R*y_R_share + MPC_TANK_Capital_K*y_K_share;
-% 1) Aggregate income elasticity
-Inc_wt_MPC_TANK_Capital = MPC_TANK_Capital;
-% 2) Income Heterogeneity Channel
-% ????
-% 3) Interest Rate Exposure Channel (URE measures as a fraction of total
-% consumption/income)
-cons_share = cons_share_R+cons_share_K;
-URE_K = -beta*Lambda*y_K_share;  % Nominal debt of Keynesians is a multiple of their labor income
-URE_R = - URE_K + invest_share;
-Elas_R_TANK_Capital = (URE_K*MPC_TANK_Capital_K + URE_R*MPC_TANK_Capital_R)/cons_share;
-% 4) Fisher channel (debt deflation)
-NNP_K = -Lambda*y_K_share;
-NNP_R = - NNP_K;
-Elas_P_TANK_Capital = (NNP_K*MPC_TANK_Capital_K + NNP_R*MPC_TANK_Capital_R)/cons_share;
-% 5) Intertemporal Substitution Channel
-Hicks_scaling_TANK_Capital = (1.0-MPC_TANK_Capital_R)*cons_share_R/cons_share + (1.0-MPC_TANK_Capital_K)*cons_share_K/cons_share;
-Elas_EIS_TANK_Capital = Hicks_scaling_TANK_Capital/sigma;
-
-% Get inputs for partial eq. decomposition
-% dY/Y
-dY_Y_TANK_Capital = TANK_Capital_irfs.y_eps_nu(1);
-dYK_Y_TANK_Capital = (TANK_Capital_irfs.w_real_eps_nu(1) + TANK_Capital_irfs.n_K_eps_nu(1))*y_K_share;
-dYR_Y_TANK_Capital = dY_Y_TANK_Capital - dYK_Y_TANK_Capital;
-% dR/R
-dR_R_TANK_Capital = TANK_Capital_irfs.r_real_eps_nu(1);
-% dP/P
-dP_P_TANK_Capital = TANK_Capital_irfs.pi_eps_nu(1);
-
-% Get output for partial eq. decomposition
-% dC/C
-dC_C_TANK_Capital = TANK_Capital_irfs.c_R_eps_nu(1)*cons_share_R/cons_share + TANK_Capital_irfs.c_K_eps_nu(1)*cons_share_K/cons_share;
-
-% Check they add up...
-dC_C_Auclert_TANK_Capital = (MPC_TANK_Capital_R*dYR_Y_TANK_Capital + MPC_TANK_Capital_K*dYK_Y_TANK_Capital)/cons_share ...
-                    + Elas_R_TANK_Capital*dR_R_TANK_Capital - Elas_P_TANK_Capital*dP_P_TANK_Capital ... 
-                    - Elas_EIS_TANK_Capital*dR_R_TANK_Capital;
-error_TANK_Capital = dC_C_Auclert_TANK_Capital - dC_C_TANK_Capital;
-
-% Agg income channel
-(MPC_TANK_Capital*dY_Y_TANK_Capital)/cons_share
-% Heterogeneous Income Channel
-(MPC_TANK_Capital_R*dYR_Y_TANK_Capital + MPC_TANK_Capital_K*dYK_Y_TANK_Capital - MPC_TANK_Capital*dY_Y_TANK_Capital)/cons_share
-% Unhedged Interest Rate Exposure
-Elas_R_TANK_Capital*dR_R_TANK_Capital
-% Fisher Channel
-- Elas_P_TANK_Capital*dP_P_TANK_Capital
-% Intertemporal Elasticity Channel
-- Elas_EIS_TANK_Capital*dR_R_TANK_Capital
-%Total
-dC_C_Auclert_TANK_Capital
-
-%check for Keynesians
-dC_K = MPC_TANK_Capital_K*dYK_Y_TANK_Capital/cons_share ...
-        + URE_K*MPC_TANK_Capital_K*dR_R_TANK_Capital/cons_share ...
-        - NNP_K*MPC_TANK_Capital_K*dP_P_TANK_Capital/cons_share;
-dC_K- TANK_Capital_irfs.c_K_eps_nu(1)*cons_share_K/cons_share
-
-%check for Ricardians
-dC_R = MPC_TANK_Capital_R*dYR_Y_TANK_Capital/cons_share ...
-        + URE_R*MPC_TANK_Capital_R*dR_R_TANK_Capital/cons_share ...
-        - NNP_R*MPC_TANK_Capital_R*dP_P_TANK_Capital/cons_share ...
-        - Elas_EIS_TANK_Capital*dR_R_TANK_Capital;
-dC_R- TANK_Capital_irfs.c_R_eps_nu(1)*(1-invest_share-cons_share_K)/cons_share
 
 %%
 % Basic TANK model, experiment with different parameters
-sigma = 1.0;
-phi=1.0;
-phi_pi = 1.5;
-phi_y  = 0.0;%.5/4;
-theta=2/3;
-rho_nu =0.0;
-beta = 0.97;
-alpha=0.25;
-epsilon=6;
-lambda = 0.2;
-Lambda = 0.0;
+run 'SetTANKParameters.m';
 cons_share_K = (1-Lambda*(1-beta))*lambda*(1-alpha)*(epsilon-1)/epsilon;
 cons_share_R = 1-cons_share_K;
-labor_share_K = lambda;
-labor_share_R = 1-labor_share_K;
 % Loop over parameters
 dynare TANKmodel_dgwages.mod noclearall;
 options_.nograph = 1;
-%param_loop = 0.0:0.05:2;
 
 %% run different experiments
 figure_dir = '.\Figures\';
@@ -303,4 +71,153 @@ for sigma = 1:3
         saveas(gcf,[figure_dir,char(save_name(j)),'_sigma',num2str(sigma),'.eps'],'epsc');
     end
 end
+
+
+
+%%
+% Now the TANK_capital model
+run 'SetTANKParameters.m';
+% Calc steady state share of labor and consumption of each type
+cons_share_to_labor_share_K = (1-Lambda*(1-beta))*(epsilon-1)/epsilon*(1-alpha);
+invest_share = delta*alpha*(epsilon-1)/(epsilon*(1/beta - (1-delta)));
+cons_share_K = lambda*cons_share_to_labor_share_K*(1-invest_share);
+cons_share_R = 1-invest_share-cons_share_K;
+dynare 'TANK_capital_model.mod' noclearall;
+options_.nograph = 1;
+
+%% run different experiments
+figure_dir = '.\Figures\';
+psi_loop = [0,1,3,10000];
+Transmission_Channels = zeros(length(psi_loop),7);
+suff_stats = zeros(length(psi_loop),4);
+YRP_changes = zeros(length(psi_loop),3);
+IRF_i = zeros(length(psi_loop),6);
+IRF_c_K = zeros(length(psi_loop),6);
+IRF_c_R = zeros(length(psi_loop),6);
+IRF_k = zeros(length(psi_loop),6);
+IRF_q = zeros(length(psi_loop),6);
+IRF_r_real = zeros(length(psi_loop),6);
+checks = zeros(length(psi_loop),3);
+for i=1:length(psi_loop)
+    set_param_value('psi_c',psi_loop(i));
+    run 'CalcTransmissionChannels_TANK_capital_model.m';
+    Transmission_Channels(i,1) = agg_inc*nominal_i_scale;
+    Transmission_Channels(i,2) = het_inc*nominal_i_scale;
+    Transmission_Channels(i,3) = ire*nominal_i_scale;
+    Transmission_Channels(i,4) = fisher*nominal_i_scale;
+    Transmission_Channels(i,5) = ies*nominal_i_scale;
+    Transmission_Channels(i,6) = dC_C_TANK_Capital*nominal_i_scale;
+    Transmission_Channels(i,7) = psi_loop(i);
+    suff_stats(i,1) = Inc_wt_MPC_TANK_Capital;
+    suff_stats(i,2) = Elas_R_TANK_Capital;
+    suff_stats(i,3) = Elas_P_TANK_Capital;
+    suff_stats(i,4) = Elas_EIS_TANK_Capital;
+    YRP_changes(i,1) = dY_Y_TANK_Capital*nominal_i_scale;
+    YRP_changes(i,2) = dR_R_TANK_Capital*nominal_i_scale;
+    YRP_changes(i,3) = dP_P_TANK_Capital*nominal_i_scale;
+    checks(i,1) = 100*error_TANK_Capital/dC_C_TANK_Capital;
+    checks(i,2) = 100*check_R/dC_C_TANK_Capital_R;
+    checks(i,3) = 100*check_K/dC_C_TANK_Capital_K;
+    IRF_i(i,:) = TANK_Capital_irfs.i_eps_nu(1:6)*nominal_i_scale;
+    IRF_c_R(i,:) = TANK_Capital_irfs.c_R_eps_nu(1:6)*nominal_i_scale;
+    IRF_c_K(i,:) = TANK_Capital_irfs.c_K_eps_nu(1:6)*nominal_i_scale;
+    IRF_k(i,:) = TANK_Capital_irfs.k_eps_nu(1:6)*nominal_i_scale;
+    IRF_q(i,:) = TANK_Capital_irfs.q_eps_nu(1:6)*nominal_i_scale;
+    IRF_r_real(i,:) = TANK_Capital_irfs.r_real_eps_nu(1:6)*nominal_i_scale;
+end
+%Plot IRF for nominal interest rate
+figure;
+plot(IRF_i','LineWidth',1.5);
+xticks(1:6)
+colormap(linspecer);
+legend('\psi_c = 0','\psi_c = 1','\psi_c = 3','\psi_c = \infty','location','SouthEast');
+legend('boxoff');
+xlabel('Time (years)');
+title('Nominal Interest Rate Path');
+ylabel('Nominal Interest Rate');
+saveas(gcf,[figure_dir,'TANK_capital_IRF_i.eps'],'epsc');
+
+%Plot IRF for c_K
+figure;
+plot(IRF_c_K','LineWidth',1.5);
+xticks(1:6)
+colormap(linspecer);
+legend('\psi_c = 0','\psi_c = 1','\psi_c = 3','\psi_c = \infty','location','NorthEast');
+legend('boxoff');
+xlabel('Time (years)');
+title('Keynesian Consumption Path');
+ylabel('Consumption');
+saveas(gcf,[figure_dir,'TANK_capital_IRF_c_K.eps'],'epsc');
+
+%Plot IRF for c_R
+figure;
+plot(IRF_c_R','LineWidth',1.5);
+xticks(1:6)
+colormap(linspecer);
+legend('\psi_c = 0','\psi_c = 1','\psi_c = 3','\psi_c = \infty','location','NorthEast');
+legend('boxoff');
+xlabel('Time (years)');
+title('Ricardian Consumption Path');
+ylabel('Consumption');
+saveas(gcf,[figure_dir,'TANK_capital_IRF_c_R.eps'],'epsc');
+
+%Plot IRF for Capital
+figure;
+plot(IRF_k','LineWidth',1.5);
+xticks(1:6)
+colormap(linspecer);
+legend('\psi_c = 0','\psi_c = 1','\psi_c = 3','\psi_c = \infty','location','NorthEast');
+legend('boxoff');
+xlabel('Time (years)');
+title('Capital Path');
+ylabel('Capital');
+saveas(gcf,[figure_dir,'TANK_capital_IRF_k.eps'],'epsc');
+
+%Plot IRF for Tobin's q
+figure;
+plot(IRF_q','LineWidth',1.5);
+xticks(1:6)
+colormap(linspecer);
+legend('\psi_c = 0','\psi_c = 1','\psi_c = 3','\psi_c = \infty','location','NorthEast');
+legend('boxoff');
+xlabel('Time (years)');
+title('Tobin q Path');
+ylabel('Tobin q');
+saveas(gcf,[figure_dir,'TANK_capital_IRF_q.eps'],'epsc');
+
+%Plot IRF for Real Interest Rate
+figure;
+plot(IRF_r_real','LineWidth',1.5);
+xticks(1:6)
+colormap(linspecer);
+legend('\psi_c = 0','\psi_c = 1','\psi_c = 3','\psi_c = \infty','location','NorthEast');
+legend('boxoff');
+xlabel('Time (years)');
+title('Real Interest Rate Path');
+ylabel('Real Interest Rate');
+saveas(gcf,[figure_dir,'TANK_capital_IRF_r_real.eps'],'epsc');
+
+%Make table of Auclert statistic errors
+
+% Make table of calibration
+table_dir = '.\Tables\';
+error_table = fopen([table_dir,'error_table.tex'],'wt');
+fprintf(error_table, '  \\begin{table}\n');
+fprintf(error_table, '\\begin{center}\n');
+fprintf(error_table, '    \\caption{Percentage Error of Decomposition}\\label{table:error}\n');
+fprintf(error_table, '\\begin{tabular}{cccc}  \n');
+fprintf(error_table, '$\\psi_c$ & Total Consumption & Ricardian Consumption & Keynesian Consumption \n');
+fprintf(error_table, '\\\\ \\toprule  \n');
+fprintf(error_table, '%1.0f & %1.1f \\%%  & %1.1f \\%% & 0.0 \\%% \\\\ \n', psi_loop(1), round(checks(1,1:2),10));
+fprintf(error_table, '%1.0f & %1.1f \\%%  & %1.1f \\%% & 0.0 \\%% \\\\ \n', psi_loop(2), round(checks(2,1:2),10));
+fprintf(error_table, '%1.0f & %1.1f \\%%  & %1.1f \\%% & 0.0 \\%% \\\\ \n', psi_loop(3), round(checks(3,1:2),10));
+fprintf(error_table, '$\\infty$ & %1.1f \\%%  & %1.1f \\%% & 0.0 \\%% \\\\ \n', round(checks(4,1:2),10));
+fprintf(error_table, '\\\\ \\bottomrule \n ');
+fprintf(error_table, '\\end{tabular}\n');
+fprintf(error_table, '\\end{center}\n');
+fprintf(error_table, '\\end{table}\n');
+fclose(error_table);
+
+
+
 

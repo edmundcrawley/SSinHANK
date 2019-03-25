@@ -13,6 +13,7 @@ var pi ${\pi}$ (long_name='inflation')
     n_K ${n_K}$ (long_name='Keynesian hours worked')
     c_R ${c_R}$ (long_name='Ricardian consumption')
     c_K ${c_K}$ (long_name='Keynesian consumption')
+    c ${c}$ (long_name='Total consumption')
     w_real ${w_r}$ (long_name='//real wage')
     nu ${\nu}$ (long_name='AR(1) monetary policy shock process')    
     a  ${a}$ (long_name='AR(1) technology shock process')
@@ -80,13 +81,18 @@ model(linear);
 //1. New Keynesian Phillips Curve eq. (21)
 pi=beta*pi(+1)+kappa*y_gap;
 
-// Replace dynamic IS curve with the following 6 equations 
-w_real = sigma*c_R + phi*n_R;
-w_real = sigma*c_K + phi*n_K;
+// Change two equation below to get wages set by union 
+// w_real = sigma*c_R + phi*n_R;
+// w_real = sigma*c_K + phi*n_K;
+w_real = sigma*(cons_share_R*c_R + cons_share_K*c_K)/(cons_share_R+cons_share_K) + phi*n;
+n_R = n_K;
+
 c_R = c_R(+1) - 1/sigma*(i - pi(+1));
 (1-Lambda*(1-beta))*c_K = w_real + n_K - Lambda*(i(-1)-pi-r_real(-1)) - beta*Lambda*r_real;
 y = cons_share_R*c_R + cons_share_K*c_K + invest_share*invest;
 n = labor_share_R*n_R + labor_share_K*n_K;
+
+c = (cons_share_R*c_R + cons_share_K*c_K)/(cons_share_R+cons_share_K);
 
 // extra equations for capital
 delta*invest = k - (1-delta)*k(-1);
