@@ -8,20 +8,21 @@ import numpy as np
 import defineSSParametersIOUsBond as Params
 from copy import copy
 import pickle
-from SteadyStateOneAssetIOUsBond import SteadyStateOneAssetIOUsBond
+from SteadyState_fsolve import SteadyState_fsolve
 from FluctuationsOneAssetIOUsBond import FluctuationsOneAssetIOUsBond, Fsys, SGU_solver, plot_IRF
 
 EconomyParams = copy(Params.parm_one_asset_IOUsBond)
   
-SSEconomy = SteadyStateOneAssetIOUsBond(**EconomyParams)
+
+SSEconomy = SteadyState_fsolve(**EconomyParams)
 
 
 ##### Choose whether calculate new steady state or use ond one
 
 SSS = SSEconomy.SolveSteadyState() # New steady state
-pickle.dump(SSS, open("SSS.p", "wb"))
+pickle.dump(SSS, open("btoy5_tau_05_gam5_xi2.p", "wb"))
 
-SSS=pickle.load(open("SSS.p", "rb")) # Use old steady state
+SSS=pickle.load(open("btoy5_tau_05_gam5_xi2.p", "rb")) # Use old steady state
 
 #############3#################################################3
 
@@ -85,8 +86,8 @@ Hick_scaling = np.sum(np.sum( np.multiply(np.multiply(np.multiply(sig_i, (1-MPC_
 
 #### changes of policy parameters: irrelevant of a steady state
 
-SSS['par']['rho_B'] = 0.99
-SSS['par']['gamma_pi'] = 1.25
+#SSS['par']['rho_B'] = 0.99
+#SSS['par']['gamma_pi'] = 1.25
 SSS['par']['theta_pi'] = 2
 ##############################################################################
 
@@ -113,6 +114,8 @@ SGUresult=SGU_solver(SR['Xss'],SR['Yss'],SR['Gamma_state'],SR['Gamma_control'],S
                      SR['par'],SR['mpar'],SR['grid'],SR['targets'],SR['P_H'],SR['aggrshock'],SR['oc'])
 
 
-plot_IRF(SR['mpar'],SR['par'],SGUresult['gx'],SGUresult['hx'],SR['joint_distr'],
+plotresult = plot_IRF(SR['mpar'],SR['par'],SGUresult['gx'],SGUresult['hx'],SR['joint_distr'],
          SR['Gamma_state'],SR['grid'],SR['targets'],SR['os'],SR['oc'],SR['Output'],C_ind,WW_h_mesh,MPC_m,Inc_wt_MPC,Redist_elas_P,Redist_elas_R,Hick_scaling)
     
+print(round(plotresult['IRF_C'][0,0],3))
+print(round(plotresult['IRF_C_by_suff'][0,0],3))

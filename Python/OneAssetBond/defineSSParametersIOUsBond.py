@@ -6,8 +6,8 @@ Parameters for one asset IOU
 ## Parameters
 # Household Parameters
 parbeta        = 0.985     # Discount factor
-parxi          = 2.          # CRRA
-pargamma       = 1.          # Inverse Frisch elasticity
+parxi          = 2          # CRRA
+pargamma       = 5          # Inverse Frisch elasticity
 
 # Income Process
 parrhoH        = 0.979    # Persistence of productivity
@@ -33,15 +33,15 @@ parrho_B = 0.99
 pargamma_pi = 1.5
 
 # Tax Schedule
-partau         = 0.75   # Net income after tax 
-parBtoY        = 5.0   # Gov debt to output ratio
+partau         = 0.75      # Net income after tax 
+parBtoY        = 5   # Gov debt to output ratio
 #partau         = 0.9   # Net income after tax 
 #parBtoY        = 0.25   # Gov debt to output ratio
 #parBtoY        = 2   # Gov debt to output ratio
 
 ## Returns
 parPI          = 1.          # Gross inflation
-parRB          = 1.          # Market clearing interest rate to be solved for
+parRB          = 1.04**0.25          # Market clearing interest rate to be solved for
 parborrwedge   = 1.02**0.25 - 1. # Wedge on borrowing
 
 ## Grids

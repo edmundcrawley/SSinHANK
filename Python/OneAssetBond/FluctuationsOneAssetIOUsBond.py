@@ -424,8 +424,9 @@ def plot_IRF(mpar,par,gx,hx,joint_distr,Gamma_state,grid,targets,os,oc,Output,C_
     Redist_elas_P = Redist_elas_P*(1/C_agg)
     Redist_elas_R = Redist_elas_R*(1/C_agg)
     Hick_scaling = Hick_scaling*(1/C_agg)
-            
-    IRF_C_by_suff = M*IRF_Y + np.multiply(Earning_hetero,IRF_Y) - Redist_elas_P*IRF_PI/100 + Redist_elas_R*IRF_RBREAL/100 - Hick_scaling*IRF_RBREAL/100;            
+#    M= 0.2       
+    IRF_C_by_suff = M*IRF_Y + np.multiply(Earning_hetero,IRF_Y) - Redist_elas_P*IRF_PI/100 + \
+                    Redist_elas_R*IRF_RBREAL/100 - Hick_scaling*IRF_RBREAL/100            
 
 #     recall that IRF_PI and IRF_RBREAL are in bp term!
 
@@ -463,14 +464,14 @@ def plot_IRF(mpar,par,gx,hx,joint_distr,Gamma_state,grid,targets,os,oc,Output,C_
 #    plt.ylabel('Percent') 
 #    f_M.show()
 
-    f_H = plt.figure(4)
-    line1,=plt.plot(range(1,mpar['maxlag']),np.squeeze(np.asarray(IRF_H)), label='IRF_H')
-    plt.plot(range(0,mpar['maxlag']-1),np.zeros((mpar['maxlag']-1)),'k--' )
-    plt.ylim((-1, 1))
-    plt.legend(handles=[line1])
-    plt.xlabel('Quarter')
-    plt.ylabel('Percent') 
-    f_H.show()
+#    f_H = plt.figure(4)
+#    line1,=plt.plot(range(1,mpar['maxlag']),np.squeeze(np.asarray(IRF_H)), label='IRF_H')
+#    plt.plot(range(0,mpar['maxlag']-1),np.zeros((mpar['maxlag']-1)),'k--' )
+#    plt.ylim((-1, 1))
+#    plt.legend(handles=[line1])
+#    plt.xlabel('Quarter')
+#    plt.ylabel('Percent') 
+#    f_H.show()
         
     f_S = plt.figure(5)
     line1,=plt.plot(range(1,mpar['maxlag']),np.squeeze(np.asarray(IRF_S)), label='IRF_S')
@@ -505,13 +506,13 @@ def plot_IRF(mpar,par,gx,hx,joint_distr,Gamma_state,grid,targets,os,oc,Output,C_
     plt.ylabel('Percent') 
     f_N.show()
 
-    f_G = plt.figure(9)
-    line1,=plt.plot(range(1,mpar['maxlag']),np.squeeze(np.asarray(IRF_G)), label='IRF_G')
-    plt.legend(handles=[line1])
-    plt.plot(range(0,mpar['maxlag']-1),np.zeros((mpar['maxlag']-1)),'k--' )
-    plt.xlabel('Quarter')
-    plt.ylabel('Percent of SS Output') 
-    f_G.show()        
+#    f_G = plt.figure(9)
+#    line1,=plt.plot(range(1,mpar['maxlag']),np.squeeze(np.asarray(IRF_G)), label='IRF_G')
+#    plt.legend(handles=[line1])
+#    plt.plot(range(0,mpar['maxlag']-1),np.zeros((mpar['maxlag']-1)),'k--' )
+#    plt.xlabel('Quarter')
+#    plt.ylabel('Percent of SS Output') 
+#    f_G.show()        
     
     return{'IRF_state_sparse': IRF_state_sparse, 'IRF_C_by_suff':IRF_C_by_suff,'IRF_C':IRF_C }
     
