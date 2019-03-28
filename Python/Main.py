@@ -19,10 +19,10 @@ SSEconomy = SteadyState_fsolve(**EconomyParams)
 
 ##### Choose whether calculate new steady state or use ond one
 
-SSS = SSEconomy.SolveSteadyState() # New steady state
-pickle.dump(SSS, open("btoy5_tau_05_gam5_xi2.p", "wb"))
+#SSS = SSEconomy.SolveSteadyState() # New steady state
+#pickle.dump(SSS, open("btoy5_tau_075.p", "wb"))
 
-SSS=pickle.load(open("btoy5_tau_05_gam5_xi2.p", "rb")) # Use old steady state
+SSS=pickle.load(open("btoy5_tau_075.p", "rb")) # Use old steady state
 
 #############3#################################################3
 
@@ -38,6 +38,7 @@ grid = SSS['grid']
 c_guess = SSS['c_policy']
 inc = SSS['inc']
 jd = SSS['joint_distr'].copy()
+joint_distr = jd.copy()
 NW=(targets['N']/par['H'])*targets['W']
 WW=NW*np.ones((mpar['nm'],mpar['nh'])) #Wages
 WW[:,-1]=SSS['Profits_fc']*par['profitshare']
@@ -55,8 +56,8 @@ grid_h_aux=grid['h']
 MPC_m = np.zeros((mpar['nm'],mpar['nh']))
 
 for hh in range(0,mpar['nh']):
-    MPC_m[:,hh]=np.gradient(np.squeeze(C_ind[:,hh]))/np.gradient(grid['m'])  # MPC_m_ is same with MPC_m
-
+#    MPC_m[:,hh]=np.gradient(np.squeeze(C_ind[:,hh]))/np.gradient(grid['m'])  # MPC_m_ is same with MPC_m
+    MPC_m[:,hh]=np.gradient(np.squeeze(c_guess[:,hh]))/np.gradient(grid['m'])  # MPC_m_ is same with MPC_m
 MPC_h = np.zeros((mpar['nm'],mpar['nh']))
 
 for mm in range(0,mpar['nm']):
@@ -79,9 +80,15 @@ Redist_elas_P = np.sum(np.sum(np.multiply(np.multiply(MPC_m.copy(), NNP.copy()),
 Redist_elas_R = np.sum(np.sum(np.multiply(np.multiply(MPC_m.copy(),URE.copy()),jd.copy()))) - np.sum(np.sum(np.multiply(MPC_m.copy(),jd.copy())))*np.sum(np.sum(np.multiply(URE.copy(),jd.copy())))
 
 # 5. substitution channel
-sig_i = par['xi']**(-1)*np.multiply(c_guess,1/C_ind)
+#sig_i = par['xi']**(-1)*np.multiply(c_guess,1/C_ind)
+#Hick_scaling = np.sum(np.sum( np.multiply(np.multiply(np.multiply(sig_i, (1-MPC_m.copy())), C_ind.copy()), jd.copy()) ))
 
-Hick_scaling = np.sum(np.sum( np.multiply(np.multiply(np.multiply(sig_i, (1-MPC_m.copy())), C_ind.copy()), jd.copy()) ))
+sig_i = par['xi']**(-1)
+Hick_scaling = np.sum(np.sum( np.multiply(np.multiply(np.multiply(sig_i, (1-MPC_m.copy())), c_guess.copy()), jd.copy()) ))
+
+
+# 6. additional term for GHH preference
+
 
 
 #### changes of policy parameters: irrelevant of a steady state
@@ -115,7 +122,12 @@ SGUresult=SGU_solver(SR['Xss'],SR['Yss'],SR['Gamma_state'],SR['Gamma_control'],S
 
 
 plotresult = plot_IRF(SR['mpar'],SR['par'],SGUresult['gx'],SGUresult['hx'],SR['joint_distr'],
-         SR['Gamma_state'],SR['grid'],SR['targets'],SR['os'],SR['oc'],SR['Output'],C_ind,WW_h_mesh,MPC_m,Inc_wt_MPC,Redist_elas_P,Redist_elas_R,Hick_scaling)
+         SR['Gamma_state'],SR['grid'],SR['targets'],SR['os'],SR['oc'],SR['Output'],C_ind,c_guess,
+         WW_h_mesh,MPC_m,Inc_wt_MPC,Redist_elas_P,Redist_elas_R,Hick_scaling,URE,NNP)
+
+IRF_W = plotresult['IRF_W']
+IRF_N = plotresult['IRF_N']
+IRF_Profit = plotresult['IRF_Profit']
     
-print(round(plotresult['IRF_C'][0,0],3))
-print(round(plotresult['IRF_C_by_suff'][0,0],3))
+print(round(plotresult['IRF_Xagg'][0,0],3))
+print(round(plotresult['IRF_X_by_suff'][0,0],3))
