@@ -26,7 +26,7 @@ import scipy.io
 
 class FluctuationsOneAssetIOUsBond:
     
-    def __init__(self, par, mpar, grid, Output, targets, Vm, joint_distr, Copula, c_policy, m_policy, mutil_c, P_H,inc,Profits_fc):
+    def __init__(self, par, mpar, grid, Output, targets, Vm, joint_distr, Copula, c_policy, m_policy, mutil_c, P_H,inc,Profits_fc,C_agg,C_ind,X_agg):
          
         self.par = par
         self.mpar = mpar
@@ -42,13 +42,19 @@ class FluctuationsOneAssetIOUsBond:
         self.P_H = P_H
         self.inc = inc
         self.Profits_fc = Profits_fc
+        self.C_agg = C_agg
+        self.C_ind = C_ind
+        self.X_agg = X_agg
         
     def StateReduc(self):
         invutil = lambda x : ((1-self.par['xi'])*x)**(1./(1-self.par['xi']))
         invmutil = lambda x : (1./x)**(1./self.par['xi'])
 
         Xss=np.vstack((np.sum(self.joint_distr.copy(),axis=1), np.transpose(np.sum(self.joint_distr.copy(),axis=0)),np.log(self.par['RB']),0))
-        Yss=np.vstack((invmutil(np.reshape(self.mutil_c.copy(),(np.product(self.mutil_c.shape),1),order='F')),np.log(self.par['PI']),np.log(self.targets['Y']),np.log(self.targets['W']),np.log(self.targets['PROFITS']),np.log(self.targets['N']),self.targets['B'],self.targets['G']))
+        Yss=np.vstack(( invmutil(np.reshape(self.mutil_c.copy(),(np.product(self.mutil_c.shape),1),order='F')),
+                       np.log(self.par['PI']),np.log(self.targets['Y']),np.log(self.targets['W']),np.log(self.targets['PROFITS']),
+                       np.log(self.targets['N']),self.targets['B'],self.targets['G'],np.log(self.C_agg),np.log(self.X_agg) ))
+        
         ## Construct Chebyshev Polynomials to describe deviations of policy from SS
         Poly=[]
         maxlevel=max(self.mpar['nm'],self.mpar['nh'])
@@ -127,7 +133,7 @@ class FluctuationsOneAssetIOUsBond:
         
 
 
-def SGU_solver(Xss,Yss,Gamma_state,Gamma_control,InvGamma,Copula,par,mpar,grid,targets,P_H,aggrshock,oc): #
+def SGU_solver(Xss,Yss,Gamma_state,Gamma_control,InvGamma,Copula,par,mpar,grid,targets,P_H,aggrshock,oc): 
 
     State       = np.zeros((mpar['numstates'],1))
     State_m     = State.copy()
@@ -331,7 +337,8 @@ def SGU_solver(Xss,Yss,Gamma_state,Gamma_control,InvGamma,Copula,par,mpar,grid,t
     return{'hx': hx, 'gx': gx, 'F1': F1, 'F2': F2, 'F3': F3, 'F4': F4, 'par': par }
 
         
-def plot_IRF(mpar,par,gx,hx,joint_distr,Gamma_state,grid,targets,os,oc,Output,C_ind,WW_h_mesh,MPC_m,Inc_wt_MPC,Redist_elas_P,Redist_elas_R,Hick_scaling):
+def plot_IRF(mpar,par,gx,hx,joint_distr,Gamma_state,grid,targets,os,oc,Output,C_ind,c_guess,
+             WW_h_mesh,MPC_m,Inc_wt_MPC,Redist_elas_P,Redist_elas_R,Hick_scaling,URE,NNP):
         
     x0 = np.zeros((mpar['numstates'],1))
     x0[-1] = par['sigmaS']
@@ -372,6 +379,8 @@ def plot_IRF(mpar,par,gx,hx,joint_distr,Gamma_state,grid,targets,os,oc,Output,C_
     IRF_Profit=100*IRF_state_sparse[-1-oc+4, :-1]
     IRF_N=100*IRF_state_sparse[-1-oc+5, :-1]
     IRF_PI=100*100*IRF_state_sparse[-1-oc+1, :-1]
+    IRF_Cagg = 100*IRF_state_sparse[-1-oc+8, :-1]
+    IRF_Xagg = 100*IRF_state_sparse[-1-oc+9, :-1]
         
     PI=1+IRF_state_sparse[-1-oc+1, 1:]
     RB=par['RB']*(1+IRF_state_sparse[mpar['numstates']-os,1:])
@@ -413,21 +422,35 @@ def plot_IRF(mpar,par,gx,hx,joint_distr,Gamma_state,grid,targets,os,oc,Output,C_
     WW_h_mesh_series = np.tile(WW_h_mesh,mpar['maxlag']-1).reshape(mpar['nm'],mpar['nh'],mpar['maxlag']-1,order='F')
     
     Earning_hetero = np.sum(np.sum( np.multiply(np.multiply(np.multiply(np.multiply(jd_series,MPC_over_t),IRF_Yi-IRF_Y_series),WW_h_mesh_series)/E_Y,1/IRF_Y_series),0),0)
-    Earning_hetero = np.asarray(Earning_hetero)          
-
+    Earning_hetero = np.asarray(Earning_hetero)    
+    
+    WW_h_wage = WW_h_mesh.copy()
+    WW_h_wage[:,-1]=0
+    WW_h_prof = WW_h_mesh.copy()
+    WW_h_prof[:,0:3]=0
+    
+    
 ###### IRFs by sufficient statistics
 
 ## change Auclert's notations into those of Crawley
     C_agg = np.sum(np.sum(np.multiply(joint_distr,C_ind)))
-    M = Inc_wt_MPC*Output/C_agg
-    Earning_hetero = Earning_hetero*Output/C_agg
-    Redist_elas_P = Redist_elas_P*(1/C_agg)
-    Redist_elas_R = Redist_elas_R*(1/C_agg)
-    Hick_scaling = Hick_scaling*(1/C_agg)
-#    M= 0.2       
-    IRF_C_by_suff = M*IRF_Y + np.multiply(Earning_hetero,IRF_Y) - Redist_elas_P*IRF_PI/100 + \
-                    Redist_elas_R*IRF_RBREAL/100 - Hick_scaling*IRF_RBREAL/100            
+    X_agg = np.sum(np.sum(np.multiply(joint_distr,c_guess)))
+    M = Inc_wt_MPC*Output/X_agg
+    Earning_hetero = Earning_hetero*Output/X_agg
+    Redist_elas_P = Redist_elas_P*(1/X_agg)
+    Redist_elas_R = Redist_elas_R*(1/X_agg)
+    Hick_scaling = Hick_scaling*(1/X_agg)
+    Add1 = (1+2*par['gamma'])/(1+par['gamma'])/par['gamma']*np.sum(np.sum(np.multiply(np.multiply(MPC_m,WW_h_wage),joint_distr)))/X_agg
+    Add2 = np.sum(np.sum( np.multiply(np.multiply(MPC_m,WW_h_prof),joint_distr) ))/X_agg
+     
+    IRF_X_by_suff = M*IRF_Y + np.multiply(Earning_hetero,IRF_Y) - Redist_elas_P*IRF_PI/100 + \
+                    Redist_elas_R*IRF_RBREAL/100 - Hick_scaling*IRF_RBREAL/100 \
+#                    - Add1 * IRF_W - Add2 * IRF_Profit
 
+    IRF_X_by_suff_w_add = M*IRF_Y + np.multiply(Earning_hetero,IRF_Y) - Redist_elas_P*IRF_PI/100 + \
+                          Redist_elas_R*IRF_RBREAL/100 - Hick_scaling*IRF_RBREAL/100 \
+                         - Add1 * IRF_W - Add2 * IRF_Profit   
+                     
 #     recall that IRF_PI and IRF_RBREAL are in bp term!
 
     print('M: ', str(M))
@@ -445,15 +468,35 @@ def plot_IRF(mpar,par,gx,hx,joint_distr,Gamma_state,grid,targets,os,oc,Output,C_
     plt.xlabel('Quarter')
     plt.ylabel('Percent') 
     f_Y.show()
-#        
-    f_C = plt.figure(2)
-    line1,=plt.plot(range(1,mpar['maxlag']),np.squeeze(np.asarray(IRF_C)),label='true IRF_C')
-    line2,=plt.plot(range(1,mpar['maxlag']),np.squeeze(np.asarray(IRF_C_by_suff)), label='IRF_C by suff stat', color='red')
+        
+
+    f_X = plt.figure(2)
+    line1,=plt.plot(range(1,mpar['maxlag']),np.squeeze(np.asarray(IRF_Xagg)),label='true IRF_X')
+    line2,=plt.plot(range(1,mpar['maxlag']),np.squeeze(np.asarray(IRF_X_by_suff)), label='IRF_X by suff stat', color='red')
+    plt.plot(range(0,mpar['maxlag']-1),np.zeros((mpar['maxlag']-1)),'k--' )
+    plt.legend(handles=[line1, line2])
+    plt.xlabel('Quarter')
+    plt.ylabel('Percent') 
+    f_X.show()   
+
+
+    f_C = plt.figure(3)
+    line1,=plt.plot(range(1,mpar['maxlag']),np.squeeze(np.asarray(IRF_Xagg)),label='true IRF_X')
+    line2,=plt.plot(range(1,mpar['maxlag']),np.squeeze(np.asarray(IRF_X_by_suff_w_add)), label='IRF_X by suff stat _w_add', color='red')
     plt.plot(range(0,mpar['maxlag']-1),np.zeros((mpar['maxlag']-1)),'k--' )
     plt.legend(handles=[line1, line2])
     plt.xlabel('Quarter')
     plt.ylabel('Percent') 
     f_C.show()
+
+
+    f_S = plt.figure(4)
+    line1,=plt.plot(range(1,mpar['maxlag']),np.squeeze(np.asarray(IRF_Profit)), label='IRF_Profit')
+    plt.plot(range(0,mpar['maxlag']-1),np.zeros((mpar['maxlag']-1)),'k--' )
+    plt.legend(handles=[line1])
+    plt.xlabel('Quarter')
+    plt.ylabel('Percent') 
+    f_S.show()
         
 #    f_M = plt.figure(3)
 #    line1,=plt.plot(range(1,mpar['maxlag']),np.squeeze(np.asarray(IRF_M)), label='IRF_M')
@@ -514,7 +557,8 @@ def plot_IRF(mpar,par,gx,hx,joint_distr,Gamma_state,grid,targets,os,oc,Output,C_
 #    plt.ylabel('Percent of SS Output') 
 #    f_G.show()        
     
-    return{'IRF_state_sparse': IRF_state_sparse, 'IRF_C_by_suff':IRF_C_by_suff,'IRF_C':IRF_C }
+    return{'IRF_state_sparse': IRF_state_sparse, 'IRF_X_by_suff':IRF_X_by_suff,
+           'IRF_C':IRF_C, 'IRF_Cagg':IRF_Cagg, 'IRF_Xagg':IRF_Xagg, 'IRF_W':IRF_W, 'IRF_N':IRF_N, 'IRF_Profit':IRF_Profit }
     
 def Fsys(State, Stateminus, Control_sparse, Controlminus_sparse, StateSS, ControlSS, 
          Gamma_state, Gamma_control, InvGamma, Copula, par, mpar, grid, targets, P, aggrshock, oc):
@@ -582,10 +626,12 @@ def Fsys(State, Stateminus, Control_sparse, Controlminus_sparse, StateSS, Contro
     #Tind = 1*NN+6
     Bind = 1*NN+5
     Gind = 1*NN+6
+    Cind = 1*NN+7
+    Xind = 1*NN+8
     
     # Initialize LHS and RHS
-    LHS = np.zeros((nx+Gind+1,1))
-    RHS = np.zeros((nx+Gind+1,1))
+    LHS = np.zeros((nx+Xind+1,1))
+    RHS = np.zeros((nx+Xind+1,1))
     
     # Indexes for states
     #distr_ind = np.arange(mpar['nm']*mpar['nh']-mpar['nh']-1)
@@ -632,12 +678,14 @@ def Fsys(State, Stateminus, Control_sparse, Controlminus_sparse, StateSS, Contro
     PIminus = np.exp(Controlminus[PIind])
     Yminus = np.exp(Controlminus[Yind])
     #Gminus = np.exp(Controlminus[Gind])
-    Wminus = np.exp(Controlminus[Wind])
+    Wminus = np.asarray(np.exp(Controlminus[Wind]))
     Profitminus = np.exp(Controlminus[Profitind])
-    Nminus = np.exp(Controlminus[Nind])
+    Nminus = np.asarray(np.exp(Controlminus[Nind]))
     #Tminus = np.exp(Controlminus[Tind])
     Bminus = Controlminus[Bind]
     Gminus = Controlminus[Gind]
+    Cminus = np.exp(Controlminus[Cind])
+    Xminus = np.exp(Controlminus[Xind])
     
     ## Write LHS values
     # Controls
@@ -649,7 +697,8 @@ def Fsys(State, Stateminus, Control_sparse, Controlminus_sparse, StateSS, Contro
     #LHS[nx+Tind] = Tminus
     LHS[nx+Bind] = Bminus
     LHS[nx+Gind] = Gminus
-    
+    LHS[nx+Cind] = Cminus
+    LHS[nx+Xind] = Xminus
     # States
     # Marginal Distributions (Marginal histograms)
     #LHS[distr_ind] = Distribution[:mpar['nm']*mpar['nh']-1-mpar['nh']].copy()
@@ -729,6 +778,14 @@ def Fsys(State, Stateminus, Control_sparse, Controlminus_sparse, StateSS, Contro
     result_EGM_policyupdate = EGM_policyupdate(EVm,PIminus,RBminus,inc,meshes,grid,par,mpar)
     c_star = result_EGM_policyupdate['c_star']
     m_star = result_EGM_policyupdate['m_star']
+    
+    aux_x=par['tau']*(Nminus/Hminus)*Wminus*meshes['h'] / (1+par['gamma'])
+    aux_x[:,-1]=0
+
+    c=c_star+aux_x
+
+    RHS[nx+Cind] = np.sum(np.sum(np.multiply(JDminus,c)))
+    RHS[nx+Xind] = np.sum(np.sum(np.multiply(JDminus,c_star)))
     
     ## Update Marginal Value Bonds
     mutil_c_aux = mutil(c_star.copy())

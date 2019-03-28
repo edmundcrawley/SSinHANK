@@ -7,7 +7,7 @@ Parameters for one asset IOU
 # Household Parameters
 parbeta        = 0.985     # Discount factor
 parxi          = 2          # CRRA
-pargamma       = 5          # Inverse Frisch elasticity
+pargamma       = 1          # Inverse Frisch elasticity
 
 # Income Process
 parrhoH        = 0.979    # Persistence of productivity

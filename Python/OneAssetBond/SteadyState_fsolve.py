@@ -52,7 +52,7 @@ class SteadyState_fsolve:
 #        init = 999. 
        
 #        count =0
-        inc = {'labor': 0.9*np.ones((self.mpar['nm'],self.mpar['nh'])) } # initial labor income for natural borrowing const
+#        inc = {'labor': 0.9*np.ones((self.mpar['nm'],self.mpar['nh'])) } # initial labor income for natural borrowing const
         
         meshesm, meshesh =  np.meshgrid(grid['m'],grid['h'],indexing='ij')
         meshes = {'m': meshesm, 'h': meshesh}
@@ -161,10 +161,10 @@ class SteadyState_fsolve:
                 'mutil_c': mutil_c,
                 'P_H' : P_H,
                 'inc' : inc,
-                'Profits_fc' : Profits_fc
-#                'C_agg' : C_agg,
-#                'C_ind': C_ind,
-#                'X_agg' : X_agg
+                'Profits_fc' : Profits_fc,
+                'C_agg' : C_agg,
+                'C_ind': C_ind,
+                'X_agg' : X_agg
                 }
     
     def excessB(self, Guess, grid,P_H,mpar,par,meshes):
