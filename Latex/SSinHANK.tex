@@ -74,7 +74,7 @@ We begin our analysis with a standard TANK model in which a proportion of househ
 
 Without a large earnings heterogeneity channel, the standard TANK model would continue to lean very heavily on the intertemporal substitution channel. Our next iteration of the model shows a potential for a very different transmission mechanism, one that fits the microdata but that current models do not quantitatively capture. We allow the hand-to-mouth households in our TANK model to maintain a debt up to some fraction of their steady state income. When interest rates are low they will be able borrow a little more, and when they are high a little less, thus providing an interest rate exposure channel through which monetary policy acts.
 
-We find the income channels (both aggregate and heterogeneous) act as a multiplier for both the intertemporal substitution and the interest rate exposure channels. As we decrease the elasticity of intertemporal substitution, the intertemporal substitution channels diminishes along with the income multipliers of it. The interest rate exposure channel, on the other hand, remains the same size. This suggests it may be possible to creast a monetary policy model in which intertemporal substitution plays no role at all, but which nonetheless fits the macrodata. This is something we plan to tackle in future work.
+We find the income channels (both aggregate and heterogeneous) act as a multiplier for both the intertemporal substitution and the interest rate exposure channels. As we decrease the elasticity of intertemporal substitution, the intertemporal substitution channels diminishes along with the income multipliers of it. The interest rate exposure channel, on the other hand, remains the same size. This suggests it may be possible to create a monetary policy model in which intertemporal substitution plays no role at all, but which nonetheless fits the macrodata. This is something we plan to tackle in future work.
 
 The rest of the paper investigates how useful Auclert's decomposition is in models with predetermined variables. Our first such model extends the  TANK model with capital. We find the decomposition fails when we have no convex capital adjustment costs, but that with standard parameterizations of these costs the decomposition accounts for over 95 percent of the change in consumption.
 
@@ -126,7 +126,7 @@ where $\frac{1}{\sigma_i}$ is the household's elasticity of intertemporal substi
 \section{A TANK Model in which the Decomposition Work Exactly}
 
 \subsection{Model Overview}
-We begin our analysis with a baseline two agent New Keynesian (TANK) model. Our baseline TANK model is composed of type types of agents, Ricardian and Keynesian, along with a continuum of intermediate goods firms, a perfectly competitive final goods firm, and a monetary policy authority. The model is closely related to the standard New Keynesian model with Calvo pricing frictions, the main difference being the addition of the Keynesian households. A key addition in our model, compared with other TANK models, is to allow for the Keynesian households to hold a non-zero quantity of short term nominal debt (owed to the Ricardian households) so that we have non-trivial levels for households' unhedged interest rate exposure (URE) and net nominal positions (NNP).
+We begin our analysis with a baseline two agent New Keynesian (TANK) model. Our baseline TANK model is composed of two types of agents, Ricardian and Keynesian, along with a continuum of intermediate goods firms, a perfectly competitive final goods firm, and a monetary policy authority. The model is closely related to the standard New Keynesian model with Calvo pricing frictions, the main difference being the addition of the Keynesian households. A key addition in our model, compared with other TANK models, is to allow for the Keynesian households to hold a non-zero quantity of short term nominal debt (owed to the Ricardian households) so that we have non-trivial levels for households' unhedged interest rate exposure (URE) and net nominal positions (NNP).
 
 The advantage of starting our analysis with this model is that it contains no predetermined variables, and therefore the conditions for our partial equilibrium decomposition hold exactly. As well as being a useful starting point to build upon, it also highlights how the transmission mechanism works in TANK models (and HANK models more generally), highlighting just how important the earnings heterogeneity channel is in these models.
 
@@ -200,7 +200,7 @@ As our focus is on monetary policy shocks, we assume the technology level ($A$) 
 
 The probability that a firm is able to adjust its price in any period is equal to $1-\theta$. A firm that is able to adjust its price in period $t$ will choose a price $P^*$ to maximize the current market value of profits it will make while the price remains effective. That is firm $j$ solves the problem:
 \begin{align}
-\underset{P^*}{\max} \sum_{k=t}^{\infty} \theta^k \mathbb{E}_t \{{\Lambda}_{t,t+k} X_{t+k}(j) (P_t^* - MC_{t+k}P_{t+k}) \} \label{profit_max}
+\underset{P^*}{\max} \sum_{k=0}^{\infty} \theta^k \mathbb{E}_t \{{\Lambda}_{t,t+k} X_{t+k}(j) (P_t^* - MC_{t+k}P_{t+k}) \} \label{profit_max}
 \end{align}
 subject to the demand constraints:
 \begin{align}
@@ -210,7 +210,7 @@ where ${\Lambda}_{t,t+k} = \beta^k \left(\frac{c^R_{t+k}}{c^R_{t}}\right)^{-\sig
 
 The first order condition arising from \ref{profit_max}  and \ref{demand_constraint} is:
 \begin{align}
-\sum_{k=t}^{\infty} \theta^k \mathbb{E}_t \Big\{{\Lambda}_{t,t+k} X_{t+k}(j) \left(P_t^* - \frac{\varepsilon}{\varepsilon-1}MC_{t+k} P_{t+k}\right)  \Big\} = 0 \label{foc_pricing}
+\sum_{k=0}^{\infty} \theta^k \mathbb{E}_t \Big\{{\Lambda}_{t,t+k} X_{t+k}(j) \left(P_t^* - \frac{\varepsilon}{\varepsilon-1}MC_{t+k} P_{t+k}\right)  \Big\} = 0 \label{foc_pricing}
 \end{align}
 
 Finally, with only a fraction $1-\theta$ of firms changing their prices in any given period, the aggregate price level moves according to:
@@ -233,7 +233,7 @@ Y_t = C_t	\label{agg_prod}
 and the total capital and labor used must equal that available, $\int_0^1 K_t(j)dj = \bar{K}$ and $\int_0^1 N_t(j)dj = N_t$.
 
 \subsection{Steady State}
-We will study small fluctuations around the zero inflation steady-state. As hours are allocated evenly between the two types of households we have that the share of hours worked by Keynesians is $\overline{n}_{K} = \lambda$, and that by Ricardians is $\overline{n}_{R} = \lambda$. The steady state consumption shares ($\overline{c}_{K} = \lambda\overline{C^K}/\overline{Y}$ and $\overline{c}_{R} = \lambda\overline{C^R}/\overline{Y}$) are less simple, both because Ricardians earn all the income from the firms and they get paid interest from the Keynesian households' debt. In steady-state the markup over marginal cost is equal to $\frac{\varepsilon}{\varepsilon-1}$, and the real wage is equal to the marginal productivity of labor adjusted down by this markup, $(1-\alpha) \frac{\varepsilon-1}{\varepsilon}\frac{\overline{Y}}{\overline{N}}$. 
+We will study small fluctuations around the zero inflation steady-state. As hours are allocated evenly between the two types of households we have that the share of hours worked by Keynesians is $\overline{n}_{K} = \lambda$, and that by Ricardians is $\overline{n}_{R} = 1-\lambda$. The steady state consumption shares ($\overline{c}_{K} = \lambda\overline{C^K}/\overline{Y}$ and $\overline{c}_{R} = \lambda\overline{C^R}/\overline{Y}$) are less simple, both because Ricardians earn all the income from the firms and they get paid interest from the Keynesian households' debt. In steady-state the markup over marginal cost is equal to $\frac{\varepsilon}{\varepsilon-1}$, and the real wage is equal to the marginal productivity of labor adjusted down by this markup, $(1-\alpha) \frac{\varepsilon-1}{\varepsilon}\frac{\overline{Y}}{\overline{N}}$. 
 
 Using this steady-state wage, along with the Keynesian budget constraint (\ref{budget_constraint_K}) we can identify the steady-state ratio of Keynesian consumption:
 \begin{align}
