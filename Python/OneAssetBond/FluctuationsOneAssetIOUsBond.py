@@ -432,25 +432,28 @@ def plot_IRF(mpar,par,gx,hx,joint_distr,Gamma_state,grid,targets,os,oc,Output,C_
     
 ###### IRFs by sufficient statistics
 
-## change Auclert's notations into those of Crawley
+
+
+## change Auclert's notations into those of Crawley             
     C_agg = np.sum(np.sum(np.multiply(joint_distr,C_ind)))
     X_agg = np.sum(np.sum(np.multiply(joint_distr,c_guess)))
-    M = Inc_wt_MPC*Output/X_agg
-    Earning_hetero = Earning_hetero*Output/X_agg
-    Redist_elas_P = Redist_elas_P*(1/X_agg)
-    Redist_elas_R = Redist_elas_R*(1/X_agg)
-    Hick_scaling = Hick_scaling*(1/X_agg)
-    Add1 = (1+2*par['gamma'])/(1+par['gamma'])/par['gamma']*np.sum(np.sum(np.multiply(np.multiply(MPC_m,WW_h_wage),joint_distr)))/X_agg
-    Add2 = np.sum(np.sum( np.multiply(np.multiply(MPC_m,WW_h_prof),joint_distr) ))/X_agg
-     
-    IRF_X_by_suff = M*IRF_Y + np.multiply(Earning_hetero,IRF_Y) - Redist_elas_P*IRF_PI/100 + \
-                    Redist_elas_R*IRF_RBREAL/100 - Hick_scaling*IRF_RBREAL/100 \
-#                    - Add1 * IRF_W - Add2 * IRF_Profit
-
-    IRF_X_by_suff_w_add = M*IRF_Y + np.multiply(Earning_hetero,IRF_Y) - Redist_elas_P*IRF_PI/100 + \
+    M = Inc_wt_MPC*Output/C_agg
+    Earning_hetero = Earning_hetero*Output/C_agg
+    Redist_elas_P = Redist_elas_P*(1/C_agg)
+    Redist_elas_R = Redist_elas_R*(1/C_agg)
+    Hick_scaling = Hick_scaling*(1/C_agg)                       
+    Add1_C = 1/par['gamma']*np.sum(np.sum(np.multiply(np.multiply(1.0-MPC_m,WW_h_wage),joint_distr)))/C_agg
+    
+    IRF_C_by_suff = M*IRF_Y + np.multiply(Earning_hetero,IRF_Y) - Redist_elas_P*IRF_PI/100 + \
                           Redist_elas_R*IRF_RBREAL/100 - Hick_scaling*IRF_RBREAL/100 \
-                         - Add1 * IRF_W - Add2 * IRF_Profit   
-                     
+                         + Add1_C * IRF_W  
+                         
+    Add1_X = -1/par['gamma']*np.sum(np.sum(np.multiply(np.multiply(MPC_m,WW_h_wage),joint_distr)))/C_agg
+
+    IRF_X_by_suff = C_agg/X_agg*(M*IRF_Y + np.multiply(Earning_hetero,IRF_Y) - Redist_elas_P*IRF_PI/100 + \
+                          Redist_elas_R*IRF_RBREAL/100 - Hick_scaling*IRF_RBREAL/100 \
+                         + Add1_X * IRF_W )
+    
 #     recall that IRF_PI and IRF_RBREAL are in bp term!
 
     print('M: ', str(M))
@@ -478,16 +481,15 @@ def plot_IRF(mpar,par,gx,hx,joint_distr,Gamma_state,grid,targets,os,oc,Output,C_
     plt.xlabel('Quarter')
     plt.ylabel('Percent') 
     f_X.show()   
-
-
+    
     f_C = plt.figure(3)
-    line1,=plt.plot(range(1,mpar['maxlag']),np.squeeze(np.asarray(IRF_Xagg)),label='true IRF_X')
-    line2,=plt.plot(range(1,mpar['maxlag']),np.squeeze(np.asarray(IRF_X_by_suff_w_add)), label='IRF_X by suff stat _w_add', color='red')
+    line1,=plt.plot(range(1,mpar['maxlag']),np.squeeze(np.asarray(IRF_Cagg)),label='true IRF_Cagg')
+    line2,=plt.plot(range(1,mpar['maxlag']),np.squeeze(np.asarray(IRF_C_by_suff)), label='IRF_C by suff stat', color='red')
     plt.plot(range(0,mpar['maxlag']-1),np.zeros((mpar['maxlag']-1)),'k--' )
     plt.legend(handles=[line1, line2])
     plt.xlabel('Quarter')
     plt.ylabel('Percent') 
-    f_C.show()
+    f_C.show() 
 
 
     f_S = plt.figure(4)
@@ -557,7 +559,7 @@ def plot_IRF(mpar,par,gx,hx,joint_distr,Gamma_state,grid,targets,os,oc,Output,C_
 #    plt.ylabel('Percent of SS Output') 
 #    f_G.show()        
     
-    return{'IRF_state_sparse': IRF_state_sparse, 'IRF_X_by_suff':IRF_X_by_suff,
+    return{'IRF_state_sparse': IRF_state_sparse, 'IRF_X_by_suff':IRF_X_by_suff, 'IRF_C_by_suff':IRF_C_by_suff,
            'IRF_C':IRF_C, 'IRF_Cagg':IRF_Cagg, 'IRF_Xagg':IRF_Xagg, 'IRF_W':IRF_W, 'IRF_N':IRF_N, 'IRF_Profit':IRF_Profit }
     
 def Fsys(State, Stateminus, Control_sparse, Controlminus_sparse, StateSS, ControlSS, 

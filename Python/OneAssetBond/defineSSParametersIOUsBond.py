@@ -33,7 +33,7 @@ parrho_B = 0.99
 pargamma_pi = 1.5
 
 # Tax Schedule
-partau         = 0.75      # Net income after tax 
+partau         = 1.0      # Net income after tax 
 parBtoY        = 5   # Gov debt to output ratio
 #partau         = 0.9   # Net income after tax 
 #parBtoY        = 0.25   # Gov debt to output ratio
