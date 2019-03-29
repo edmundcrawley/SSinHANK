@@ -444,9 +444,16 @@ def plot_IRF(mpar,par,gx,hx,joint_distr,Gamma_state,grid,targets,os,oc,Output,C_
     Hick_scaling = Hick_scaling*(1/C_agg)                       
     Add1_C = 1/par['gamma']*np.sum(np.sum(np.multiply(np.multiply(1.0-MPC_m,WW_h_wage),joint_distr)))/C_agg
     
-    IRF_C_by_suff = M*IRF_Y + np.multiply(Earning_hetero,IRF_Y) - Redist_elas_P*IRF_PI/100 + \
-                          Redist_elas_R*IRF_RBREAL/100 - Hick_scaling*IRF_RBREAL/100 \
-                         + Add1_C * IRF_W  
+    IRF_AggInc = M*IRF_Y 
+    IRF_EarnHet = np.multiply(Earning_hetero,IRF_Y)
+    IRF_Fisher = - Redist_elas_P*IRF_PI/100
+    IRF_IRE = Redist_elas_R*IRF_RBREAL/100
+    IRF_IntSubs = - Hick_scaling*IRF_RBREAL/100
+    IRF_GHH = Add1_C * IRF_W 
+    
+    IRF_C_by_suff =  IRF_AggInc +  IRF_EarnHet + IRF_Fisher + IRF_IRE + IRF_IntSubs + IRF_GHH
+                         
+                    
                          
     Add1_X = -1/par['gamma']*np.sum(np.sum(np.multiply(np.multiply(MPC_m,WW_h_wage),joint_distr)))/C_agg
 
@@ -560,7 +567,10 @@ def plot_IRF(mpar,par,gx,hx,joint_distr,Gamma_state,grid,targets,os,oc,Output,C_
 #    f_G.show()        
     
     return{'IRF_state_sparse': IRF_state_sparse, 'IRF_X_by_suff':IRF_X_by_suff, 'IRF_C_by_suff':IRF_C_by_suff,
-           'IRF_C':IRF_C, 'IRF_Cagg':IRF_Cagg, 'IRF_Xagg':IRF_Xagg, 'IRF_W':IRF_W, 'IRF_N':IRF_N, 'IRF_Profit':IRF_Profit }
+           'IRF_C':IRF_C, 'IRF_Cagg':IRF_Cagg, 'IRF_Xagg':IRF_Xagg, 'IRF_W':IRF_W, 'IRF_N':IRF_N,
+           'IRF_Profit':IRF_Profit, 'IRF_G':IRF_G, 'IRF_RB':IRF_RB, 'IRF_RBREAL':IRF_RBREAL, 'IRF_PI':IRF_PI,
+           'IRF_AggInc':IRF_AggInc,  'IRF_EarnHet':IRF_EarnHet, 'IRF_Fisher':IRF_Fisher,
+           'IRF_IRE':IRF_IRE, 'IRF_IntSubs':IRF_IntSubs, 'IRF_GHH':IRF_GHH}
     
 def Fsys(State, Stateminus, Control_sparse, Controlminus_sparse, StateSS, ControlSS, 
          Gamma_state, Gamma_control, InvGamma, Copula, par, mpar, grid, targets, P, aggrshock, oc):
