@@ -34,7 +34,7 @@ pargamma_pi = 1.5
 
 # Tax Schedule
 partau         = 1.0      # Net income after tax 
-parBtoY        = 5.0   # Gov debt to output ratio
+parBtoY        = 10   # Gov debt to output ratio
 #partau         = 0.9   # Net income after tax 
 #parBtoY        = 0.25   # Gov debt to output ratio
 #parBtoY        = 2   # Gov debt to output ratio
@@ -53,7 +53,7 @@ mpartauchen    = 'importance'
 gridK = 1 # keep fixed at SS of economy with bonds and capital
 gridm_min_art = 0 
 #gridm_min_art = 0 # to make the asset as a gov bond
-gridm_max_art = 150 
+gridm_max_art = 400
 
 ## Numerical Parameters
 mparcrit    = 10**(-11)

@@ -382,11 +382,11 @@ def plot_IRF(mpar,par,gx,hx,joint_distr,Gamma_state,grid,targets,os,oc,Output,C_
     IRF_Cagg = 100*IRF_state_sparse[-1-oc+8, :-1]
     IRF_Xagg = 100*IRF_state_sparse[-1-oc+9, :-1]
         
-    PI=1+IRF_state_sparse[-1-oc+1, 1:]
+    PI=1+IRF_state_sparse[-1-oc+1, :-1]
     RB=par['RB']*(1+IRF_state_sparse[mpar['numstates']-os,1:])
     IRF_RB=100*100*(RB-par['RB'])
     IRF_RBREAL=100*100*(RB/PI-par['RB'])
-    
+#    IRF_RBREAL=IRF_RB-IRF_PI
     
     labor_aux = IRF_N+IRF_W
     labor_income_aux = np.zeros((mpar['nm'],mpar['nh'],mpar['maxlag']-1))
@@ -507,23 +507,6 @@ def plot_IRF(mpar,par,gx,hx,joint_distr,Gamma_state,grid,targets,os,oc,Output,C_
     plt.ylabel('Percent') 
     f_S.show()
         
-#    f_M = plt.figure(3)
-#    line1,=plt.plot(range(1,mpar['maxlag']),np.squeeze(np.asarray(IRF_M)), label='IRF_M')
-#    plt.plot(range(0,mpar['maxlag']-1),np.zeros((mpar['maxlag']-1)),'k--' )
-#    plt.ylim((-1, 1))
-#    plt.legend(handles=[line1])
-#    plt.xlabel('Quarter')
-#    plt.ylabel('Percent') 
-#    f_M.show()
-
-#    f_H = plt.figure(4)
-#    line1,=plt.plot(range(1,mpar['maxlag']),np.squeeze(np.asarray(IRF_H)), label='IRF_H')
-#    plt.plot(range(0,mpar['maxlag']-1),np.zeros((mpar['maxlag']-1)),'k--' )
-#    plt.ylim((-1, 1))
-#    plt.legend(handles=[line1])
-#    plt.xlabel('Quarter')
-#    plt.ylabel('Percent') 
-#    f_H.show()
         
     f_S = plt.figure(5)
     line1,=plt.plot(range(1,mpar['maxlag']),np.squeeze(np.asarray(IRF_S)), label='IRF_S')
@@ -558,13 +541,27 @@ def plot_IRF(mpar,par,gx,hx,joint_distr,Gamma_state,grid,targets,os,oc,Output,C_
     plt.ylabel('Percent') 
     f_N.show()
 
-#    f_G = plt.figure(9)
-#    line1,=plt.plot(range(1,mpar['maxlag']),np.squeeze(np.asarray(IRF_G)), label='IRF_G')
-#    plt.legend(handles=[line1])
-#    plt.plot(range(0,mpar['maxlag']-1),np.zeros((mpar['maxlag']-1)),'k--' )
-#    plt.xlabel('Quarter')
-#    plt.ylabel('Percent of SS Output') 
-#    f_G.show()        
+    f_DC = plt.figure(9)
+    line1,=plt.plot(range(1,mpar['maxlag']),np.squeeze(np.asarray(IRF_AggInc)),label='AggInc')
+    line2,=plt.plot(range(1,mpar['maxlag']),np.squeeze(np.asarray(IRF_EarnHet)), label='EarnHet', color='red')
+    line3,=plt.plot(range(1,mpar['maxlag']),np.squeeze(np.asarray(IRF_Fisher)), label='Fisher', color='yellow')
+    line4,=plt.plot(range(1,mpar['maxlag']),np.squeeze(np.asarray(IRF_IRE)), label='IRE', color='green')
+    line5,=plt.plot(range(1,mpar['maxlag']),np.squeeze(np.asarray(IRF_IntSubs)), label='IntSubs', color='orange')
+    line6,=plt.plot(range(1,mpar['maxlag']),np.squeeze(np.asarray(IRF_GHH)), label='GHH', color='purple')
+    plt.plot(range(0,mpar['maxlag']-1),np.zeros((mpar['maxlag']-1)),'k--' )
+    plt.legend(handles=[line1, line2, line3, line4, line5, line6])
+    plt.xlabel('Quarter')
+    plt.ylabel('Percent') 
+    f_DC.show()         
+    
+    f_RBPI = plt.figure(10)
+    line1,=plt.plot(range(1,mpar['maxlag']),np.squeeze(np.asarray(IRF_Y)), label='IRF_Y', color='blue', linestyle='--')
+    line2,=plt.plot(range(1,mpar['maxlag']),np.squeeze(np.asarray(IRF_Cagg)), label='IRF_Cagg', color='red')
+    plt.legend(handles=[line1, line2])
+    plt.plot(range(0,mpar['maxlag']-1),np.zeros((mpar['maxlag']-1)),'k--' )
+    plt.xlabel('Quarter')
+    plt.ylabel('Basis point') 
+    f_RBPI.show()
     
     return{'IRF_state_sparse': IRF_state_sparse, 'IRF_X_by_suff':IRF_X_by_suff, 'IRF_C_by_suff':IRF_C_by_suff,
            'IRF_C':IRF_C, 'IRF_Cagg':IRF_Cagg, 'IRF_Xagg':IRF_Xagg, 'IRF_W':IRF_W, 'IRF_N':IRF_N,
