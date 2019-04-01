@@ -165,5 +165,9 @@
   *{file}   {../Matlab/DynareCode/Figures/TANK_capital_IRF_c_K-eps-converted-to.pdf}{0000/00/00 v0.0}
   *{file}   {../Matlab/DynareCode/Figures/TANK_capital_IRF_c_R-eps-converted-to.pdf}{0000/00/00 v0.0}
   *{file}   {../Matlab/DynareCode/Figures/TANK_capital_IRF_q-eps-converted-to.pdf}{0000/00/00 v0.0}
+  *{file}   {../Python/Figures/IRF_C.pdf}{0000/00/00 v0.0}
+  *{file}   {../Python/Figures/IRF_PI.pdf}{0000/00/00 v0.0}
+  *{file}   {../Python/Figures/IRF_RB.pdf}{0000/00/00 v0.0}
+  *{file}   {../Python/Figures/IRF_W.pdf}{0000/00/00 v0.0}
   *{file}   {SSinHANK.bbl}{0000/00/00 v0.0}
 }

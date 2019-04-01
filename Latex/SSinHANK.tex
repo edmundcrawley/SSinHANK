@@ -418,7 +418,7 @@ In a given period household $i$ has labor productivity $h_{it}$, chooses their c
 \begin{align*}
 \mathbb{E} \sum_{t=0}^{\infty}\beta^t  u(c_{it} - \nu(n_{it} h_{it})) 
 \end{align*}
-where $u(x) = \frac{x^{1-\sigma}}{1-\sigma}$ and $\nu(n) = \frac{x^{1-\psi}}{1-\psi}$.
+where $u(x) = \frac{x^{1-\sigma}}{1-\sigma}$ and $\nu(n) = \frac{n^{1-\psi}}{1-\psi}$.
 
 Households consume a consumption bundle formed according to a Dixit-Stiglitz aggregator:
 \begin{align*}
@@ -451,16 +451,46 @@ Prices are set by risk-neutral managers who form a group of measure zero.\footno
 where $Y_t$ is total output in period $t$, $MC_t$ is the real marginal cost and $\kappa$ measures the size of the Rotemberg price frictions. In equilibrium all goods will have the same price.
 
 \subsubsection{Fiscal Policy}
+Our model assumes the government will always owe a constant proportion of GDP in the following period. It does not make any real purchases, but services its debt through lumps sum taxes.
 
 
 \subsubsection{Monetary Policy}
 As in the TANK model, we assume the central bank follows the Taylor rule given in equation \ref{taylor_rule}.
 
 \subsection{Results from the HANK model}
+\subsubsection{Effect of GHH Preferences}
+Our HANK model uses non-separable GHH preferences. This results in a strong link between consumption and hours worked that is not accounted for in our partial equilibrium decomposition. To take account of this we need to add a sixth `GHH' transmission mechanism:
+\begin{align*}
+\text{GHHchannel} = \mathbb{E}\left((1-MPC_i) h_i\right)  \frac{\bar{N}}{\psi} d\omega
+\end{align*}
+This intuition here is that households smooth $c_{it} - \nu(n_{it})$ over time periods, so if a household works more in one period they will need to consume more in that period to achieve the same marginal utility of consumption. As we shall see, this channel dominates all the other five transmission channels.
 
+\subsubsection{Is a Monetary Policy Shock Transitory in the HANK Model?}
+While the aggregate level of government debt at the start of each period will only change in the initial period, the distribution of wealth may propagate through time leading to errors in our decomposition. Figure \ref{fig:HANK_IRFs} shows the impulse response of a one percentage point decline in the nominal interest rate. It is clear the the aggregate consumption response, along with the wage response, is transitory in nature. However, both the real interest rate and the inflation impulse response functions show some persistence, possibly due to the fact that the monetary policy decline acts as a wealth transfer from the wealthy to the less wealthy, so higher interest rates are required to dampen demand back down to the steady state level. The aggregate size of the response is also noticeably large. The one percentage point decline in nominal interest rates leads to almost 12 percentage point increase in consumption. Much of this is due to the unusual nature of GHH preferences as will become clear in the next section.
+
+\begin{figure} 
+	\begin{centering}
+		\includegraphics[scale=0.45]{../Python/Figures/IRF_C.pdf} \includegraphics[scale=0.45]{../Python/Figures/IRF_PI.pdf} \\
+		\includegraphics[scale=0.45]{../Python/Figures/IRF_RB.pdf}
+		\includegraphics[scale=0.45]{../Python/Figures/IRF_W.pdf}
+		\caption{IRFs following a 1\% Nominal Interest Rate Decline for the HANK Model}
+		\label{fig:HANK_IRFs}
+	\end{centering}
+\end{figure}
+
+\subsubsection{Which Transmission Channels Are Important?}
+Table \ref{table:trans_channel} shows how the period 1 consumption response divides into the six channels we have identified, as well as a (small) error term that subsumes the persistent behavior. It is clear from the table that the GHH channel dominates the transmission mechanism in this model. The complementarity between increased hours and increased consumption in this model with GHH preferences causes consumption to increase greatly in the first period when wages rise. Such a result has little empirical backing and strongly suggests GHH preferences are not suitable for this kind of work.
+
+Beyond the GHH channel, we see that the aggregate and heterogeneous income channels are both large. Even though the MPC in this model is relatively small, these act as multipliers to the GHH channel and therefore become quantitatively important. The intertemporal substitution channel, along with the interest rate exposure and Fisher channels play a small role in the monetary policy transmission mechanism for this model.
+
+\input ../Python/Tables/Decomposition.tex
 
 \section{Conclusion}
-Lots of future research to do!
+Our paper shows that the transmission mechanism of monetary policy can look very different in a model with heterogeneity in household behavior. Our view of the empirical evidence is that the interest rate exposure channel is likely to be of primary quantitative importance. However, we have shown in this paper that such a mechanism is of limited importance in the standard TANK and HANK models in use today.
+
+We believe much progress has been made recently in understanding the role of consumption behavior in macroeconomic models. While there are clear gaps in our understanding, a path forward bridging both empirical results and theory is within sight. At present the dynamics of inflation, in our paper taken from the New Keynesian Phillips curve, remains a separate area of research to which we have little to add.
+
+We believe future research should focus on reducing the countercyclical profits of New Keynesian models which leads to a large earnings heterogeneity channel in our models. Furthermore, finding models with small intertemporal substitution channels, while still maintaining determinacy, is of primary importance.
 
 
 %\processdelayedfloats
