@@ -21,9 +21,9 @@ SSEconomy = SteadyState_fsolve(**EconomyParams)
 ##### Choose whether calculate new steady state or use ond one
 
 #SSS = SSEconomy.SolveSteadyState() # New steady state
-#pickle.dump(SSS, open("btoy5_tau_1.p", "wb"))
+#pickle.dump(SSS, open("btoy8_tau_1.p", "wb"))
 
-SSS=pickle.load(open("btoy5_tau_1.p", "rb")) # Use old steady state
+SSS=pickle.load(open("btoy8_tau_1.p", "rb")) # Use old steady state
 
 #############3#################################################3
 
@@ -48,7 +48,10 @@ meshes_m,meshes_h = np.meshgrid(grid['m'],grid['h'], indexing='ij')
 aux_x = par['tau']*targets['N']/par['H']*targets['W']*meshes_h/(1+par['gamma'])
 aux_x[:,-1]=0
 C_ind = c_guess + aux_x
-
+Output = SSS['Output']
+C_agg = SSS['C_agg']
+B = SSS['targets']['B']
+RB = SSS['par']['RB']
 
 # MPC
 WW_h=WW[0,:]
@@ -99,9 +102,6 @@ Hick_scaling = np.sum(np.sum( np.multiply(np.multiply(np.multiply(sig_i, (1-MPC_
 SSS['par']['theta_pi'] = 2
 ##############################################################################
 
-#pickle.dump(SSS, open("SSS.p", "wb"))
-#
-#SSS=pickle.load(open("SSS.p", "rb"))
 
 
 EX2SR=FluctuationsOneAssetIOUsBond(**SSS)
@@ -126,9 +126,19 @@ plotresult = plot_IRF(SR['mpar'],SR['par'],SGUresult['gx'],SGUresult['hx'],SR['j
          SR['Gamma_state'],SR['grid'],SR['targets'],SR['os'],SR['oc'],SR['Output'],C_ind,c_guess,
          WW_h_mesh,MPC_m,Inc_wt_MPC,Redist_elas_P,Redist_elas_R,Hick_scaling,URE,NNP)
 
-IRF_W = plotresult['IRF_W']
-IRF_N = plotresult['IRF_N']
-IRF_Profit = plotresult['IRF_Profit']
+os = SR['os']
+oc = SR['oc']
+IRF_state_sparse = plotresult['IRF_state_sparse']
+IRF_RB = 100*IRF_state_sparse[mpar['numstates']-os,1:]
+IRF_Y=100*IRF_state_sparse[-1-oc+2, :-1]
+IRF_W=100*IRF_state_sparse[-1-oc+3, :-1]
+PI=1+IRF_state_sparse[-1-oc+1, :-1]
+RB=par['RB']*(1+IRF_state_sparse[mpar['numstates']-os,1:])
+IRF_RBREAL=100*100*(RB/PI-par['RB'])
+IRF_RB=100*100*(RB-par['RB'])
+IRF_PI=100*100*IRF_state_sparse[-1-oc+1, :-1]
+IRF_Cagg = 100*IRF_state_sparse[-1-oc+8, :-1]
+IRF_Xagg = 100*IRF_state_sparse[-1-oc+9, :-1]
     
 print(round(plotresult['IRF_Xagg'][0,0],3))
 print(round(plotresult['IRF_X_by_suff'][0,0],3))

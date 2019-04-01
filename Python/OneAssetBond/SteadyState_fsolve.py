@@ -425,8 +425,9 @@ class SteadyState_fsolve:
         incmoney = RBRB*meshes['m'].copy()
         #incprofits = sum((1-par['tau'])*par['gamma']/(1+par['gamma'])*(N/par['H'])*W_fc*grid['h'][0:-1]*jd_aux[0:-1]) + (1-par['tau'])*Profits_fc*par['profitshare']*jd_aux[-1]
           
-        incprofits = sum((1-par['tau'])*(N/par['H'])*W_fc*grid['h'][0:-1]*jd_aux[0:-1]) + (1-par['tau'])*Profits_fc*par['profitshare']*jd_aux[-1] \
-                      - (RBRB-1.0)*self.par['BtoY']*Output
+        incprofits = sum((1-par['tau'])*(N/par['H'])*W_fc*grid['h'][0:-1]*jd_aux[0:-1]) \
+                         + (1-par['tau'])*Profits_fc*par['profitshare']*jd_aux[-1] \
+                         - (RBRB-1.0)*self.par['BtoY']*Output
 
 
 
