@@ -382,7 +382,7 @@ def plot_IRF(mpar,par,gx,hx,joint_distr,Gamma_state,grid,targets,os,oc,Output,C_
     IRF_Cagg = 100*IRF_state_sparse[-1-oc+8, :-1]
     IRF_Xagg = 100*IRF_state_sparse[-1-oc+9, :-1]
         
-    PI=1+IRF_state_sparse[-1-oc+1, :-1]
+    PI=1+IRF_state_sparse[-1-oc+1, 1:]
     RB=par['RB']*(1+IRF_state_sparse[mpar['numstates']-os,1:])
     IRF_RB=100*100*(RB-par['RB'])
     IRF_RBREAL=100*100*(RB/PI-par['RB'])

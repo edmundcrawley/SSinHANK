@@ -20,10 +20,10 @@ SSEconomy = SteadyState_fsolve(**EconomyParams)
 
 ##### Choose whether calculate new steady state or use ond one
 
-#SSS = SSEconomy.SolveSteadyState() # New steady state
-#pickle.dump(SSS, open("btoy8_tau_1.p", "wb"))
+SSS = SSEconomy.SolveSteadyState() # New steady state
+pickle.dump(SSS, open("btoy5_tau_1.p", "wb"))
 
-SSS=pickle.load(open("btoy8_tau_1.p", "rb")) # Use old steady state
+SSS=pickle.load(open("btoy5_tau_1.p", "rb")) # Use old steady state
 
 #############3#################################################3
 
@@ -99,7 +99,7 @@ Hick_scaling = np.sum(np.sum( np.multiply(np.multiply(np.multiply(sig_i, (1-MPC_
 
 #SSS['par']['rho_B'] = 0.99
 #SSS['par']['gamma_pi'] = 1.25
-SSS['par']['theta_pi'] = 2
+SSS['par']['theta_pi'] = 2.0
 ##############################################################################
 
 
@@ -132,7 +132,7 @@ IRF_state_sparse = plotresult['IRF_state_sparse']
 IRF_RB = 100*IRF_state_sparse[mpar['numstates']-os,1:]
 IRF_Y=100*IRF_state_sparse[-1-oc+2, :-1]
 IRF_W=100*IRF_state_sparse[-1-oc+3, :-1]
-PI=1+IRF_state_sparse[-1-oc+1, :-1]
+PI=1+IRF_state_sparse[-1-oc+1, 1:]
 RB=par['RB']*(1+IRF_state_sparse[mpar['numstates']-os,1:])
 IRF_RBREAL=100*100*(RB/PI-par['RB'])
 IRF_RB=100*100*(RB-par['RB'])
@@ -142,70 +142,70 @@ IRF_Xagg = 100*IRF_state_sparse[-1-oc+9, :-1]
     
 print(round(plotresult['IRF_Xagg'][0,0],3))
 print(round(plotresult['IRF_X_by_suff'][0,0],3))
-
-factor1percent = -100.0/(plotresult['IRF_RB'][0,0])
-
-f_C = plt.figure(1)
-line1,=plt.plot(range(1,mpar['maxlag']),factor1percent*np.squeeze(np.asarray(plotresult['IRF_Cagg'])),label='Consumption IRF')
-plt.plot(range(0,mpar['maxlag']-1),np.zeros((mpar['maxlag']-1)),'k--' )
-plt.legend(handles=[line1])
-plt.xlabel('Quarter')
-plt.ylabel('Percent') 
-plt.title('Impulse Response to Consumption')
-f_C.show()
-plt.savefig('./Figures/IRF_C.pdf',format='pdf')
-
-f_RB = plt.figure(2)
-line1,=plt.plot(range(1,mpar['maxlag']),factor1percent/100*np.squeeze(np.asarray(plotresult['IRF_RB'])),label='Real Interest Rate IRF')
-plt.plot(range(0,mpar['maxlag']-1),np.zeros((mpar['maxlag']-1)),'k--' )
-plt.legend(handles=[line1])
-plt.xlabel('Quarter')
-plt.ylabel('Percent') 
-plt.title('Impulse Response for Real Interest Rate')
-f_C.show()
-plt.savefig('./Figures/IRF_RB.pdf',format='pdf')
-
-f_W = plt.figure(3)
-line1,=plt.plot(range(1,mpar['maxlag']),factor1percent*np.squeeze(np.asarray(plotresult['IRF_W'])),label='Real Wages IRF')
-plt.plot(range(0,mpar['maxlag']-1),np.zeros((mpar['maxlag']-1)),'k--' )
-plt.legend(handles=[line1])
-plt.xlabel('Quarter')
-plt.ylabel('Percent') 
-plt.title('Impulse Response for Real Wages')
-f_W.show()
-plt.savefig('./Figures/IRF_W.pdf',format='pdf')
-
-f_PI = plt.figure(4)
-line1,=plt.plot(range(1,mpar['maxlag']),factor1percent/100*np.squeeze(np.asarray(plotresult['IRF_PI'])),label='Inflation IRF')
-plt.plot(range(0,mpar['maxlag']-1),np.zeros((mpar['maxlag']-1)),'k--' )
-plt.legend(handles=[line1])
-plt.xlabel('Quarter')
-plt.ylabel('Percent') 
-plt.title('Impulse Response for Inflation')
-f_PI.show()
-plt.savefig('./Figures/IRF_PI.pdf',format='pdf')
-
-decom_table = "    \\begin{table}  \n"
-decom_table += '\\begin{center} \n'
-decom_table +=  '\\caption{Transmission Channel Importance}\label{table:trans_channel}'
-
-decom_table += "\\begin{tabular}{lc}  \n"
-decom_table += "\\toprule \n"
-
-decom_table += "Aggregate Income & {:.1f}".format(100*plotresult['IRF_AggInc'][0,0]/plotresult['IRF_Cagg'][0,0]) +"\\% \n"
-decom_table += "\\\\ Earnings Heterogeneity & {:.1f}".format(100*plotresult['IRF_EarnHet'][0,0]/plotresult['IRF_Cagg'][0,0]) +"\\% \n"
-decom_table += "\\\\ Interest Rate Exposure & {:.1f}".format(100*plotresult['IRF_IRE'][0,0]/plotresult['IRF_Cagg'][0,0]) +"\\% \n"
-decom_table += "\\\\ Fisher & {:.1f}".format(100*plotresult['IRF_Fisher'][0,0]/plotresult['IRF_Cagg'][0,0]) +"\\% \n"
-decom_table += "\\\\ Intertemporal Substitution & {:.1f}".format(100*plotresult['IRF_IntSubs'][0,0]/plotresult['IRF_Cagg'][0,0]) +"\\% \n"
-decom_table += "\\\\ GHH Channel & {:.1f}".format(100*plotresult['IRF_GHH'][0,0]/plotresult['IRF_Cagg'][0,0]) +"\\% \n"
-decom_table += "\\\\ Error & {:.1f}".format(100*(plotresult['IRF_Cagg'][0,0]-plotresult['IRF_C_by_suff'][0,0])/plotresult['IRF_Cagg'][0,0]) +"\\% \n"
-
-decom_table += "\\\\ \\bottomrule  \n"
-decom_table += " \end{tabular}   \n"
-decom_table += '\\end{center} \n'
-decom_table += "\\end{table}  \n"
-
-with open('./Tables/Decomposition.tex','w') as f:
-    f.write(decom_table)
-    f.close()
-
+#
+#factor1percent = -100.0/(plotresult['IRF_RB'][0,0])
+#
+#f_C = plt.figure(1)
+#line1,=plt.plot(range(1,mpar['maxlag']),factor1percent*np.squeeze(np.asarray(plotresult['IRF_Cagg'])),label='Consumption IRF')
+#plt.plot(range(0,mpar['maxlag']-1),np.zeros((mpar['maxlag']-1)),'k--' )
+#plt.legend(handles=[line1])
+#plt.xlabel('Quarter')
+#plt.ylabel('Percent') 
+#plt.title('Impulse Response to Consumption')
+#f_C.show()
+#plt.savefig('./Figures/IRF_C.pdf',format='pdf')
+#
+#f_RB = plt.figure(2)
+#line1,=plt.plot(range(1,mpar['maxlag']),factor1percent/100*np.squeeze(np.asarray(plotresult['IRF_RB'])),label='Real Interest Rate IRF')
+#plt.plot(range(0,mpar['maxlag']-1),np.zeros((mpar['maxlag']-1)),'k--' )
+#plt.legend(handles=[line1])
+#plt.xlabel('Quarter')
+#plt.ylabel('Percent') 
+#plt.title('Impulse Response for Real Interest Rate')
+#f_C.show()
+#plt.savefig('./Figures/IRF_RB.pdf',format='pdf')
+#
+#f_W = plt.figure(3)
+#line1,=plt.plot(range(1,mpar['maxlag']),factor1percent*np.squeeze(np.asarray(plotresult['IRF_W'])),label='Real Wages IRF')
+#plt.plot(range(0,mpar['maxlag']-1),np.zeros((mpar['maxlag']-1)),'k--' )
+#plt.legend(handles=[line1])
+#plt.xlabel('Quarter')
+#plt.ylabel('Percent') 
+#plt.title('Impulse Response for Real Wages')
+#f_W.show()
+#plt.savefig('./Figures/IRF_W.pdf',format='pdf')
+#
+#f_PI = plt.figure(4)
+#line1,=plt.plot(range(1,mpar['maxlag']),factor1percent/100*np.squeeze(np.asarray(plotresult['IRF_PI'])),label='Inflation IRF')
+#plt.plot(range(0,mpar['maxlag']-1),np.zeros((mpar['maxlag']-1)),'k--' )
+#plt.legend(handles=[line1])
+#plt.xlabel('Quarter')
+#plt.ylabel('Percent') 
+#plt.title('Impulse Response for Inflation')
+#f_PI.show()
+#plt.savefig('./Figures/IRF_PI.pdf',format='pdf')
+#
+#decom_table = "    \\begin{table}  \n"
+#decom_table += '\\begin{center} \n'
+#decom_table +=  '\\caption{Transmission Channel Importance}\label{table:trans_channel}'
+#
+#decom_table += "\\begin{tabular}{lc}  \n"
+#decom_table += "\\toprule \n"
+#
+#decom_table += "Aggregate Income & {:.1f}".format(100*plotresult['IRF_AggInc'][0,0]/plotresult['IRF_Cagg'][0,0]) +"\\% \n"
+#decom_table += "\\\\ Earnings Heterogeneity & {:.1f}".format(100*plotresult['IRF_EarnHet'][0,0]/plotresult['IRF_Cagg'][0,0]) +"\\% \n"
+#decom_table += "\\\\ Interest Rate Exposure & {:.1f}".format(100*plotresult['IRF_IRE'][0,0]/plotresult['IRF_Cagg'][0,0]) +"\\% \n"
+#decom_table += "\\\\ Fisher & {:.1f}".format(100*plotresult['IRF_Fisher'][0,0]/plotresult['IRF_Cagg'][0,0]) +"\\% \n"
+#decom_table += "\\\\ Intertemporal Substitution & {:.1f}".format(100*plotresult['IRF_IntSubs'][0,0]/plotresult['IRF_Cagg'][0,0]) +"\\% \n"
+#decom_table += "\\\\ GHH Channel & {:.1f}".format(100*plotresult['IRF_GHH'][0,0]/plotresult['IRF_Cagg'][0,0]) +"\\% \n"
+#decom_table += "\\\\ Error & {:.1f}".format(100*(plotresult['IRF_Cagg'][0,0]-plotresult['IRF_C_by_suff'][0,0])/plotresult['IRF_Cagg'][0,0]) +"\\% \n"
+#
+#decom_table += "\\\\ \\bottomrule  \n"
+#decom_table += " \end{tabular}   \n"
+#decom_table += '\\end{center} \n'
+#decom_table += "\\end{table}  \n"
+#
+#with open('./Tables/Decomposition.tex','w') as f:
+#    f.write(decom_table)
+#    f.close()
+#
