@@ -416,7 +416,7 @@ The model we study is a one asset version of the HANK model presented in \cite{b
 \subsubsection{Households}
 In a given period household $i$ has labor productivity $h_{it}$, chooses their consumption $c_{it}$ and hours worked $n_{it}$. Households have Greenwood, Hercowitz and Huffman (GHH) preferences and act in order to maximize their expected utility:\footnote{The use of GHH preferences is primarily motivated to significantly simplify the solution method. \cite{arGHH} show GHH preferences can lead to unrealistically large fiscal multipliers, while separable preferences lead to other counter factual results.}
 \begin{align*}
-\mathbb{E} \sum_{t=0}^{\infty}\beta^t  u(c_{it} - \nu(n_{it} h_{it})) 
+\mathbb{E} \sum_{t=0}^{\infty}\beta^t  u(c_{it} -  h_{it} \nu(n_{it})) 
 \end{align*}
 where $u(x) = \frac{x^{1-\sigma}}{1-\sigma}$ and $\nu(n) = \frac{n^{1-\psi}}{1-\psi}$.
 
@@ -463,7 +463,7 @@ Our HANK model uses non-separable GHH preferences. This results in a strong link
 \begin{align*}
 \text{GHHchannel} = \mathbb{E}\left((1-MPC_i) h_i\right)  \frac{\bar{N}}{\psi} d\omega
 \end{align*}
-This intuition here is that households smooth $c_{it} - \nu(n_{it})$ over time periods, so if a household works more in one period they will need to consume more in that period to achieve the same marginal utility of consumption. As we shall see, this channel dominates all the other five transmission channels.
+The intuition here is that households smooth $c_{it} - h_{it}\nu(n_{it})$ over time periods, so if a household works more in one period they will need to consume more in that period to achieve the same marginal utility of consumption. As we shall see, this channel dominates all the other five transmission channels.
 
 \subsubsection{Is a Monetary Policy Shock Transitory in the HANK Model?}
 While the aggregate level of government debt at the start of each period will only change in the initial period, the distribution of wealth may propagate through time leading to errors in our decomposition. Figure \ref{fig:HANK_IRFs} shows the impulse response of a one percentage point decline in the nominal interest rate. It is clear the the aggregate consumption response, along with the wage response, is transitory in nature. However, both the real interest rate and the inflation impulse response functions show some persistence, possibly due to the fact that the monetary policy decline acts as a wealth transfer from the wealthy to the less wealthy, so higher interest rates are required to dampen demand back down to the steady state level. The aggregate size of the response is also noticeably large. The one percentage point decline in nominal interest rates leads to almost 12 percentage point increase in consumption. Much of this is due to the unusual nature of GHH preferences as will become clear in the next section.
