@@ -74,9 +74,11 @@ set_param_value('psi_c',psi_c);
 model(linear); 
 //Composite parameters
 #Omega=1; // We are using constant returns to scale as firms can also adjust their capital each period (1-alpha)/(1-alpha+alpha*epsilon);  //defined on page 47
-#psi_n_ya=(1+phi)/(sigma*(1-alpha)+phi+alpha); //defined on page 48
+#YoverC = 1.0/(cons_share_K+cons_share_R);
+#InvoverC = invest_share/(cons_share_K+cons_share_R);
+#psi_n_ya=(1+phi)/(sigma*YoverC*(1-alpha)+phi+alpha); //defined on page 48
 #lambda_gali=(1-theta)*(1-beta*theta)/theta*Omega; //defined on page 47, named lambda there
-#kappa=lambda_gali*(sigma+(phi+alpha)/(1-alpha));  //defined on page 49
+#kappa=lambda_gali*(sigma*YoverC+(phi+alpha)/(1-alpha));  //defined on page 49
 
 //1. New Keynesian Phillips Curve eq. (21)
 pi=beta*pi(+1)+kappa*y_gap;
@@ -107,7 +109,7 @@ i=phi_pi*pi+phi_y*y_gap+nu;
 //5. Definition real interest rate
 r_real=i-pi(+1);
 //6. Definition natural output, eq. (19)
-y_nat=psi_n_ya*(a + alpha*k(-1));
+y_nat=psi_n_ya*(a + alpha*k(-1)) + (1-alpha)*sigma*InvoverC/(sigma*(1-alpha)*YoverC + phi + alpha)*invest;
 //7. Definition output gap
 y_gap=y-y_nat;
 //8. Monetary policy shock

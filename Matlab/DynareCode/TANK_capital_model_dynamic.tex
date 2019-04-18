@@ -8,13 +8,19 @@
 Omega = 1
 \end{dmath*}
 \begin{dmath*}
-psi_n_ya = \frac{1+{\phi}}{{\alpha}+{\phi}+{\sigma}\, \left(1-{\alpha}\right)}
+YoverC = \frac{1.0}{\bar{C_K}+\bar{C_R}}
+\end{dmath*}
+\begin{dmath*}
+InvoverC = \frac{{\frac{\bar{I}}{\bar{Y}}}}{\bar{C_K}+\bar{C_R}}
+\end{dmath*}
+\begin{dmath*}
+psi_n_ya = \frac{1+{\phi}}{{\alpha}+{\phi}+{\sigma}\, YoverC_{t}\, \left(1-{\alpha}\right)}
 \end{dmath*}
 \begin{dmath*}
 lambda_gali = \frac{\left(1-{\theta}\right)\, \left(1-{\theta}\, {\beta}\right)}{{\theta}}\, Omega_{t}
 \end{dmath*}
 \begin{dmath*}
-kappa = lambda\_gali_{t}\, \left({\sigma}+\frac{{\phi}+{\alpha}}{1-{\alpha}}\right)
+kappa = lambda\_gali_{t}\, \left({\sigma}\, YoverC_{t}+\frac{{\phi}+{\alpha}}{1-{\alpha}}\right)
 \end{dmath*}
 \begin{dmath}
 % Equation 1
@@ -22,7 +28,7 @@ kappa = lambda\_gali_{t}\, \left({\sigma}+\frac{{\phi}+{\alpha}}{1-{\alpha}}\rig
 \end{dmath}
 \begin{dmath}
 % Equation 2
-{w_r}_{t}=\frac{{\sigma}\, \left(\bar{C_R}\, {c_R}_{t}+\bar{C_K}\, {c_K}_{t}\right)}{\bar{C_R}+\bar{C_K}}+{\phi}\, {n}_{t}
+{w_r}_{t}=\frac{{\sigma}\, \left(\bar{C_R}\, {c_R}_{t}+\bar{C_K}\, {c_K}_{t}\right)}{\bar{C_K}+\bar{C_R}}+{\phi}\, {n}_{t}
 \end{dmath}
 \begin{dmath}
 % Equation 3
@@ -46,7 +52,7 @@ kappa = lambda\_gali_{t}\, \left({\sigma}+\frac{{\phi}+{\alpha}}{1-{\alpha}}\rig
 \end{dmath}
 \begin{dmath}
 % Equation 8
-{c}_{t}=\frac{\bar{C_R}\, {c_R}_{t}+\bar{C_K}\, {c_K}_{t}}{\bar{C_R}+\bar{C_K}}
+{c}_{t}=\frac{\bar{C_R}\, {c_R}_{t}+\bar{C_K}\, {c_K}_{t}}{\bar{C_K}+\bar{C_R}}
 \end{dmath}
 \begin{dmath}
 % Equation 9
@@ -70,7 +76,7 @@ kappa = lambda\_gali_{t}\, \left({\sigma}+\frac{{\phi}+{\alpha}}{1-{\alpha}}\rig
 \end{dmath}
 \begin{dmath}
 % Equation 14
-{y^{nat}}_{t}=psi\_n\_ya_{t}\, \left({a}_{t}+{\alpha}\, {k}_{t-1}\right)
+{y^{nat}}_{t}=psi\_n\_ya_{t}\, \left({a}_{t}+{\alpha}\, {k}_{t-1}\right)+{i_R}_{t}\, \frac{{\sigma}\, \left(1-{\alpha}\right)\, InvoverC_{t}}{{\alpha}+{\phi}+YoverC_{t}\, {\sigma}\, \left(1-{\alpha}\right)}
 \end{dmath}
 \begin{dmath}
 % Equation 15

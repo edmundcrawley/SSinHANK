@@ -182,7 +182,7 @@ M_.maximum_exo_lead = 0;
 oo_.exo_steady_state = zeros(1, 1);
 M_.params = NaN(18, 1);
 M_.NNZDerivatives = zeros(3, 1);
-M_.NNZDerivatives(1) = 63;
+M_.NNZDerivatives(1) = 64;
 M_.NNZDerivatives(2) = -1;
 M_.NNZDerivatives(3) = -1;
 set_param_value('sigma',sigma);
