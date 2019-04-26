@@ -1,0 +1,56 @@
+name: Representative Agent New Keynesian
+
+symbols:
+
+   exogenous: [eps_nu]
+   states: [nu]
+   controls: [i, pi, y, r_real]
+   expectations: []
+   values: []
+   parameters: [beta, alpha, rho_nu, sigma, phi, phi_pi, phi_y, epsilon, theta, Omega, lambda1, kappa]
+   rewards: []
+   
+#definitions:
+#    n: (1-alpha)/y
+#    w_real: sigma*y + phi*n
+    
+
+equations:
+
+    arbitrage: 
+        - i = phi_pi*pi+phi_y*y+nu  
+        - r_real=i-pi(+1)
+        - y = y(+1) - 1/sigma*(i - pi(+1))    
+        - pi=beta*pi(+1)+kappa*y
+
+    transition:
+        - nu=rho_nu*nu(-1)+eps_nu
+
+#    expectation:
+
+calibration:
+    # parameters
+    beta: 0.97
+    alpha: 0.33
+    rho_nu: 0
+    sigma: 1.0
+    phi: 1.0 
+    phi_pi: 1.5
+    phi_y: 0.0
+    epsilon: 20
+    theta: 2./3.
+    Omega: 1.   #  We are using constant returns to scale as firms can also adjust their capital each period (1-alpha)/(1-alpha+alpha*epsilon);  //defined on page 47
+    lambda1: (1-theta)*(1-beta*theta)/theta*Omega    #defined on page 47
+    kappa: lambda1*(sigma+(phi+alpha)/(1-alpha))     #defined on page 49
+    
+    pi: 0.
+    y: 0.
+    i: 0.
+#    n: 0.
+#    w_real: 0.
+    nu: 0.
+    r_real: 0.
+    
+exogenous: !Normal
+    Sigma: [[0.1**2]]
+    

@@ -281,7 +281,7 @@ The final baseline model consists of the Taylor rule, equation \ref{taylor_rule}
 \subsection{Calibration}
 We calibrate to standard parameters based on annual periods. Baseline parameters are shown in table \ref{table:calibration}. We will vary some of these to see how the size of the different transmission mechanisms changes with them.
 
-\input ../Matlab/DynareCode//Tables/calib_table.tex
+\input ../Python/DoloCode/Tables/calib_table.tex
 
 \section{Results from the Baseline TANK Model}
 As there are no predetermined variables in our baseline TANK model the decomposition of transmission mechanisms described in section \ref{transmission_channels} works exactly. Here we look at how monetary policy divides into the five different channels according to the proportion of Keynesian households, as well as the extent to which they are able to take on debt.
@@ -295,7 +295,7 @@ Moving along the x-axis increases the proportion of Keynesian households. The si
 
 \begin{figure} 
 	\begin{centering}
-		\includegraphics[scale=0.7]{../Matlab/DynareCode/Figures/ProportionKeynesian_sigma1.eps}
+		\includegraphics[scale=0.7]{../Python/DoloCode/Figures/ProportionKeynesian_sigma1.pdf}
 		\caption{Changing the Proportion of Keynesian Households, $\sigma=1$}
 		\label{fig:ProportionKeynesian}
 	\end{centering}
@@ -306,21 +306,21 @@ This feature of the standard New Keynesian model, that markups are low during a 
 \subsection{Introducing Debt}
 In this section we analyze what happens when the Keynesian households are allowed to take on debt equal to some fraction of their steady state income. For the remainder of this section we will fix the proportion of Keynesian households at 0.2, giving an economy-wide MPC of just over 20 percent. This number is chosen both because it is close to a number of the current theoretical HANK models, and a larger number causes indeterminacy problems for some parameterizations.\footnote{See \cite{gali_2004} for a detailed discussion on determinacy of TANK models.} However, we accept 0.2 is on the low end of empirical estimates.\footnote{A large literature aims to estimate MPCS. See \cite{johnson_household_2006}, \cite{parker_consumer_2013}, \cite{fagereng_mpc_2016} and \cite{ckConsumption} for a small selection of examples.} In figure \ref{fig:ProportionKeynesian} from the previous section, there is a dotted line drawn where the proportion of Keynesian households equals 0.2. This shows the size of the transmission channels for this section when there is no debt.
 
-Figure \ref{fig:KeynesianDebt} shows how the size of the transmission channels change with the level of debt held by the Keynesian households, with the three panels showing this for decreasing elasticity of substitution.\footnote{The elasticity of substitution is equal to $1/\sigma$, so the three panels in figure \ref{fig:KeynesianDebt} represent an elasticity of substitution of 1, 0.5 and 0.33 respectively.} Starting with the left hand panel, we consider how the model behaves with an elasticity of substitution equal to one. The intercepts with the y-axis exactly correspond with the intercepts with the dotted line from figure \ref{fig:ProportionKeynesian}. This is the size of the transmission channels when a proportion 0.2 of households are Keynesian and these households have no debt. As in the previous section, the intertemporal substitution channel is slightly below one, while the income channels also play a significant role due to presence of Keynesian households. However, with no debt at the intersection with the y-axis both the interest rate exposure and Fisher channels are zero.
+Figure \ref{fig:KeynesianDebt} shows how the size of the transmission channels change with the level of debt held by the Keynesian households, with the three panels showing this for decreasing elasticity of substitution.\footnote{The elasticity of substitution is equal to $1/\sigma$, so the three panels in figure \ref{fig:KeynesianDebt} represent an elasticity of substitution of 1, 0.5 and 0.33 respectively.} Starting with the top panel, we consider how the model behaves with an elasticity of substitution equal to one. The intercepts with the y-axis exactly correspond with the intercepts with the dotted line from figure \ref{fig:ProportionKeynesian}. This is the size of the transmission channels when a proportion 0.2 of households are Keynesian and these households have no debt. As in the previous section, the intertemporal substitution channel is slightly below one, while the income channels also play a significant role due to presence of Keynesian households. However, with no debt at the intersection with the y-axis both the interest rate exposure and Fisher channels are zero.
 
 \begin{figure} 
 	\begin{centering}
-		\includegraphics[scale=0.4]{../Matlab/DynareCode/Figures/KeynesianDebt_sigma1.eps}
-		\includegraphics[scale=0.4]{../Matlab/DynareCode/Figures/KeynesianDebt_sigma2.eps}
-		\includegraphics[scale=0.4]{../Matlab/DynareCode/Figures/KeynesianDebt_sigma3.eps}
+		\includegraphics[scale=0.55]{../Python/DoloCode/Figures/KeynesianDebt_sigma1.pdf}
+		\includegraphics[scale=0.55]{../Python/DoloCode/Figures/KeynesianDebt_sigma2.pdf}
+		\includegraphics[scale=0.55]{../Python/DoloCode/Figures/KeynesianDebt_sigma3.pdf}
 		\caption{Changing the Debt of Keynesian Households}
 		\label{fig:KeynesianDebt}
 	\end{centering}
 \end{figure}
 
-As the quantity of debt that the Keynesian households can take on increases, both the interest rate exposure and Fisher channel start to become quantitatively important. Still looking at the left hand panel of figure \ref{fig:KeynesianDebt}, we see both of these channels growing, but they are still dominated by the intertemporal substitution channel. The two income channels grow in exact proportion to the other three channels, acting as a constant multiplier of the other three channels, no matter the quantity of debt. It may be useful to think of the transmission of monetary policy acting in stages. First aggregate demand is directly affected by the intertemporal substitution and interest rate exposure channels. The size of these channels depends only on the change in the interest rate, and is not changed as output and inflation change. The size of the Fisher channel is proportional to the amount of nominal debt, multiplied by the size of the overall change in income.\footnote{This is because inflation is proportional to the output gap in this model.} Finally the income channels are each a constant proportion of the total income change. We can think of intertemporal substitution and interest rate exposure as providing the initial `kick', which is then augmented by the Fisher and income channels.
+As the quantity of debt that the Keynesian households can take on increases, both the interest rate exposure and Fisher channel start to become quantitatively important. Still looking at the top panel of figure \ref{fig:KeynesianDebt}, we see both of these channels growing, but they are still dominated by the intertemporal substitution channel. The two income channels grow in exact proportion to the other three channels, acting as a constant multiplier of the other three channels, no matter the quantity of debt. It may be useful to think of the transmission of monetary policy acting in stages. First aggregate demand is directly affected by the intertemporal substitution and interest rate exposure channels. The size of these channels depends only on the change in the interest rate, and is not changed as output and inflation change. The size of the Fisher channel is proportional to the amount of nominal debt, multiplied by the size of the overall change in income.\footnote{This is because inflation is proportional to the output gap in this model.} Finally the income channels are each a constant proportion of the total income change. We can think of intertemporal substitution and interest rate exposure as providing the initial `kick', which is then augmented by the Fisher and income channels.
 
-The center and right panels of figure \ref{fig:KeynesianDebt} show the same channels, but when the elasticity of substitution is 0.5 and 0.33 respectively. The size of the intertemporal substitution channel is reduced in the same proportion, by 0.5 and 0.33 as the Ricardian households are now less happy to shift consumption between periods. However, the interest rate exposure channel remains exactly the same size as before. It is determined by the change in the borrowing cost along with the size of the debt, both of which are unchanged. The aggregate income channel is also exactly the same multiple of the other channels in all three panels, as is the Fisher channel.\footnote{The aggregate income multiplier is constant across both debt levels and intertemporal elasticity. The Fisher multiplier varies by debt level, but for any particular debt level it does not vary with intertemporal elasticity} The earnings heterogeneity multiplier grows significantly with $\sigma$. This is because the markup, and hence firm profits, become \textit{more} countercyclical with higher $\sigma$. Again, this feature of the standard New Keynesian model is undesirable and leads us here to be unable analyze the model under low elasticities of substitution that we believe to be more empirically reasonable.\footnote{See \cite{havranek_measuring_2015} for a meta-study for EIS estimates.}
+The center and bottom panels of figure \ref{fig:KeynesianDebt} show the same channels, but when the elasticity of substitution is 0.5 and 0.33 respectively. The size of the intertemporal substitution channel is reduced in the same proportion, by 0.5 and 0.33 as the Ricardian households are now less happy to shift consumption between periods. However, the interest rate exposure channel remains exactly the same size as before. It is determined by the change in the borrowing cost along with the size of the debt, both of which are unchanged. The aggregate income channel is also exactly the same multiple of the other channels in all three panels, as is the Fisher channel.\footnote{The aggregate income multiplier is constant across both debt levels and intertemporal elasticity. The Fisher multiplier varies by debt level, but for any particular debt level it does not vary with intertemporal elasticity} The earnings heterogeneity multiplier grows significantly with $\sigma$. This is because the markup, and hence firm profits, become \textit{more} countercyclical with higher $\sigma$. Again, this feature of the standard New Keynesian model is undesirable and leads us here to be unable analyze the model under low elasticities of substitution that we believe to be more empirically reasonable.\footnote{See \cite{havranek_measuring_2015} for a meta-study for EIS estimates.}
 
 This brings us to a broader point: the calibration of the elasticity of intertemporal substitution (EIS) in the standard New Keynsian model has been chosen to match aggregate data, despite the little micro evidence we have suggesting a much lower level. Figure \ref{fig:KeynesianDebt} shows why, in the absence of debt, a large EIS is required: with no debt the intertemporal substitution channel is the only `kick' to aggregate demand, so if this is small we need very large multipliers to get a sizable consumption response to monetary policy. If we make the EIS small, we need something else to take its place. Interest rate exposure is another `kick', that empirical evidence has shown could be large,\footnote{See \cite{auclert_monetary_2017} and \cite{ckConsumption}.}. By introducing interest rate exposure, we allow our models to use more micro-founded estimates of the EIS while still generating the kinds of aggregate responses estimated in the macro data.
 
@@ -369,7 +369,7 @@ For our partial equilibrium decomposition to approximate the aggregate consumpti
 
 \begin{figure} 
 	\begin{centering}
-		\includegraphics[scale=0.7]{../Matlab/DynareCode/Figures/TANK_capital_IRF_k.eps}
+		\includegraphics[scale=0.7]{../Python/DoloCode/Figures/TANK_capital_IRF_k.pdf}
 		\caption{Path of Capital following a 1\% nominal interest rate shock}
 		\label{fig:PathCap}
 	\end{centering}
@@ -383,9 +383,9 @@ In order to quantify how large of a deviation the model with capital is from the
 
 \begin{figure} 
 	\begin{centering}
-		\includegraphics[scale=0.4]{../Matlab/DynareCode/Figures/TANK_capital_IRF_i.eps}
-		\includegraphics[scale=0.4]{../Matlab/DynareCode/Figures/TANK_capital_IRF_c_K.eps}
-		\includegraphics[scale=0.4]{../Matlab/DynareCode/Figures/TANK_capital_IRF_c_R.eps}
+		\includegraphics[scale=0.5]{../Python/DoloCode/Figures/TANK_capital_IRF_i.pdf}
+		\includegraphics[scale=0.5]{../Python/DoloCode/Figures/TANK_capital_IRF_c_K.pdf}
+		\includegraphics[scale=0.5]{../Python/DoloCode/Figures/TANK_capital_IRF_c_R.pdf}
 		\caption{Paths following a 1\% nominal interest rate decrease}
 		\label{fig:iandcpath}
 	\end{centering}
@@ -395,7 +395,7 @@ The existence of capital raises the question of whether we should be including a
 
 The model with capital does not allow such an easy interpretation of the change in wealth, even in the case with infinite capital adjustment costs. This is because the Ricardians are consistently investing to offset depreciation. In our decomposition this saving counts as unhedged interest rate exposure because their return on investment will be equal to the real interest rate. However, investments that were already planned will not be subject to this higher price - it is the marginal investments that suffer from the convex adjustment costs. If we change our definition of unhedged interest rate exposure to exclude planned investment, then partial equilibrium decomposition gives no error for the model with infinite adjustment costs.
 
-\input ../Matlab/DynareCode//Tables/error_table.tex
+\input ../Python/DoloCode/Tables/error_table.tex
 
 The change in the value of existing assets is shown in figure \ref{fig:PathTobinq}. With no adjustment costs the value of assets remains constant over time as the consumption asset is freely exchangeable with capital next period. Similarly, with infinite adjustment costs the price of a unit of capital next period moves one for one with the interest rate. For values in between the price of assets jumps up in period one followed by a persistent period in which capital adjusts back down to the steady state, and hence assets prices are low due to convex adjustment costs.
 
@@ -403,7 +403,7 @@ Overall the partial equilibrium decomposition works reasonably well with the add
 
 \begin{figure} 
 	\begin{centering}
-		\includegraphics[scale=0.7]{../Matlab/DynareCode/Figures/TANK_capital_IRF_q.eps}
+		\includegraphics[scale=0.7]{../Python/DoloCode/Figures/TANK_capital_IRF_q.pdf}
 		\caption{Path of Tobin's q following a 1\% nominal interest rate shock}
 		\label{fig:PathTobinq}
 	\end{centering}

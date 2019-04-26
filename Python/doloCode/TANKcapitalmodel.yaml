@@ -1,0 +1,97 @@
+name: Two Agent New Keynesian model with Capital
+
+symbols:
+
+   exogenous: [eps_nu]
+   states: [nu, Epi, k_previous]
+   controls: [i, pi, y, y_gap, y_nat, r_real, n, n_R, n_K, c, c_R, c_K, w_real, invest, q, k]
+   expectations: []
+   values: []
+   parameters: [beta, alpha, rho_nu, sigma, phi, phi_pi, phi_y, epsilon, theta, Omega, lambda_gali, kappa, pop_share_K, debt_limit, cons_share_K, cons_share_R, labor_share_K, labor_share_R, psi_n_ya, delta, invest_share, psi_c, YoverC, InvoverC, cons_share_to_labor_share_K]
+   rewards: []
+   
+#definitions:
+
+
+equations:
+
+    arbitrage: 
+        - i = phi_pi*pi+phi_y*y_gap+nu  
+        - r_real=i-pi(+1)   
+        - pi=beta*pi(+1)+kappa*y_gap
+        - c_R = c_R(+1) - 1/sigma*(i - pi(+1)) 
+        - (1-debt_limit*(1-beta))*c_K = w_real + n_K - debt_limit*(Epi-pi) - beta*debt_limit*r_real
+        - w_real = sigma*(cons_share_R*c_R + cons_share_K*c_K)/(cons_share_R+cons_share_K) + phi*n
+        - n_R = n_K
+        - y = cons_share_R*c_R + cons_share_K*c_K + invest_share*invest
+        - n = labor_share_R*n_R + labor_share_K*n_K
+        - c = (cons_share_R*c_R + cons_share_K*c_K)/(cons_share_R+cons_share_K)
+        - delta*invest = k - (1-delta)*k_previous
+        - q = psi_c*(k-k_previous)
+        - r_real + q = beta*(1-delta)*q(+1) + (1 - beta*(1-delta))*(w_real(+1) + n(+1) - k)
+        - y_nat=psi_n_ya*alpha*k_previous + (1-alpha)*sigma*InvoverC/(sigma*(1-alpha)*YoverC + phi + alpha)*invest
+        - y_gap = y - y_nat
+        - y=(1-alpha)*n + alpha*k_previous
+
+    transition:
+        - nu=rho_nu*nu(-1)+eps_nu
+        - Epi = i(-1)-r_real(-1)
+        - k_previous = k(-1)
+
+#    expectation:
+#    direct_response:
+        
+
+calibration:
+    # parameters
+    sigma: 1.0
+    phi: 1.0 
+    phi_pi: 1.5
+    phi_y: 0.0
+    theta: 2./3.
+    rho_nu: 0.0
+    beta: 0.97
+    alpha: 0.33
+    epsilon: 6.0
+    pop_share_K: 0.2
+    debt_limit: 0.0
+    labor_share_K: pop_share_K
+    labor_share_R: 1.0 - labor_share_K
+    Omega: 1.   #  We are using constant returns to scale as firms can also adjust their capital each period (1-alpha)/(1-alpha+alpha*epsilon);  //defined on page 47
+    lambda_gali: (1-theta)*(1-beta*theta)/theta*Omega    #defined on page 47
+    kappa: lambda_gali*(sigma*YoverC+(phi+alpha)/(1-alpha))     #defined on page 49
+    psi_n_ya: (1+phi)/(sigma*YoverC*(1-alpha)+phi+alpha)    #defined on page 48
+    cons_share_K: pop_share_K*cons_share_to_labor_share_K*(1-invest_share)
+    cons_share_R: 1.0-invest_share-cons_share_K
+    delta: 0.1
+    invest_share: delta*alpha*(epsilon-1)/(epsilon*(1/beta - (1-delta)))
+    psi_c: 0.0
+    YoverC: 1.0/(cons_share_K+cons_share_R)
+    InvoverC: invest_share/(cons_share_K+cons_share_R)
+    cons_share_to_labor_share_K: (1-debt_limit*(1-beta))*(epsilon-1)/epsilon*(1-alpha)
+
+    
+    pi: 0.
+    y: 0.
+    y_gap: 0.
+    y_nat: 0.
+    i: 0.
+    r_real: 0.
+    n: 0.
+    n_R: 0.
+    n_K: 0.
+    c: 0.
+    c_R: 0.
+    c_K: 0.
+    w_real: 0.
+    invest: 0.
+    q: 0.
+    nu: 0.
+    k: 0.
+    k_previous: 0.
+    Epi: 0.
+
+    
+exogenous: !Normal
+    Sigma: [[0.1**2]]
+    
