@@ -53,7 +53,7 @@ mpartauchen    = 'importance'
 gridK = 1 # keep fixed at SS of economy with bonds and capital
 gridm_min_art = 0 
 #gridm_min_art = 0 # to make the asset as a gov bond
-gridm_max_art = 400
+gridm_max_art = 150
 
 ## Numerical Parameters
 mparcrit    = 10**(-11)
