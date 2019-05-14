@@ -1,0 +1,95 @@
+name: Two Agent New Keynesian model
+
+symbols:
+
+   exogenous: [eps_nu]
+   states: [nu, Epi_p, w_gap_previous, w_nat_previous]
+   controls: [i, pi_p, y, y_gap, y_nat, r_real, n, n_R, n_K, c_R, c_K, w_real, w_nat, w_gap, pi_w]
+   expectations: []
+   values: []
+   parameters: [beta, alpha, rho_nu, sigma, phi, phi_pi_p, phi_pi_w, phi_y, epsilon_p, epsilon_w, theta_p, theta_w, Omega, lambda_p, kappa_p, lambda_w, kappa_w, pop_share_K, debt_limit, cons_share_K, cons_share_R, labor_share_K, labor_share_R]
+   rewards: []
+   
+#definitions:
+
+
+equations:
+
+    arbitrage: 
+        - i = phi_pi_p*pi_p + phi_pi_w*pi_w + phi_y*y_gap+nu  
+        - r_real=i-pi_p(+1)   
+        - pi_p=beta*pi_p(+1)+kappa_p*y_gap + lambda_p*w_gap
+        - pi_w=beta*pi_w(+1)+kappa_w*y_gap - lambda_w*w_gap
+        - c_R = c_R(+1) - 1/sigma*(i - pi_p(+1)) 
+        - (1-debt_limit*(1-beta))*c_K = w_real + n_K - debt_limit*(Epi_p-pi_p) - beta*debt_limit*r_real
+        - w_gap = w_gap_previous + pi_w - pi_p - (w_nat - w_nat_previous)
+        - n_R = n_K
+        - y = cons_share_R*c_R + cons_share_K*c_K
+        - n = labor_share_R*n_R + labor_share_K*n_K
+        - y_nat = 0.
+        - y_gap = y - y_nat
+        - w_nat = 0
+        - w_gap = w_real - w_nat
+        - y=(1-alpha)*n
+
+    transition:
+        - nu=rho_nu*nu(-1)+eps_nu
+        - Epi_p = i(-1)-r_real(-1)
+        - w_gap_previous = w_gap(-1)
+        - w_nat_previous = w_nat(-1)
+
+#    expectation:
+#    direct_response:
+        
+
+calibration:
+    # parameters
+    sigma: 1.0
+    phi: 1.0 
+    phi_pi_p: 1.5
+    phi_pi_w: 0.
+    phi_y: 0.0
+    theta_p: 0.0000001
+    theta_w: 2./3.
+    rho_nu: 0.0
+    beta: 0.97
+    alpha: 0.33
+    epsilon_p: 6.0
+    epsilon_w: 6.0
+    pop_share_K: 0.5
+    debt_limit: 0.0
+    labor_share_K: pop_share_K
+    labor_share_R: 1.0 - labor_share_K
+    Omega: 1.   #  We are using constant returns to scale as firms can also adjust their capital each period (1-alpha)/(1-alpha+alpha*epsilon);  //defined on page 47
+    lambda_p: (1-theta_p)*(1-beta*theta_p)/theta_p*Omega    
+    kappa_p: lambda_p*alpha/(1-alpha)  
+    lambda_w: (1-theta_w)*(1-beta*theta_w)/(theta_w*(1+epsilon_w*phi)) 
+    kappa_w: lambda_w*(sigma + phi/(1-alpha)) 
+    cons_share_K: (1.0-debt_limit*(1-beta))*pop_share_K*(1.0-alpha)*(epsilon_p-1.0)/epsilon_p
+    cons_share_R: 1.0-cons_share_K
+
+    
+    pi_p: 0.
+    y: 0.
+    y_gap: 0.
+    y_nat: 0.
+    i: 0.
+    r_real: 0.
+    n: 0.
+    n_R: 0.
+    n_K: 0.
+    c_R: 0.
+    c_K: 0.
+    w_real: 0.
+    w_nat: 0.
+    w_gap: 0.
+    nu: 0.
+    Epi_p: 0.
+    pi_w: 0.
+    w_gap_previous: 0.
+    w_nat_previous: 0.
+
+    
+exogenous: !Normal
+    Sigma: [[0.1**2]]
+    

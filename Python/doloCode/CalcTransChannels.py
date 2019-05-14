@@ -4,7 +4,7 @@ Calculates Auclert statistics for the TANK model
 import numpy as np
 from dolo import *  # load the dolo library
 
-def CalcTransChannels_TANK(model, T=8):
+def CalcTransChannels_TANK(model, T=8, sticky_wages=False):
     #get parameters needed for later calculations
     param_names = model.symbols['parameters']
     param_vals = model.calibration['parameters']
@@ -46,8 +46,10 @@ def CalcTransChannels_TANK(model, T=8):
     # dR/R
     dR_R_TANK = float(irf.sel(V='r_real')[2])
     # dP/P
-    dP_P_TANK = float(irf.sel(V='pi')[2])
-
+    if sticky_wages:
+        dP_P_TANK = float(irf.sel(V='pi_p')[2])
+    else:
+        dP_P_TANK = float(irf.sel(V='pi')[2])
     # Get output for partial eq. decomposition
     # dC/C
     dC_C_TANK = float(irf.sel(V='y_gap')[2])
@@ -88,9 +90,16 @@ def CalcTransChannels_TANK(model, T=8):
                              ies*nominal_i_scale, dC_C_TANK*nominal_i_scale]
     suff_stats = [Inc_wt_MPC_TANK, Elas_R_TANK, Elas_P_TANK, Elas_EIS_TANK]
     YRP_changes = [dY_Y_TANK*nominal_i_scale, dR_R_TANK*nominal_i_scale, dP_P_TANK*nominal_i_scale]
-    checks = [error_TANK, check_R, check_K]
+    checks = 100*np.array([error_TANK/dC_C_TANK, check_R/dC_R, check_K/dC_K])
     
-    return Transmission_Channels, suff_stats, YRP_changes, checks
+    IRF_i = np.array(irf.sel(V='i')[2:])*nominal_i_scale
+    IRF_c_R = np.array(irf.sel(V='c_R')[2:])*nominal_i_scale
+    IRF_c_K = np.array(irf.sel(V='c_K')[2:])*nominal_i_scale
+    IRF_pi_p = np.array(irf.sel(V='pi_p')[2:])*nominal_i_scale
+    IRF_r_real = np.array(irf.sel(V='r_real')[2:])*nominal_i_scale
+    IRF_pi_w = np.array(irf.sel(V='pi_w')[2:])*nominal_i_scale
+    
+    return Transmission_Channels, suff_stats, YRP_changes, checks, IRF_i, IRF_c_R, IRF_c_K, IRF_pi_p, IRF_r_real, IRF_pi_w
     
  
 
@@ -138,7 +147,10 @@ def CalcTransChannels_TANKcapital(model, T=8):
     # dR/R
     dR_R_TANK = float(irf.sel(V='r_real')[2])
     # dP/P
-    dP_P_TANK = float(irf.sel(V='pi')[2])
+    if sticky_wages:
+        dP_P_TANK = float(irf.sel(V='pi_p')[2])
+    else:
+        dP_P_TANK = float(irf.sel(V='pi')[2])
 
     # Get output for partial eq. decomposition
     # dC/C
