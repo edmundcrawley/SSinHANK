@@ -1,7 +1,7 @@
 import numpy as np
 from matplotlib import pyplot as plt
 from dolo import *  # load the dolo library
-from CalcTransChannels import CalcTransChannels_TANK, CalcTransChannels_TANKcapital
+from CalcTransChannels import CalcTransChannels_persistent
 figure_dir = '.\\Figures\\'
 table_dir = '.\\Tables\\'
 
@@ -39,7 +39,7 @@ for this_sigma in [1.0,2.0,3.0,10.0]:
                 TANKmodel.set_calibration(debt_limit=param_array[i])
             else:
                 print('Can\'t handle this parameter')
-            Transmission_Channels[i,:], suff_stats[i,:], YRP_changes[i,:], checks[i,:], IRF_i, IRF_c_R, IRF_c_K, IRF_pi_p, IRF_r_real, IRF_pi_w = CalcTransChannels_TANK(TANKmodel, sticky_wages=True)
+            Transmission_Channels[i,:], suff_stats[i,:], YRP_changes[i,:], checks[i,:], IRF_i, IRF_c_R, IRF_c_K, IRF_pi_p, IRF_r_real, IRF_pi_w = CalcTransChannels_persistent(TANKmodel, sticky_wages=True)
         plt.figure()
         plt.stackplot(param_array,np.transpose(Transmission_Channels[:,[4,2,3,0,1]]), \
                       labels=['Intertemporal Substitution', 'Interest Rate Exposure', 'Fisher','Aggregate Income', 'Heterogenous Income'], \
