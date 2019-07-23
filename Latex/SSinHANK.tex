@@ -499,7 +499,96 @@ We believe future research should focus on reducing the countercyclical profits 
 \small
 \bibliography{AllPapers}
 \normalsize
+\newpage
+\section{Sticky Wages}
+This appendix describes initial work done on a sticky wages version of the TANK model.
+\subsection{Model}
+Euler equation for Ricardian's is the same as before:
+\begin{align}
+c^R_t = \mathbb{E}_t c^R_{t+1} - \frac{1}{\sigma}(i_t - \mathbb{E}_t\pi_{t+1}) 
+\end{align}
+We need NKPCs for both goods and wage inflation:
+\begin{align}
+\pi^p_t=\beta \mathbb{E}_t\pi^p_{t+1}+\kappa^p \tilde{y}_t + \lambda^p \tilde{w}_t \\
+\pi^w_t=\beta \mathbb{E}_t\pi^w_{t+1}+\kappa^w \tilde{y}_t - \lambda^w \tilde{w}_t
+\end{align}
+where
+\begin{align}
+\lambda^p = (1-\theta^p)\frac{(1-\beta \theta^p)} {\theta^p} \\
+\lambda^w = (1-\theta^w)\frac{(1-\beta \theta^w)} {\theta^w (1+\varepsilon_w \phi)} \\
+\kappa^p = \lambda_p \alpha/(1-\alpha)  \\
+\kappa^w = \lambda_w(\sigma + \phi/(1-\alpha)) 
+\end{align}
+where the output gap and wage gap, $\tilde{y}_t$ and $\tilde{w}_t$, in this case with fixed technology and capital is just the percentage deviation from steady-state.
 
+The monetary policy rule is already linearized and we take it directly from equation \ref{taylor_rule}:
+\begin{align}
+i_t = \phi_{\pi} \pi^p_t + \nu_t	
+\end{align}
+
+\begin{align}
+c_t &= \overline{c}_{K} c^K_t + \overline{c}_{R} c^R_t  \\
+n_t &= \overline{n}_{K} n^K_t + \overline{n}_{R} n^R_t  \\
+\tilde{y}_t &= c_t 
+\end{align}
+and the Keynesian budget condition from equation \ref{budget_constraint_K}:
+\begin{align}
+(1-\Omega (1-\beta)) c^K_t = w_t + n^K_t + \Omega \left(\pi^p_t - \mathbb{E}_{t-1}\pi^p_t\right) - \beta \Omega  (i_t - \mathbb{E}_t \pi^p_{t+1})  \end{align}
+where $w_t$ is the real wage in period $t$. Note $\pi^p_t - \mathbb{E}_{t-1}\pi^p_t$ represents unexpected inflation between $t-1$ and $t$ and relates to the net nominal position of the Keynesian households. The expected return on nominal bonds, $r_t = i_t - \mathbb{E}_t \pi^p_{t+1}$, would be the real interest between $t$ and $t+1$ if such a market existed and relates to the unhedged interest rate exposure of the Keynesian households. In the case where there is no debt ($\Omega=0$), both these components of the budget constraint disappear. 
+
+Real wages are determined by the previous period's wages, adjusted for both price and nominal wage inflation. Note this is different to the sticky prices version, where wages are set optimally for Ricardian households.
+\begin{align}
+w_t = w_{t-1} + \pi^w_t - \pi^p_t \\
+n^R_t &= n^K_t
+\end{align}
+Finally the connection between hours worked and the output gap is given by:
+\begin{align}
+\tilde{y}_t &= (1-\alpha)n_t  
+\end{align}
+Note capital does not appear in the linearized production function because of the fixed capital assumption.
+
+We also have the identity:
+\begin{align}
+r_t = i_t - \mathbb{E}_t \pi_{t+1}
+\end{align}
+
+\subsection{Persistence}
+Unlike the baseline sticky prices model which has no predetermined variables, in the sticky wages model the real wage in the previous period acts as a predetermined variable. Therefore the simple decomposition of Auclert no longer works.
+
+We take the approach of decomposing the consumption response into the same five channels, but now:
+\begin{itemize}
+	\item Aggregate income channel is the \textit{first period} consumption response due to the aggregate income change in \textit{all} periods
+	\item Earnings Heterogeneity channel is the \textit{first period} consumption response due to the earnings heterogeneity in \textit{all} periods
+	\item Fisher channel is the same as before, as in our model all nominal liabilities have a maturity of only one year
+	\item Interest rate exposure channel is the \textit{first period} consumption response due to unhedged interest rate exposure in \textit{all} periods
+	\item Intertemporal substitution channel is the \textit{first period} consumption response due to intertemporal substitution change in \textit{all} periods
+\end{itemize}
+
+\subsection{Initial Results}
+With sticky wages and flexible prices, the goods markup is constant and therefore the share of income going to labor vs capital remains constant. This completely eliminates the earnings heterogeneity channel.
+
+Figure \ref{fig:ProportionKeynesian_sw} shows how the removal of the earnings heterogeneity channel changes the transmission mechanism even when there is no debt in the model. As compared with figure \ref{fig:ProportionKeynesian}, the aggregate consumption response is constant as the proportion of Keynesian households increases, which the transmission channel moves from intertemporal substitution to aggregate income.
+
+Figure \ref{fig:KeynesianDebt_sw} shows how introducing nominal debt changes the transmission channels in this model, depending on the value of the elasticity of intertemporal substitution ($1/\sigma$). When the EIS is high ($\sigma=1$), the intertemporal substitution channel still dominates, but we can now reduce the EIS while still maintaining a well behaved model. When $\sigma=10$ the interest rate exposure channel is the same size as when $\sigma=1$, but the intertemporal substitution channel is now significantly smaller. The consumption response is dominated by the interest rate exposure channel and the aggregate income channel (plus the Fisher channel), as suggested by the data.
+
+\begin{figure} 
+	\begin{centering}
+		\includegraphics[scale=0.7]{../Python/DoloCode/Figures/ProportionKeynesian_sigma1_sw.pdf}
+		\caption{Changing the Proportion of Keynesian Households, $\sigma=1$}
+		\label{fig:ProportionKeynesian_sw}
+	\end{centering}
+\end{figure}
+
+
+\begin{figure} 
+	\begin{centering}
+		\includegraphics[scale=0.55]{../Python/DoloCode/Figures/KeynesianDebt_sigma1_sw.pdf}
+		\includegraphics[scale=0.55]{../Python/DoloCode/Figures/KeynesianDebt_sigma3_sw.pdf}
+		\includegraphics[scale=0.55]{../Python/DoloCode/Figures/KeynesianDebt_sigma10_sw.pdf}
+		\caption{Changing the Debt of Keynesian Households}
+		\label{fig:KeynesianDebt_sw}
+	\end{centering}
+\end{figure}
 \end{document}
 
 
