@@ -95,11 +95,15 @@ def CalcTransChannels_TANK(model, T=8, sticky_wages=False):
     IRF_i = np.array(irf.sel(V='i')[2:])*nominal_i_scale
     IRF_c_R = np.array(irf.sel(V='c_R')[2:])*nominal_i_scale
     IRF_c_K = np.array(irf.sel(V='c_K')[2:])*nominal_i_scale
-    IRF_pi_p = np.array(irf.sel(V='pi_p')[2:])*nominal_i_scale
     IRF_r_real = np.array(irf.sel(V='r_real')[2:])*nominal_i_scale
-    IRF_pi_w = np.array(irf.sel(V='pi_w')[2:])*nominal_i_scale
+    if sticky_wages:
+        IRF_pi_p = np.array(irf.sel(V='pi_p')[2:])*nominal_i_scale
+        IRF_pi_w = np.array(irf.sel(V='pi_w')[2:])*nominal_i_scale
+        return Transmission_Channels, suff_stats, YRP_changes, checks, IRF_i, IRF_c_R, IRF_c_K, IRF_pi_p, IRF_r_real, IRF_pi_w
+    else:
+        return Transmission_Channels, suff_stats, YRP_changes, checks
+
     
-    return Transmission_Channels, suff_stats, YRP_changes, checks, IRF_i, IRF_c_R, IRF_c_K, IRF_pi_p, IRF_r_real, IRF_pi_w
     
  
 
@@ -147,10 +151,7 @@ def CalcTransChannels_TANKcapital(model, T=8):
     # dR/R
     dR_R_TANK = float(irf.sel(V='r_real')[2])
     # dP/P
-    if sticky_wages:
-        dP_P_TANK = float(irf.sel(V='pi_p')[2])
-    else:
-        dP_P_TANK = float(irf.sel(V='pi')[2])
+    dP_P_TANK = float(irf.sel(V='pi')[2])
 
     # Get output for partial eq. decomposition
     # dC/C
