@@ -2,8 +2,9 @@ import numpy as np
 from matplotlib import pyplot as plt
 from dolo import *  # load the dolo library
 from CalcTransChannels import CalcTransChannels_TANK, CalcTransChannels_TANKcapital
-figure_dir = './Figures/'
-table_dir = './Tables/'
+from pathlib import Path
+figure_dir = Path('./Figures/')
+table_dir = Path('./Tables/')
 
 #################################################
 # First do the TANK model without capital
