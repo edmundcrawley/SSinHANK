@@ -1,20 +1,26 @@
 function [c_update,m_update]=EGM_Step1_a(grid,inc,money_expense,c_aux,mpar,par,meshes,w0,mmin,pf_guess)
 
-cpbind = ((par.RB)*meshes.m+mmin)/2+sqrt(((par.RB)*meshes.m+mmin).^(2)+4*(meshes.h/par.H*w0).^(1+par.varphi))/2;
 
-% cpbind  = zeros(mpar.nm,mpar.nh);
-% options = optimset('Display','off');
-% 
-% for i=1:mpar.nh-1
-% cpbind(:,i) = fsolve(@(c) (par.RB)*meshes.m(:,i)+...
-%                (c.^(-par.xi).*meshes.h(:,i)/par.H.*w0).^(1/par.gamma).*meshes.h(:,i)/par.H.*w0-c+mmin,c_aux(:,i),options);
-% end
+cpbind  = zeros(mpar.nm,mpar.nh);
 
-cpbind(:,end) = ((par.RB)*meshes.m(:,end)+mmin+pf_guess*par.profitshare);
 
-m_star = (c_aux + money_expense - inc.labor)./par.RB; % a0
+m_star = (c_aux + money_expense - c_aux.^(-par.xi/par.gamma).*(meshes.h/par.H.*w0).^((1+par.gamma)/par.gamma))./par.RB; % a0
+m_star(:,end) = (c_aux(:,end) + money_expense(:,end) - inc.labor(:,end))./par.RB; % money_expense: savings, m_star: previous savings
+
 
 binding_constraints = money_expense < repmat(m_star(1,:),[mpar.nm 1 ]); % a0(1,:): the smallest current asset, thus, we think it's binding-constraint if saving is smaller than the smallest current asset
+
+[row,col]=find(binding_constraints);
+
+options = optimset('Display','off');
+
+for i=1:length(row)
+cpbind(row(i),col(i)) = fsolve( @(c) (par.RB)*meshes.m(row(i),col(i))+...
+           (c.^(-par.xi).*meshes.h(row(i),col(i))/par.H.*w0).^(1/par.gamma).*meshes.h(row(i),col(i))/par.H.*w0 - c - mmin,c_aux(row(i),col(i)),options );
+end
+
+cpbind(:,end) = ((par.RB)*meshes.m(:,end) - mmin + pf_guess*par.profitshare);
+
 
 % c_aux(binding_constraints)=cpbind(binding_constraints);
 % 

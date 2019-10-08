@@ -10,8 +10,12 @@ Xss=[squeeze(sum(joint_distr,2)); ... % marginal distribution liquid
 par.W=par.mc;
 par.PROFITS = (1-par.mc)*grid.Y;
 
+targets.B=grid.m*(sum(joint_distr,2));
+par.G=targets.B*(1-par.RB/par.PI);
+
+
 Yss=[invmutil(mutil_c(:));log(par.PI); log(grid.Y); log(par.W) ; 
-    log(par.PROFITS);log(grid.N); log(grid.B);log(grid.C)];
+    log(par.PROFITS);log(grid.N); log(grid.B);log(grid.C);par.G];
 
 %% Construct Chebyshev Polynomials to describe deviations of policy from SS
 Poly=[];

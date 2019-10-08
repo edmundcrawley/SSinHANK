@@ -15,30 +15,28 @@ iter_L = 0;
 
 Y=sum(sum(L_guess.*jd_guess));
 pf_guess=(1-mc)*Y;
-% distance between two successive functions
-% start with a distance above the convergence criterion
+
 distC = crit+1;
 
 iter = 0;
-
 disp('Solving household problem by EGM')
 tic
 
+w0 = mc; % labor share = 1 (labor is only one factor)
+money_expense  = repmat(grid.m',[1 mpar.nh]);
+
+
 while (distL>crit)
 
-% w0 = mc*par.alpha*(mc*(1-par.alpha)/(par.RB-1+par.delta))^((1-par.alpha)/par.alpha); % when capital is considered
-w0 = mc; % labor share = 1 (labor is only one factor)
 WW = w0.*L_guess;
-WW(:,end) = pf_guess*par.profitshare;
 
-% initial guess on future consumption 
-% (consume asset income plus labor income from working l=1)
+% initial guess on future consumption (consume asset income plus labor income from working l=1)
 inc.labor = meshes.h/par.H.*WW;
-inc.money = (par.RB)*meshes.m; % initial interest income
-c_guess = inc.money+inc.labor; % guess on C_{t+1}
+inc.labor(:,end) = pf_guess*par.profitshare;
 
-%%% iterate on the consumption decision rule
-money_expense  = repmat(grid.m',[1 mpar.nh]);
+inc.money = (par.RB)*meshes.m; % initial interest income
+% inc.money = (par.RB-1)*meshes.m; % initial interest income
+c_guess = inc.money+inc.labor; % guess on C_{t+1}
 
 distC = crit+1;
 
@@ -78,17 +76,13 @@ end
  
  L_guess = L_new;
 
-  [joint_distr]=JDiteration(m_star,P_H,mpar,grid);
+ [joint_distr]=JDiteration(m_star,P_H,mpar,grid);
  
  joint_distr=reshape(joint_distr,[mpar.nm mpar.nh]);
  
  N = L_new(:)'*joint_distr(:);
-%  K = grid.m*sum(joint_distr,2);
-%  Y=N^(par.alpha)*K^(1-par.alpha);
  Y = N;
  pf_guess = (1-mc)*Y;
-%  r_ss = mc*(1-par.alpha)*K^(-par.alpha)*N^(par.alpha) - par.delta;
-%  par.RB=1+r_ss;
 
  
 end

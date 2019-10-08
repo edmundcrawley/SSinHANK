@@ -30,6 +30,7 @@ Profitind = NN+4;
 Nind  = NN+5;
 Bind  = NN+6;
 Cind =  NN+7; % final goods consumption
+Gind = NN+8;
 
 % Indexes for States
 marginal_mind = (1:mpar.nm-1);
@@ -77,6 +78,7 @@ Profitminus  = exp(Controlminus(Profitind ));
 Nminus  = exp(Controlminus(Nind ));
 Bminus  = exp(Controlminus(Bind ));
 Cminus = exp(Controlminus(Cind ));
+Gminus  = Controlminus(Gind );
 
 %% Write LHS values
 % Controls
@@ -88,6 +90,7 @@ LHS(nx+Profitind)  = (Profitminus);
 LHS(nx+Nind)       = (Nminus);
 LHS(nx+Cind)       = Cminus;
 LHS(nx+Bind)       = (Bminus);
+LHS(nx+Gind)       = (Gminus);
 
 % States
 % Marginal Distributions (Marginal histograms)
@@ -142,11 +145,13 @@ Niminus = (ciminus.^(-par.xi).*[meshes.h(:,1:end-1)/Hminus,zeros(mpar.nm,1)]*Wmi
 
 %% Wages net of leisure services
 WW=Wminus*reshape(Niminus,[mpar.nm,mpar.nh]);
-WW(:,end)=Profitminus*par.profitshare;
+% WW(:,end)=Profitminus*par.profitshare;
 
 %% Incomes (grids)
 inc.labor   = par.tau*WW.*(meshes.h)/Hminus;
+inc.labor(:,end) = Profitminus*par.profitshare;
 inc.money   = meshes.m.*(RBminus/PIminus+(meshes.m<0).*par.borrwedge/PIminus);
+% inc.money   = meshes.m.*((RBminus-1)/PIminus+(meshes.m<0).*par.borrwedge/PIminus);
 
 %% Update policies
 RBaux=(RB+(meshes.m<0).*par.borrwedge)/PI;
@@ -224,6 +229,7 @@ RHS(RBind) = log(par.RB) + par.rho_R* log(RBminus/par.RB)  + log(PIminus/par.PI)
 RHS(nx+PIind) = par.RB*grid.B;
 LHS(nx+PIind) = RB/PI * B;
 
+RHS(nx+Gind) =  B - Bminus*RBminus/PIminus;
 
 %% Difference
 Difference = InvGamma(:,:)*((LHS-RHS)./[ones(nx,1);(ControlSS(1:end-oc));ones(oc,1)]);

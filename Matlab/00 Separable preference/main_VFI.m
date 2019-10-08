@@ -9,13 +9,9 @@ set(0,'defaulttextinterpreter','latex')
 
 %% Select options
 % Name economy
-% casename            = 'BtoY3_min0_max150_nm50_nh4_xi2_gam1_log1_crit10';
-% casename            = 'BtoY3_min0_max150_nm50_nh4_xi2_gam1_cp0_RB_1';
-casename            = 'BtoY3_min0_max200_nm50_nh4_xi2_gam1_log3_crit11';
-% casename            = 'BtoY3_min0_max150_nm50_nh4_xi2_gam1_log3_crit11';
-% casename            = 'BtoY3_min0_max100_nm50_nh4_xi2_gam1_log3_crit11';
-% casename            = 'BtoY3_min0_max50_nm50_nh4_xi2_gam1_log3_crit11';
-% casename            = 'BtoY3_min0_max150_nm50_nh4_xi2_gam1_log3_beta98';
+% casename            = 'BtoY3_min0_max150_nm100_nh6_xi2_gam2_eqgrid';
+% casename            = 'BtoY3_min0_max150_nm100_nh6_xi3_gam3_eqgrid';
+casename            = 'BtoY3_min0_max150_nm100_nh6_xi10_gam10_eqgrid';
 % FindNewSS           = true;
 FindNewSS           = false;
 mpar.overrideEigen  = true;
@@ -26,14 +22,14 @@ if FindNewSS==1% parameters
 mmin = 0;                  % borrowing constraint
 par.beta   = 0.985;        % subjective discount factor
 par.delta  = 0.02;         % depreciation rate of physical capital
-par.varphi = 1;          % Frisch elasticity of labor supply
-par.xi = 2;                % inverse elasticity of intertemporal substitution (RRA)
+par.varphi = 1/10;          % Frisch elasticity of labor supply
+par.xi = 10;                % inverse elasticity of intertemporal substitution (RRA)
 par.gamma  = 1/par.varphi;   
 par.eta=20;
 par.mu=(par.eta-1)/par.eta;
 par.alpha  = 1;            % labor income share
 par.prob_priceadj = 3/4;   % average price duration of 4 quarters = 1/(1-par.prob_priceadj)
-par.kappa  = (1-par.prob_priceadj)*(1-par.prob_priceadj*par.beta)/par.prob_priceadj;% Phillips-curve parameter (from Calvo prob.)
+par.kappa         = (1-par.prob_priceadj)*(1-par.prob_priceadj*par.beta)/par.prob_priceadj;% Phillips-curve parameter (from Calvo prob.)
 par.PI=1;
 par.borrwedge=1.00^0.25-1;
 par.BtoY = 3;
@@ -42,14 +38,14 @@ par.tau=1;
 % set up asset grid
 
 nh = 4;  mpar.nh=nh;              % number of possible productivity realizations
-nm = 50; mpar.nm=nm;            % number of asset grid points
+nm  = 20; mpar.nm=nm;            % number of asset grid points
 
-mmax = 200;                        % maximum asset level
+mmax = 150;                        % maximum asset level
 
 % grid.m  = linspace(mmin,mmax,nm);          % equally-spaced asset grid from a_1=b to a_M
-% grid.m = (exp(linspace(0,log(mmax - mmin+1),mpar.nm))-1+mmin);   
+grid.m = (exp(linspace(0,log(mmax - mmin+1),mpar.nm))-1+mmin);   
 % grid.m = exp(exp(linspace(0,log(log(mmax - mmin+1)+1),mpar.nm))-1)-1+mmin;
-grid.m = (exp(exp(exp(linspace(0,log(log(log(mmax - mmin+1)+1)+1),mpar.nm))-1)-1)-1+mmin);
+% grid.m = (exp(exp(exp(linspace(0,log(log(log(mmax - mmin+1)+1)+1),mpar.nm))-1)-1)-1+mmin);
 
 A=grid.m';
 grid.K=1;
@@ -67,6 +63,7 @@ mpar.out = 0.0625;
 
 
 % set up productivity grid
+% H  = [h1,h2,h3]';                   % grid for productivity
 
 H = grid.h;
 % vectorize the grid in two dimensions
@@ -102,23 +99,16 @@ crit = 10^(-11);
 
 r0  = (1/par.beta-1);
 % set up an anonymous function
-fprintf('Start solving the Huggett with positive bond model... \n');
+fprintf('Start solving the Aiyagari model... \n');
 tic;
 
-par.RB=1.02^0.25; % initial guess for equilibrium interest rate
+par.RB=1.04^0.25; % initial guess for equilibrium interest rate
 
 Guess = par.RB;
 
-% tic
-% [L_guess,jd_guess] = stationary_eqm_L_guess(Guess,crit,meshes,par,L,mpar,grid,P_H);
-% toc
-
-L_guess = ones(mpar.nm,mpar.nh);
-L_guess(:,end)=0;
-
-jd_h = P_H^1000;
-jd_guess = repmat(jd_h(1,:)/mpar.nm,mpar.nm,1);
-
+tic
+[L_guess,jd_guess] = stationary_eqm_VFI(Guess,crit,meshes,par,L,mpar,grid,P_H);
+toc
 
 myfun   = @(r) stationary_eqm(r,L_guess,jd_guess,crit,meshes,par,L,mpar,grid,P_H);
 
@@ -174,7 +164,7 @@ solver = 'QZ';
 
 % aggrshock      = 'TFP';
 % par.sigmaS     = 0.01;    
-% par.rhoS       = 0.90;
+% par.rhoS       = 0.99;
 aggrshock           = 'MP';
 par.rhoS            = 0.0;    % Persistence of variance
 par.sigmaS          = 0.001;    % STD of variance shocks
@@ -188,7 +178,7 @@ par.kappa         = (1-par.prob_priceadj)*(1-par.prob_priceadj*par.beta)/par.pro
 
 
 % Produce matrices to reduce state-space
-mpar.maxdim=30;
+mpar.maxdim=10;
 
 %% mainskript_statereduc
 % mainskript_statereduc

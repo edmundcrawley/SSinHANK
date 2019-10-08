@@ -6,18 +6,33 @@ c_aux = 1./(EMU.^(1/par.xi));
 
 mmin = min(grid.m);
 
-cpbind = ((RBminus/PIminus)*meshes.m+mmin)/2+sqrt(((RBminus/PIminus)*meshes.m+mmin).^(2)+4*(meshes.h/Hminus*Wminus).^(1+par.varphi))/2;
-cpbind(:,end) = ((RBminus/PIminus)*meshes.m(:,end)+mmin+Profitminus*par.profitshare);
-
-
 % Calculate assets consistent with choices being (m')
 % Calculate initial money position from the budget constraint,
 % that leads to the optimal consumption choice
-m_n_aux = (c_aux + meshes.m - inc.labor)/(RBminus/PIminus);
+m_n_aux = (c_aux + meshes.m - c_aux.^(-par.xi/par.gamma).*(meshes.h/Hminus.*Wminus).^((1+par.gamma)/par.gamma))/(RBminus/PIminus);
+m_n_aux(:,end) = (c_aux(:,end) + meshes.m(:,end) - inc.labor(:,end))/(RBminus/PIminus);
 % m_n_aux = m_n_aux./(RBminus/PIminus+(m_n_aux<0)*par.borrwedge/PIminus);
 
 % Identify binding constraints
 binding_constraints = meshes.m < repmat(m_n_aux(1,:),[mpar.nm 1]);
+
+[row,col]=find(binding_constraints);
+
+options = optimset('Display','off');
+
+cpbind  = zeros(mpar.nm,mpar.nh);
+
+% cpbind = ((RBminus/PIminus)*meshes.m+mmin)/2+sqrt(((RBminus/PIminus)*meshes.m+mmin).^(2)+4*(meshes.h/Hminus*Wminus).^(1+par.varphi))/2;
+% cpbind(:,end) = ((RBminus/PIminus)*meshes.m(:,end)+mmin+Profitminus*par.profitshare);
+
+for i=1:length(row)
+cpbind(row(i),col(i)) = fsolve( @(c) (RBminus/PIminus)*meshes.m(row(i),col(i))+...
+           (c.^(-par.xi).*meshes.h(row(i),col(i))/Hminus.*Wminus).^(1/par.gamma).*meshes.h(row(i),col(i))/Hminus.*Wminus - c - mmin,c_aux(row(i),col(i)),options );
+end
+
+cpbind(:,end) = ((RBminus/PIminus)*meshes.m(:,end) - mmin+Profitminus*par.profitshare);
+
+
 
 % Consumption when drawing assets m' to zero: Eat all Resources
 % Resource = inc.labor + inc.money;

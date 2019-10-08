@@ -19,6 +19,7 @@ IRF_Profit=100*IRF_state_sparse(end-oc+4,1:end-1);
 IRF_N=100*IRF_state_sparse(end-oc+5,1:end-1);
 IRF_B=100*IRF_state_sparse(end-oc+6,1:end-1);
 IRF_C=100*IRF_state_sparse(end-oc+7,1:end-1);
+IRF_G=IRF_state_sparse(end-oc+8,1:end-1);
 
 PI=1+IRF_state_sparse(end-oc+1,1:end-1);
 RB=par.RB+(IRF_state_sparse(mpar.numstates-os+1,2:end));
@@ -114,9 +115,14 @@ plot(1:mpar.maxlag-1,IRF_Profit,'Linewidth',1.5)
 ylabel('Percent','Interpreter','none','FontName','arial','FontSize',12)
 xlabel('Quarter','Interpreter','none','FontName','arial','FontSize',12)
 title('Profits')
+subplot(3,3,8)
+plot(1:mpar.maxlag-1,IRF_G,'Linewidth',1.5)
+ylabel('\Delta from SS','Interpreter','tex','FontName','arial','FontSize',12)
+xlabel('Quarter','Interpreter','none','FontName','arial','FontSize',12)
+title('Gov spending')
 subplot(3,3,9)
 plot(1:mpar.maxlag-1,IRF_S,'Linewidth',1.5)
-ylabel('Percent','Interpreter','none','FontName','arial','FontSize',12)
+ylabel('Percent','Interpreter','tex','FontName','arial','FontSize',12)
 xlabel('Quarter','Interpreter','none','FontName','arial','FontSize',12)
 title('Shock')
 

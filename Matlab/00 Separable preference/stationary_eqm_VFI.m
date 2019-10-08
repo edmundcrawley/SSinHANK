@@ -1,4 +1,4 @@
-function [L_guess,joint_distr] = stationary_eqm_L_guess(Guess,crit,meshes,par,L,mpar,grid,P_H)
+function [L_guess,joint_distr] = stationary_eqm_VFI(Guess,crit,meshes,par,L,mpar,grid,P_H)
 
 par.RB=Guess;
 
@@ -17,11 +17,13 @@ pf_guess=(1-mc)*Y;
 % pf_guess=(1-mc);
 
 distC = crit+1;
+
 iter = 0;
 
 disp('Solving household problem by EGM')
 tic
 
+while (distL>crit)
 
   % w0 = mc*par.alpha*(mc*(1-par.alpha)/(par.RB-1+par.delta))^((1-par.alpha)/par.alpha); % when capital is considered
 w0 = mc; % labor share = 1 (labor is only one factor)
@@ -34,14 +36,10 @@ WW(:,end) = pf_guess*par.profitshare;
 % (consume asset income plus labor income from working l=1)
 inc.labor = meshes.h/par.H.*WW;
 inc.money = (par.RB)*meshes.m; % initial interest income
-% inc.money = (par.RB-1)*meshes.m; % initial interest income
 c_guess = max(inc.money,0)+inc.labor; % guess on C_{t+1}
 
 %%% iterate on the consumption decision rule
 money_expense  = repmat(grid.m',[1 mpar.nh]);
-
-
-while (distL>crit)
 
 distC = crit+1;
 
