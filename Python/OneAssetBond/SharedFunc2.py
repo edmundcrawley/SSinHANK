@@ -142,10 +142,11 @@ def MakeGrid2(mpar, grid, m_min, m_max):
     grid : np.array
         new grid
     '''
+    grid['m']  = np.linspace(m_min,m_max,mpar['nm'])
+#    grid['m'] = np.exp(np.linspace(0., np.log(m_max - m_min +1), mpar['nm']))-1+m_min
+#    grid['m'] = np.exp(np.exp(np.linspace(0., np.log(np.log(m_max - m_min +1)+1), mpar['nm']))-1)-1+m_min
     
-    grid['m'] = np.exp(np.exp(np.linspace(0., np.log(np.log(m_max - m_min +1)+1), mpar['nm']))-1)-1+m_min
-    
-    grid['m'][np.abs(grid['m'])==np.min(grid['m'])]=0.
+#    grid['m'][np.abs(grid['m'])==np.min(grid['m'])]=0.
     
     return grid
 

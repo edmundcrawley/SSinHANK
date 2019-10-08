@@ -7,7 +7,7 @@ Parameters for one asset IOU
 # Household Parameters
 parbeta        = 0.985     # Discount factor
 parxi          = 2          # CRRA
-pargamma       = 1          # Inverse Frisch elasticity
+pargamma       = 2          # Inverse Frisch elasticity
 
 # Income Process
 parrhoH        = 0.979    # Persistence of productivity
@@ -25,7 +25,7 @@ parprob_priceadj = 3/4. # average price duration of 4 quarters = 1/(1-par.prob_p
 parkappa         = (1.-parprob_priceadj)*(1.-parprob_priceadj*parbeta)/parprob_priceadj  # Phillips-curve parameter (from Calvo prob.)
 
 # Central Bank Policy
-partheta_pi    = 1.25 # Reaction to inflation
+partheta_pi    = 1.5 # Reaction to inflation
 parrho_R       = 0 # Inertia
 
 # Fiscal Policy
@@ -34,7 +34,7 @@ pargamma_pi = 1.5
 
 # Tax Schedule
 partau         = 1.0      # Net income after tax 
-parBtoY        = 5   # Gov debt to output ratio
+parBtoY        = 3   # Gov debt to output ratio
 #partau         = 0.9   # Net income after tax 
 #parBtoY        = 0.25   # Gov debt to output ratio
 #parBtoY        = 2   # Gov debt to output ratio
@@ -47,7 +47,7 @@ parborrwedge   = 1.02**0.25 - 1. # Wedge on borrowing
 ## Grids
 # Idiosyncratic States
 mparnm         = 100 # integer
-mparnh         = 4 # integer
+mparnh         = 6 # integer
 mpartauchen    = 'importance'
 
 gridK = 1 # keep fixed at SS of economy with bonds and capital
