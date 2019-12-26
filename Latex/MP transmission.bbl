@@ -1,0 +1,110 @@
+
+
+% Bibstyle aea.bst version 2009.05.20
+
+\begin{thebibliography}{xx}
+
+\harvarditem[Auclert]{Adrien Auclert}{2017}{auclert_monetary_2017}
+{\bf Auclert, Adrien.} 2017. ``Monetary {Policy} and the {Redistribution}
+  {Channel}.'' National Bureau of Economic Research NBER {Working} {Paper}
+  23451.
+
+\harvarditem[Auclert \harvardand\ Rognlie]{Adrien Auclert \harvardand\ Matthew
+  Rognlie}{2017}{arGHH}
+{\bf Auclert, Adrien, and Matthew Rognlie.} 2017. ``A note on multipliers in NK
+  models with GHH preferences.'' working paper.
+
+\harvarditem[Auclert \harvardand\ Rognlie]{Adrien Auclert \harvardand\ Matthew
+  Rognlie}{2018}{auclert_inequality_2018}
+{\bf Auclert, Adrien, and Matthew Rognlie.} 2018. ``Inequality and {Aggregate}
+  {Demand}.'' National Bureau of Economic Research Working {Paper} 24280.
+
+\harvarditem[Bayer \harvardand\ Luetticke]{Christian Bayer \harvardand\ Ralph
+  Luetticke}{2018}{blSolving}
+{\bf Bayer, Christian, and Ralph Luetticke.} 2018. ``Solving heterogeneous
+  agent models in discrete time with many idiosyncratic states by perturbation
+  methods.'' working paper.
+
+\harvarditem[Best et~al.]{Michael~Carlos Best, James Cloyne, Ethan Ilzetzki
+  \harvardand\ Henrik Kleven}{2018}{best_estimating_2018}
+{\bf Best, Michael~Carlos, James Cloyne, Ethan Ilzetzki, and Henrik Kleven.}
+  2018. ``Estimating the {Elasticity} of {Intertemporal} {Substitution} {Using}
+  {Mortgage} {Notches}.'' National Bureau of Economic Research NBER {Working}
+  {Paper} 24948.
+
+\harvarditem[Broer et~al.]{Tobias Broer, Niels-Jakob~Harbo Hansen, Per Krusell
+  \harvardand\ Erik Oberg}{2018}{broer_2018}
+{\bf Broer, Tobias, Niels-Jakob~Harbo Hansen, Per Krusell, and Erik Oberg.}
+  2018. ``The {New} {Keynesian} {Transmission} {Mechanism}: {A}
+  {Heterogeneous}-{Agent} {Perspective}.'' {\em The Review of Economic
+  Studies}.
+
+\harvarditem[Crawley \harvardand\ Kuchler]{Edmund Crawley \harvardand\ Andreas
+  Kuchler}{2018}{ckConsumption}
+{\bf Crawley, Edmund, and Andreas Kuchler.} 2018. ``Consumption Heterogeneity:
+  Micro Drivers and Macro Implications.'' Danmarks Nationalbank working paper
+  129.
+
+\harvarditem[Debortoli \harvardand\ Gali]{Davide Debortoli \harvardand\ Jorda
+  Gali}{2018}{dgHANKTANK}
+{\bf Debortoli, Davide, and Jorda Gali.} 2018. ``Monetary Policy with
+  Heterogeneous Agents: Insights from TANK models.'' CREI mimeo.
+
+\harvarditem[Fagereng, Holm \harvardand\ Natvik]{Andreas Fagereng, Martin~B.
+  Holm \harvardand\ Gisle~J. Natvik}{2016}{fagereng_mpc_2016}
+{\bf Fagereng, Andreas, Martin~B. Holm, and Gisle~J. Natvik.} 2016. ``{MPC}
+  {Heterogeneity} and {Household} {Balance} {Sheets}.'' Statistics Norway,
+  Research Department Discussion {Paper}.
+
+\harvarditem[Gali]{Jorda Gali}{2008}{gali_book}
+{\bf Gali, Jorda.} 2008. {\em Monetary Policy, Inflation, and the Business
+  Cycle.} Princeton University Press.
+
+\harvarditem[Gali, {Lopez-Salido} \harvardand\ Valles]{Jordi Gali, David
+  {Lopez-Salido} \harvardand\ Javier Valles}{2007}{gali_understanding_2007}
+{\bf Gali, Jordi, David {Lopez-Salido}, and Javier Valles.} 2007.
+  ``Understanding the {Effects} of {Government} {Spending} on {Consumption}.''
+  {\em Journal of the European Economic Association}, 5(1):~227--270.
+
+\harvarditem[Gali, Lopez-Salido \harvardand\ Valles]{Jordi Gali, J.~David
+  Lopez-Salido \harvardand\ Javier Valles}{2004}{gali_2004}
+{\bf Gali, Jordi, J.~David Lopez-Salido, and Javier Valles.} 2004.
+  ``Rule-of-{Thumb} {Consumers} and the {Design} of {Interest} {Rate}
+  {Rules}.'' National Bureau of Economic Research, Inc 10392.
+
+\harvarditem[Havranek]{Tomas Havranek}{2015}{havranek_measuring_2015}
+{\bf Havranek, Tomas.} 2015. ``Measuring {Intertemporal} {Substitution}: {The}
+  {Importance} of {Method} {Choices} and {Selective} {Reporting}.'' {\em
+  Journal of the European Economic Association}, 13(6):~1180--1204.
+
+\harvarditem[Johnson, Parker \harvardand\ Souleles]{David~S. Johnson,
+  Jonathan~A. Parker \harvardand\ Nicholas~S.
+  Souleles}{2006}{johnson_household_2006}
+{\bf Johnson, David~S., Jonathan~A. Parker, and Nicholas~S. Souleles.} 2006.
+  ``Household {Expenditure} and the {Income} {Tax} {Rebates} of 2001.'' {\em
+  American Economic Review}, 96(5):~1589--1610.
+
+\harvarditem[Kaplan, Moll \harvardand\ Violante]{Greg Kaplan, Benjamin Moll
+  \harvardand\ Giovanni~L. Violante}{2016}{kaplan_monetary_2016}
+{\bf Kaplan, Greg, Benjamin Moll, and Giovanni~L. Violante.} 2016. ``Monetary
+  {Policy} {According} to {HANK}.'' National Bureau of Economic Research NBER
+  {Working} {Paper} 21897.
+
+\harvarditem[Landier, Sraer \harvardand\ Thesmar]{Augustin Landier, David Sraer
+  \harvardand\ David Thesmar}{2013}{landier_banks_2013}
+{\bf Landier, Augustin, David Sraer, and David Thesmar.} 2013. ``Banks'
+  {Exposure} to {Interest} {Rate} {Risk} and {The} {Transmission} of {Monetary}
+  {Policy}.'' National Bureau of Economic Research NBER {Working} {Paper}
+  18857.
+
+\harvarditem[Parker et~al.]{Jonathan~A Parker, Nicholas~S Souleles, David~S
+  Johnson \harvardand\ Robert McClelland}{2013}{parker_consumer_2013}
+{\bf Parker, Jonathan~A, Nicholas~S Souleles, David~S Johnson, and Robert
+  McClelland.} 2013. ``Consumer spending and the economic stimulus payments of
+  2008.'' {\em American Economic Review}, 103(6):~2530--2553.
+
+\harvarditem[Rotemberg]{Julio~J. Rotemberg}{1982}{rotemberg_sticky_1982}
+{\bf Rotemberg, Julio~J.} 1982. ``Sticky {Prices} in the {United} {States}.''
+  {\em Journal of Political Economy}, 90(6):~1187--1211.
+
+\end{thebibliography}
