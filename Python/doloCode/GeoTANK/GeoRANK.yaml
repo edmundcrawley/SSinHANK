@@ -1,0 +1,43 @@
+name: Geometric RANK model
+
+symbols:
+
+   exogenous: [eps_G]
+   states: [dG, dA, dSavings]
+   controls: [dC, dM, dY, dT]
+   expectations: []
+   values: []
+   parameters: [alpha, rho_G, rho_B, Rf]
+   rewards: []
+   
+#definitions:
+equations:
+
+    arbitrage: 
+        - dC = alpha * dM
+        - dA = dM - dC
+        - dY = dC + dG 
+        - dM = dY + dSavings - dT
+        
+    transition:
+        - dG = rho_G*dG(-1) + eps_G
+        - dA = rho_B*(dA(-1) +dG)
+        - dSavings = Rf*dA(-1)
+
+calibration:
+    # parameters
+    alpha: 0.25
+    rho_G: 0.0
+    rho_B: 0.7
+    Rf: 1.01
+    
+    dG: 0.
+    dA: 0.
+    dC: 0.
+    dT: 0.
+    dM: 0.
+    dY: 0.
+    dSavings: 0.
+    
+exogenous: !Normal
+    Sigma: [[1.0**2]]

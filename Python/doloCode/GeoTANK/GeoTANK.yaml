@@ -1,0 +1,54 @@
+name: Geometric TANK model
+
+symbols:
+
+   exogenous: [eps_G]
+   states: [dG, dSavings_g, dSavings_r, dA]
+   controls: [dC_g, dM_g, dY, dT, dA_g, dA_r, dC]
+   expectations: []
+   values: []
+   parameters: [alpha, rho_G, rho_B, Rf, geo_share]
+   rewards: []
+   
+#definitions:
+equations:
+
+    arbitrage: 
+        # equations for geo-agent
+        - dC_g = alpha * dM_g
+        - dA_g = dM_g - dC_g
+        - dM_g = dY + dSavings_g - dT
+        # equations for equilibrium
+        - dY = geo_share * dC_g + dG 
+        - dA_r = dY + dSavings_r - dT
+        - dA = geo_share * dA_g + (1.0-geo_share)*dA_r
+        - dC = geo_share*dC_g
+                
+    transition:
+        - dG = rho_G*dG(-1) + eps_G
+        - dSavings_g = Rf*dA_g(-1)
+        - dSavings_r = Rf*dA_r(-1)
+        - dA = rho_B*(dA(-1) +dG)   
+
+calibration:
+    # parameters
+    rho_G: 0.0
+    rho_B: 0.7
+    Rf: 1.01
+    geo_share: 0.8
+    alpha: 1.0-(geo_share-0.25)/geo_share    #set to match an average MPC of 0.25
+    
+    dG: 0.
+    dA_g: 0.
+    dA_r: 0.
+    dC_g: 0.
+    dC: 0.
+    dT: 0.
+    dM_g: 0.
+    dY: 0.
+    dA: 0.
+    dSavings_g: 0.
+    dSavings_r: 0.
+    
+exogenous: !Normal
+    Sigma: [[1.0**2]]

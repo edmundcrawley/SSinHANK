@@ -172,4 +172,9 @@
   *{file}   {../Python/Figures/IRF_RB.pdf}{0000/00/00 v0.0}
   *{file}   {../Python/Figures/IRF_W.pdf}{0000/00/00 v0.0}
   *{file}   {SSinHANK.bbl}{0000/00/00 v0.0}
+  *{file}   {omscmr.fd}   {2014/09/29 v2.5h}
+  *{file}   {../Python/DoloCode/Figures/ProportionKeynesian_sigma1_sw.pdf}{0000/00/00 v0.0}
+  *{file}   {../Python/DoloCode/Figures/KeynesianDebt_sigma1_sw.pdf}{0000/00/00 v0.0}
+  *{file}   {../Python/DoloCode/Figures/KeynesianDebt_sigma3_sw.pdf}{0000/00/00 v0.0}
+  *{file}   {../Python/DoloCode/Figures/KeynesianDebt_sigma10_sw.pdf}{0000/00/00 v0.0}
 }

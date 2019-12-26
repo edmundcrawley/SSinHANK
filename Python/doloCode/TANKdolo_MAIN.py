@@ -2,8 +2,9 @@ import numpy as np
 from matplotlib import pyplot as plt
 from dolo import *  # load the dolo library
 from CalcTransChannels import CalcTransChannels_TANK, CalcTransChannels_TANKcapital
-figure_dir = '.\\Figures\\'
-table_dir = '.\\Tables\\'
+from pathlib import Path
+figure_dir = Path('./Figures/')
+table_dir = Path('./Tables/')
 
 #################################################
 # First do the TANK model without capital
@@ -15,7 +16,7 @@ TANKmodel = yaml_import("TANKmodel.yaml")   # import the model
 param_to_vary = ['pop_share_K','debt_limit']
 plot_xlabel = ['Proportion of Keynesian Households','Keynesian Household Debt Level']
 param_loop = dict()
-param_loop[param_to_vary[0]] = np.linspace(0.0,0.3,31)
+param_loop[param_to_vary[0]] = np.linspace(0.0,0.4,41)
 param_loop[param_to_vary[1]] = np.linspace(0.0,2.0,41) 
 
 # Loop over sigma
@@ -52,7 +53,7 @@ for this_sigma in [1.0,2.0,3.0]:
         leg.get_frame().set_linewidth(0.0)
         if param_to_vary[j]=='pop_share_K':
             plt.title('Transmission Channels to a 1% Interest Rate Decline')
-            plt.axvline(x=0.2, color='k', linestyle='--')
+            #plt.axvline(x=0.2, color='k', linestyle='--')
             save_name = 'ProportionKeynesian_sigma'+ '{:.0f}'.format(this_sigma) + '.pdf'
         elif param_to_vary[j]=='debt_limit':
             plt.title('$\sigma$ = ' + '{:.1f}'.format(this_sigma))

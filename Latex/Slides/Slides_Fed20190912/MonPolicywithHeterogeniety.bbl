@@ -1,0 +1,28 @@
+\ifx\undefined\BySame
+\newcommand{\BySame}{\leavevmode\rule[.5ex]{3em}{.5pt}\ }
+\fi
+\ifx\undefined\textsc
+\newcommand{\textsc}[1]{{\sc #1}}
+\newcommand{\emph}[1]{{\em #1\/}}
+\let\tmpsmall\small
+\renewcommand{\small}{\tmpsmall\sc}
+\fi
+\begin{thebibliography}{}
+
+\harvarditem[Ahn, Kaplan, Moll, Winberry, and Wolf]{Ahn, Kaplan, Moll,
+  Winberry, and Wolf}{2017}{ahn_when_2017}
+\textsc{Ahn, SeHyoun, Greg Kaplan, Benjamin Moll, Thomas Winberry,  {and}
+  Christian Wolf}  (2017): ``When {Inequality} {Matters} for {Macro} and
+  {Macro} {Matters} for {Inequality},'' \emph{NBER}.
+
+\harvarditem[Bayer and Luetticke]{Bayer and Luetticke}{2018}{blSolving}
+\textsc{Bayer, Christian,  {and} Ralph Luetticke}  (2018): ``Solving
+  heterogeneous agent models in discrete time with many idiosyncratic states by
+  perturbation methods,'' working paper.
+
+\harvarditem[Reiter]{Reiter}{2009}{reiter_solving_2009}
+\textsc{Reiter, Michael}  (2009): ``Solving heterogeneous-agent models by
+  projection and perturbation,'' \emph{Journal of Economic Dynamics and
+  Control}, 33(3), 649--665.
+
+\end{thebibliography}
